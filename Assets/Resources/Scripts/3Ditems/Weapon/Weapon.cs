@@ -4,7 +4,7 @@ using System.Collections;
 
 public class Weapon: Item3D
 {
-    // Properties //
+    // Properties // test
     protected LineRenderer hitLine;
     public UnitController holder;
 
