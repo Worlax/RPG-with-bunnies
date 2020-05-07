@@ -4,7 +4,7 @@ using System.Collections;
 
 public class Gun: Weapon
 {
-    // Properties //
+    // Properties // test 2
     public bool singleAvailable = true;
     public bool burstAvailable = true;
     public bool automaticAvailable = true;
