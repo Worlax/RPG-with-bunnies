@@ -4,7 +4,7 @@ using System.Collections.Generic;
 [SelectionBase]
 public class Tile: MonoBehaviour
 {
-    // Properties //
+    // Properties // test 3
     public Material mDisabled;
     public Material mPossible;
     public Material mOverlapped;
