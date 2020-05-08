@@ -17,15 +17,15 @@ public class ItemsManager : MonoBehaviour
         }
         //
 
-        Dollar.maxInStack = dollar;
+        Dollar.MaxInStack = dollar;
 
-        Ammo_7D62x51mm.maxInStack = ammo_7D62x51mm;
-        Ammo_5D56x45mm.maxInStack = ammo_5D56x45mm;
-        Ammo_9mm.maxInStack = ammo_9mm;
+        Ammo_7D62x51mm.MaxInStack = ammo_7D62x51mm;
+        Ammo_5D56x45mm.MaxInStack = ammo_5D56x45mm;
+        Ammo_9mm.MaxInStack = ammo_9mm;
 
         Rifle.magazineMaxAmmo = rifle;
 
-        HealingPotion.maxUses = healingPotion;
+        HealingPotion.MaxUses = healingPotion;
     }
 
     // Properties //

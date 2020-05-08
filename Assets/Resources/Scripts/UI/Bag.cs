@@ -5,7 +5,7 @@ public class Bag: Inventory
 {
     // Properties //
     public List<InventorySlot> slots;
-    public List<Item2D> itemsPrefabs;
+    public List<Item> itemsPrefabs;
 
     // Functions //
     protected override void Start()
@@ -21,7 +21,7 @@ public class Bag: Inventory
             if (i > slots.Count)
                 return;
 
-            Item2D item = Instantiate(itemsPrefabs[i]);
+            Item item = Instantiate(itemsPrefabs[i]);
 
             item.transform.SetParent(slots[i].transform, false);
         }

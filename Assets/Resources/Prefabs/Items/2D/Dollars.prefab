@@ -100,8 +100,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58715fa30d8d6ea4a8fac059bf378b7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ItemPrefab: {fileID: 0}
+  lastConnectedSlot: {fileID: 0}
+  itemIn3DPrefab: {fileID: 0}
+  type: 0
+  usesLeft: 0
   inStack: 20
+  equipType: 0
 --- !u!1001 &440674347729693789
 PrefabInstance:
   m_ObjectHideFlags: 0

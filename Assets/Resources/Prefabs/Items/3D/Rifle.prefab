@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 5959371376978671179}
   - component: {fileID: -6896663335500801082}
   - component: {fileID: -4667657964330613426}
-  - component: {fileID: 300395079809215237}
   m_Layer: 12
   m_Name: Rifle
   m_TagString: Untagged
@@ -115,52 +114,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.11009159, y: 0.26348263, z: 0.74492323}
   m_Center: {x: -0.0010435322, y: -0.08376641, z: 0.37246183}
---- !u!114 &300395079809215237
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 492439861722384161}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f955086200730704abbc1a138aa95526, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 0
-  holder: {fileID: 0}
-  actionPointsForUse: 2
-  hitDistance: 6
-  minDamage: 0
-  maxDamage: 0
-  fireAnimationInProcess: 0
-  animationTimeBeforHit: 0.07
-  animationTimeAfterHit: 0
-  state: 0
-  singleAvailable: 1
-  burstAvailable: 1
-  automaticAvailable: 1
-  singleActionPoints: 2
-  burstActionPoints: 3
-  automaticActionPoints: 4
-  singleAmmo: 1
-  burstAmmo: 3
-  automaticAmmo: 6
-  ammoForUse: 0
-  singleMinDamage: 7
-  singleMaxDamage: 10
-  burstMinDamage: 6
-  burstMaxDamage: 8
-  automaticMinDamage: 5
-  automaticMaxDamage: 6
-  AimAnimationInProcess: 0
-  aimAnimationTime: 1.35
-  bulletPrefab: {fileID: 7512954883070007328, guid: ac5907911dc09df459058cb5d2b54904,
-    type: 3}
-  firePoint: {fileID: 6453790053400307047}
-  bulletSpeed: 20
-  magazineCurrentAmmo: 0
-  fireMode: 0
 --- !u!1 &1436596805542936310
 GameObject:
   m_ObjectHideFlags: 0

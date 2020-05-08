@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 
-public class Ammo: StackableItem
+public class NewBehaviourScript: MonoBehaviour
 {
     // Properties //
-
-
+	
+	
     // Functions //
 	
 }

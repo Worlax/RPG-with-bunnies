@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class EquipmentItem : Item2D
+public class Equippable: Item
 {
     // Properties //
     public enum Type
@@ -29,7 +29,7 @@ public class EquipmentItem : Item2D
     {
         base.Start();
 
-        Gun gun = ItemPrefab.GetComponent<Gun>();
+        Gun gun = itemIn3DPrefab.GetComponent<Gun>();
 
         if (gun != null)
         {

@@ -6,25 +6,25 @@ using System;
 public class EquipmentSlot: InventorySlot
 {
     // Properties //
-    public EquipmentItem.Type type;
+    public Equippable.Type type;
     GameObject itemIn3D;
 
     // Events //
 
-    public static event Action<Item2D, Item3D> OnItemEquiped;
-    public static event Action<Item2D, Item3D> OnItemUnequiped;
+    public static event Action<Item, Item3D> OnItemEquiped;
+    public static event Action<Item, Item3D> OnItemUnequiped;
 
     // Functions //
-    public override bool ConnectOrSwapItem(Item2D newItem, bool ignoreMoveTurn = false)
+    public override bool ConnectOrSwapItem(Item newItem, bool ignoreMoveTurn = false)
     {
-        EquipmentItem equipmentItem = newItem as EquipmentItem;
+        Equippable equipmentItem = newItem as Equippable;
         if (equipmentItem == null || equipmentItem.type != type)
             return false;
 
         return base.ConnectOrSwapItem(newItem, ignoreMoveTurn);
     }
 
-    protected override void ConnectItem(Item2D newItem)
+    protected override void ConnectItem(Item newItem)
     {
         base.ConnectItem(newItem);
         EquipItem();
@@ -36,7 +36,7 @@ public class EquipmentSlot: InventorySlot
         base.DisconnectItem();
     }
 
-    protected override void SwapItems(Item2D newItem)
+    protected override void SwapItems(Item newItem)
     {
         base.SwapItems(newItem);
     }
@@ -45,10 +45,10 @@ public class EquipmentSlot: InventorySlot
     {
         PlayerController player = GameManager.instance.currentUnit as PlayerController;
 
-        itemIn3D = Instantiate(itemInSlot.ItemPrefab);
+        itemIn3D = Instantiate(itemInSlot.itemIn3DPrefab);
         itemIn3D.transform.SetParent(player.transform, false);
 
-        if (type == EquipmentItem.Type.Weapon)
+        if (type == Equippable.Type.Weapon)
         {
             Weapon weapon = itemIn3D.GetComponent<Weapon>();
 
@@ -57,7 +57,7 @@ public class EquipmentSlot: InventorySlot
 
             // load ammo info from buffer
             Gun gun = itemIn3D.GetComponent<Gun>();
-            EquipmentItem _itemInSlot = itemInSlot as EquipmentItem;
+            Equippable _itemInSlot = itemInSlot as Equippable;
 
             if (gun != null && _itemInSlot != null)
             {
@@ -70,7 +70,7 @@ public class EquipmentSlot: InventorySlot
 
     public void UnequipItem()
     {
-        if (type == EquipmentItem.Type.Weapon)
+        if (type == Equippable.Type.Weapon)
         {
             PlayerController player = GameManager.instance.currentUnit as PlayerController;
             Weapon weapon = itemIn3D.GetComponent<Weapon>();
@@ -80,7 +80,7 @@ public class EquipmentSlot: InventorySlot
 
             // buffer ammo info
             Gun gun = itemIn3D.GetComponent<Gun>();
-            EquipmentItem _itemInSlot = itemInSlot as EquipmentItem;
+            Equippable _itemInSlot = itemInSlot as Equippable;
 
             if (gun != null && _itemInSlot != null)
             {

@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 2836030409389240178}
   - component: {fileID: 6485355119114638660}
   - component: {fileID: 665430441391368637}
-  - component: {fileID: 2439082977036220529}
   - component: {fileID: -8004928197894187916}
   - component: {fileID: -1090898358430400782}
   - component: {fileID: 13350066}
@@ -84,28 +83,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!114 &2439082977036220529
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1225194024383487329}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f7ebbb75419a8924cb2c1ce8515abded, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 0
-  holder: {fileID: 0}
-  useActionPoints: 1
-  hitDistance: 0.7
-  minDamage: 4
-  maxDamage: 5
-  fireAnimationInProcess: 0
-  animationTimeBeforHit: 0.83
-  animationTimeAfterHit: 1.46
-  state: 0
 --- !u!95 &-8004928197894187916
 Animator:
   serializedVersion: 3

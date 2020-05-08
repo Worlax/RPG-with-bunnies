@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 803239318957881650}
   - component: {fileID: 8538450340986700548}
   - component: {fileID: 2684745934567948285}
-  - component: {fileID: -7972931831608271868}
   m_Layer: 12
   m_Name: Helmet
   m_TagString: Untagged
@@ -80,16 +79,3 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!114 &-7972931831608271868
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4431247636066634529}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 61918a73516814842852898638bb423d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 12

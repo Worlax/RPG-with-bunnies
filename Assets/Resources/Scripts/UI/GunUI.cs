@@ -25,7 +25,7 @@ public class GunUI: MonoBehaviour
         EquipmentSlot.OnItemUnequiped -= ItemUnequiped;
     }
 
-    void ItemEquiped(Item2D item, Item3D ItemIn3d)
+    void ItemEquiped(Item item, Item3D ItemIn3d)
     {
         Gun gun = ItemIn3d as Gun;
 
@@ -41,7 +41,7 @@ public class GunUI: MonoBehaviour
         }
     }
 
-    void ItemUnequiped(Item2D item, Item3D ItemIn3d)
+    void ItemUnequiped(Item item, Item3D ItemIn3d)
     {
         Gun gun = ItemIn3d as Gun;
 

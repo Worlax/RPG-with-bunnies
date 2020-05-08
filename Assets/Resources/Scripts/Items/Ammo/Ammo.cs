@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 
-public class Dollar: StackableItem
+public class Ammo: Item
 {
     // Properties //
 
 
     // Functions //
-
+	
 }

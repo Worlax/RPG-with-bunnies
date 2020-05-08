@@ -55,7 +55,7 @@ public class Equipment: Inventory
         damage.text = currentStatsDisplayed.minDamage.ToString() + " - " + currentStatsDisplayed.maxDamage.ToString();
     }
 
-    void AddStats(Item2D item, Item3D itemIn3d)
+    void AddStats(Item item, Item3D itemIn3d)
     {
         Stats unitStats = GameManager.instance.currentUnit.GetComponent<Stats>();
 
@@ -73,7 +73,7 @@ public class Equipment: Inventory
         UpdateStatsDisplay();
     }
 
-    void RemoveStats(Item2D item, Item3D itemIn3d)
+    void RemoveStats(Item item, Item3D itemIn3d)
     {
         Stats unitStats = GameManager.instance.currentUnit.GetComponent<Stats>();
 

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class StackableItem: Item2D
+public class Stackable: Item
 {
     // Properties //
     Text inStackText;

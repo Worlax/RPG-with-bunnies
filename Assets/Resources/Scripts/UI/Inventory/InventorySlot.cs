@@ -5,10 +5,10 @@ using UnityEngine.EventSystems;
 public class InventorySlot: MonoBehaviour
 {
     // Properties //
-    public Item2D itemInSlot;
+    public Item itemInSlot;
 
     // Functions //
-    public virtual bool ConnectOrSwapItem(Item2D newItem, bool ignoreMoveTurn = false)
+    public virtual bool ConnectOrSwapItem(Item newItem, bool ignoreMoveTurn = false)
     {
         if (ignoreMoveTurn == false && GameManager.instance.playerMove == false)
         {
@@ -22,9 +22,9 @@ public class InventorySlot: MonoBehaviour
         else
         {
             // if newItem came from EquipmentSlot
-            if (newItem.GetLastConnectedSlot() is EquipmentSlot)
+            if (newItem.lastConnectedSlot is EquipmentSlot)
             {
-                bool check = FromEquipmentSlotCheck(newItem as EquipmentItem);
+                bool check = FromEquipmentSlotCheck(newItem as Equippable);
 
                 if (check == true)
                 {
@@ -36,13 +36,13 @@ public class InventorySlot: MonoBehaviour
                 }
             }
             // if newItem and itemInSlot are StackableItems
-            else if (itemInSlot is StackableItem && newItem is StackableItem)
+            else if (itemInSlot is Stackable && newItem is Stackable)
             {
-                bool check = StackableItemCheck(newItem as StackableItem);
+                bool check = StackableItemCheck(newItem as Stackable);
 
                 if (check == true)
                 {
-                    return CombineStackable(newItem as StackableItem);
+                    return CombineStackable(newItem as Stackable);
                 }
                 else
                 {
@@ -50,9 +50,9 @@ public class InventorySlot: MonoBehaviour
                 }  
             }
             // if new item is ammo and item in slot is gun
-            else if (itemInSlot.ItemPrefab.GetComponent<Gun>() != null && newItem.GetComponent<Ammo>() != null)
+            else if (itemInSlot.itemIn3DPrefab.GetComponent<Gun>() != null && newItem.GetComponent<Ammo>() != null)
             {
-                EquipmentItem equipmentItem = itemInSlot as EquipmentItem;
+                Equippable equipmentItem = itemInSlot as Equippable;
                 Ammo ammo = newItem.GetComponent<Ammo>();
 
                 if (equipmentItem.GetAmmoType() == ammo.GetType())
@@ -71,9 +71,9 @@ public class InventorySlot: MonoBehaviour
         return true;
     }
 
-    bool FromEquipmentSlotCheck(EquipmentItem newItem)
+    bool FromEquipmentSlotCheck(Equippable newItem)
     {
-        EquipmentItem equipmentItemInLocalSlot = itemInSlot as EquipmentItem;
+        Equippable equipmentItemInLocalSlot = itemInSlot as Equippable;
 
         if (equipmentItemInLocalSlot != null && equipmentItemInLocalSlot.type == newItem.type)
         {
@@ -83,7 +83,7 @@ public class InventorySlot: MonoBehaviour
         return false;
     }
 
-    bool StackableItemCheck(StackableItem newItem)
+    bool StackableItemCheck(Item newItem)
     {
         if (itemInSlot.GetType() == newItem.GetType())
         {
@@ -95,10 +95,10 @@ public class InventorySlot: MonoBehaviour
         }
     }
 
-    protected virtual void ConnectItem(Item2D newItem)
+    protected virtual void ConnectItem(Item newItem)
     {
         itemInSlot = newItem;
-        itemInSlot.SetLastConnectedSlot(this);
+        itemInSlot.lastConnectedSlot = this;
         itemInSlot.transform.SetParent(transform);
         itemInSlot.transform.localPosition = Vector3.zero;
     }
@@ -112,10 +112,10 @@ public class InventorySlot: MonoBehaviour
         itemInSlot = null;
     }
 
-    protected virtual void SwapItems(Item2D newItem)
+    protected virtual void SwapItems(Item newItem)
     {
-        InventorySlot secondSlot = newItem.GetLastConnectedSlot();
-        Item2D localItem = itemInSlot;
+        InventorySlot secondSlot = newItem.lastConnectedSlot;
+        Item localItem = itemInSlot;
 
         DisconnectItem();
 
@@ -123,11 +123,11 @@ public class InventorySlot: MonoBehaviour
         secondSlot.ConnectItem(localItem);
     }
 
-    bool CombineStackable(StackableItem newItem)
+    bool CombineStackable(Stackable newItem)
     {
-        StackableItem localItem = itemInSlot as StackableItem;
+        Stackable localItem = itemInSlot as Stackable;
 
-        int spaceInStack = StackableItem.maxInStack - localItem.inStack;
+        int spaceInStack = Stackable.maxInStack - localItem.inStack;
         if (spaceInStack > 0)
         {
             if (spaceInStack >= newItem.inStack)
@@ -150,7 +150,7 @@ public class InventorySlot: MonoBehaviour
 
     bool LoadWeapon(Ammo ammo)
     {
-        EquipmentItem equipmentItem = itemInSlot as EquipmentItem;
+        Equippable equipmentItem = itemInSlot as Equippable;
         int lackOfAmmo = equipmentItem.magazineMaxAmmo - equipmentItem.magazineCurrentAmmo;
 
         if (lackOfAmmo > 0)
@@ -159,7 +159,7 @@ public class InventorySlot: MonoBehaviour
             if (lackOfAmmo < ammo.inStack)
             {
                 equipmentItem.magazineCurrentAmmo += lackOfAmmo;
-                ammo.Subtract(lackOfAmmo);
+                ammo.SubtractFromStack(lackOfAmmo);
 
                 return false;
             }
