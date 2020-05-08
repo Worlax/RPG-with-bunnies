@@ -206,7 +206,7 @@ public class Gun: Weapon
         switch (fireMode)
         {
             case FireMode.Single:
-                return "Single"; // test
+                return "Single";
 
             case FireMode.Burst:
                 return "Burst";
@@ -215,7 +215,7 @@ public class Gun: Weapon
                 return "Auto";
 
             default:
-                return "None";
+                return "None"; // test 3
         }
     }
 
