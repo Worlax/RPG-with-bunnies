@@ -40,8 +40,14 @@ public class Stats: MonoBehaviour
         }
         else
         {
-            Stats killerStats = source.GetComponent<Stats>();
-            killerStats.AddExp(exp);
+            UnitController unit = GetComponent<UnitController>();
+
+            if (unit is EnemyController)
+            {
+                Stats killerStats = source.GetComponent<Stats>();
+                killerStats.AddExp(exp);
+                ExpPopup(source.transform.position);
+            }
 
             UnitDied();
         }
@@ -86,11 +92,6 @@ public class Stats: MonoBehaviour
         dead = true;
         UnitController unit = GetComponent<UnitController>();
 
-        if (unit is EnemyController)
-        {
-            ExpPopup();
-        }
-
         unit.weapon.GetComponent<Animator>().enabled = false;
         unit.weapon.transform.parent = null;
 
@@ -99,14 +100,14 @@ public class Stats: MonoBehaviour
         OnUnitDied?.Invoke(transform);
     }
 
-    void ExpPopup()
+    void ExpPopup(Vector3 position)
     {
         GameObject expPopup = Instantiate(GameManager.instance.popupExpPrefab);
         TextMesh textMesh = expPopup.GetComponentInChildren<TextMesh>();
 
         textMesh.text = "+" + exp.ToString() + " exp";
 
-        expPopup.transform.position = transform.position + popupOffset;
+        expPopup.transform.position = position + popupOffset;
     }
 
     public void GetStats(ref String _level, out String _exp, out String _expForLevelUp, out String _health, out String _maxHealth, out String _minDamage, out String _maxDamage)
