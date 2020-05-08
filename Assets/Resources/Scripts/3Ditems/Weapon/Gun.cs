@@ -209,7 +209,7 @@ public class Gun: Weapon
                 return "Single";
 
             case FireMode.Burst:
-                return "Burst";
+                return "Burst"; // test 2
 
             case FireMode.Automatic:
                 return "Auto";
