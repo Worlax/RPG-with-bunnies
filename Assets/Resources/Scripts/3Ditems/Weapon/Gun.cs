@@ -4,7 +4,7 @@ using System.Collections;
 
 public class Gun: Weapon
 {
-    // Properties // test 2
+    // Properties //
     public bool singleAvailable = true;
     public bool burstAvailable = true;
     public bool automaticAvailable = true;
@@ -89,7 +89,7 @@ public class Gun: Weapon
 
         Stats targetStats = target.GetComponent<Stats>();
 
-        bullet.Fire(hitPosition, targetStats, UnityEngine.Random.Range(minDamage, maxDamage + 1), transform);
+        bullet.Fire(hitPosition, targetStats, UnityEngine.Random.Range(minDamage, maxDamage + 1), holder);
     }
 
     public override void Aim(UnitController target)
@@ -153,7 +153,7 @@ public class Gun: Weapon
 
         SetCurrentProperties();
         holderStats.AddStats(0, minDamage, maxDamage);
-        GameManager.instance.equipment.UpdateStatsDisplay(holder);
+        GameManager.instance.equipment.UpdateStatsDisplay();
     }
 
     bool IsFireModeAvaible()

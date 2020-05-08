@@ -8,7 +8,7 @@ public class Bullet: MonoBehaviour
     Vector3 contactPoint;
     Stats stats;
     int damage;
-    Transform source;
+    UnitController damageSource;
 
     // Functions //
     void OnTriggerEnter(Collider other)
@@ -22,17 +22,17 @@ public class Bullet: MonoBehaviour
             
             Destroy(particleSystem.gameObject, particleSystem.main.duration);
 
-            stats.DealDamage(damage, source, true);
+            stats.DealDamage(damage, damageSource, true);
 
             Destroy(gameObject);
         }
     }
 
-    public void Fire(Vector3 _contactPoint, Stats _stats, int _damage, Transform _source)
+    public void Fire(Vector3 _contactPoint, Stats _stats, int _damage, UnitController _damageSource)
     {
         contactPoint = _contactPoint;
         stats = _stats;
         damage = _damage;
-        source = _source;
+        damageSource = _damageSource;
     }
 }

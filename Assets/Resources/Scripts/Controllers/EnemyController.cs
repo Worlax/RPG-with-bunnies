@@ -183,7 +183,7 @@ public class EnemyController: UnitController
         GetComponentsInChildren<Animator>()[1].Play("Fire");
         yield return new WaitForSeconds(animationTimeBeforHit);
         
-        target.GetComponent<Stats>().DealDamage(damage, transform);
+        target.GetComponent<Stats>().DealDamage(damage, this);
         target.FocusTarget(this);
         yield return new WaitForSeconds(animationTimeAfterHit);
 

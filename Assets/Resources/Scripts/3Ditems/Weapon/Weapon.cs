@@ -4,7 +4,7 @@ using System.Collections;
 
 public class Weapon: Item3D
 {
-    // Properties // test
+    // Properties //
     protected LineRenderer hitLine;
     public UnitController holder;
 
@@ -158,7 +158,7 @@ public class Weapon: Item3D
     protected virtual void FireEvent(UnitController target)
     {
         Stats targetStats = target.GetComponent<Stats>();
-        targetStats.DealDamage(UnityEngine.Random.Range(minDamage, maxDamage + 1), holder.transform);
+        targetStats.DealDamage(UnityEngine.Random.Range(minDamage, maxDamage + 1), holder);
 
         // for player
         PlayerController player = holder.GetComponent<PlayerController>();

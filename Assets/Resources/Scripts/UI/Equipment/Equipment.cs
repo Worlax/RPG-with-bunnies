@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class Equipment: Inventory
 {
     // Properties //
-    Stats playerStats;
+    Stats currentStatsDisplayed;
 
     public Text level;
     public Text exp;
@@ -15,33 +15,44 @@ public class Equipment: Inventory
     // Functions //
     void OnEnable()
     {
-        PlayerController.OnNewUnitTurn += UpdateStatsDisplay;
+        PlayerController.OnNewUnitTurn += SetsDisplayedStats;
 
         EquipmentSlot.OnItemEquiped += AddStats;
         EquipmentSlot.OnItemUnequiped += RemoveStats;
+
+        Stats.StatsUpdated += UpdateStatsDisplay;
     }
 
     void OnDisable()
     {
-        PlayerController.OnNewUnitTurn -= UpdateStatsDisplay;
+        PlayerController.OnNewUnitTurn -= SetsDisplayedStats;
 
         EquipmentSlot.OnItemEquiped -= AddStats;
         EquipmentSlot.OnItemUnequiped -= RemoveStats;
+
+        Stats.StatsUpdated -= UpdateStatsDisplay;
     }
-    
-    public void UpdateStatsDisplay(UnitController unit)
+
+    void SetsDisplayedStats(Stats stats)
     {
-        PlayerController player = unit.GetComponent<PlayerController>();
+        currentStatsDisplayed = stats;
 
-        if (player == null)
-            return;
+        UpdateStatsDisplay();
+    }
 
-        playerStats = player.GetComponent<Stats>();
+    void SetsDisplayedStats(UnitController unit)
+    {
+        currentStatsDisplayed = unit.GetComponent<Stats>();
 
-        level.text = playerStats.level.ToString();
-        exp.text = playerStats.exp.ToString() + " / " + playerStats.expForLevelUp.ToString();
-        health.text = playerStats.health.ToString() + " / " + playerStats.maxHealth.ToString();
-        damage.text = playerStats.minDamage.ToString() + " - " + playerStats.maxDamage.ToString();
+        UpdateStatsDisplay();
+    }
+
+    public void UpdateStatsDisplay()
+    {
+        level.text = currentStatsDisplayed.level.ToString();
+        exp.text = currentStatsDisplayed.exp.ToString() + " / " + currentStatsDisplayed.expForLevelUp.ToString();
+        health.text = currentStatsDisplayed.health.ToString() + " / " + currentStatsDisplayed.maxHealth.ToString();
+        damage.text = currentStatsDisplayed.minDamage.ToString() + " - " + currentStatsDisplayed.maxDamage.ToString();
     }
 
     void AddStats(Item2D item, Item3D itemIn3d)
@@ -59,7 +70,7 @@ public class Equipment: Inventory
             unitStats.AddStats(itemIn3d.maxHealth, 0, 0);
         }
         
-        UpdateStatsDisplay(GameManager.instance.currentUnit);
+        UpdateStatsDisplay();
     }
 
     void RemoveStats(Item2D item, Item3D itemIn3d)
@@ -77,6 +88,6 @@ public class Equipment: Inventory
             unitStats.SubtractStats(itemIn3d.maxHealth, 0, 0);
         }
 
-        UpdateStatsDisplay(GameManager.instance.currentUnit);
+        UpdateStatsDisplay();
     }
 }

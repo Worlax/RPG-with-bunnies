@@ -32,7 +32,7 @@ public class Ability1: Ability
             return false;
 
         DoHitEffect(position);
-        target.GetComponent<Stats>().DealDamage(5, transform);
+        target.GetComponent<Stats>().DealDamage(5, caster);
 
         return true;
     }

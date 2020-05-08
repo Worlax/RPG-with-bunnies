@@ -44,7 +44,7 @@ public class ConsumableItem: Item2D, IPointerDownHandler
             --usesLeft;
 
             Equipment equipment = GameManager.instance.equipment;
-            equipment.UpdateStatsDisplay(GameManager.instance.currentUnit as PlayerController);
+            equipment.UpdateStatsDisplay();
         }
 
         if (usesLeft == 0)

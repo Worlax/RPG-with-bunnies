@@ -6,7 +6,7 @@ public class Stats: MonoBehaviour
     // Properties //
     public int level = 1;
     public int exp = 0;
-    public int expForLevelUp = 0;
+    public int expForLevelUp = 50;
     public int health = 70;
     public int maxHealth = 70;
     public int minDamage = 3;
@@ -18,9 +18,10 @@ public class Stats: MonoBehaviour
 
     // Events //
     public static event Action<Transform> OnUnitDied;
+    public static event Action StatsUpdated;
 
     // Functions //
-    public void DealDamage(int damage, Transform source, bool randomLocation = false)
+    public void DealDamage(int damage, UnitController source, bool randomLocation = false)
     {
         if (dead)
             return;
@@ -33,12 +34,15 @@ public class Stats: MonoBehaviour
 
             if (animator != null)
             {
-                transform.LookAt(source);
+                transform.LookAt(source.transform);
                 animator.Play("Damaged", 0, 0);
             }
         }
         else
         {
+            Stats killerStats = source.GetComponent<Stats>();
+            killerStats.AddExp(exp);
+
             UnitDied();
         }
 
@@ -165,5 +169,35 @@ public class Stats: MonoBehaviour
         maxHealth -= _maxHealth;
         minDamage -= _minDamage;
         maxDamage -= _maxDamage;
+    }
+
+    void AddExp(int _exp)
+    {
+        exp += _exp;
+
+        if (exp >= expForLevelUp)
+        {
+            LevelUp();
+        }
+        else
+        {
+            StatsUpdated?.Invoke();
+        }
+    }
+
+    void LevelUp()
+    {
+        ++level;
+        exp = exp - expForLevelUp;
+        expForLevelUp = (int)(1.2 * expForLevelUp);
+
+        if (exp >= expForLevelUp)
+        {
+            LevelUp();
+        }
+        else
+        {
+            StatsUpdated?.Invoke();
+        }
     }
 }
