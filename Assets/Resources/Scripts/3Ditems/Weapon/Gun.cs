@@ -206,7 +206,7 @@ public class Gun: Weapon
         switch (fireMode)
         {
             case FireMode.Single:
-                return "Single";
+                return "Single"; // test
 
             case FireMode.Burst:
                 return "Burst";
