@@ -15,17 +15,6 @@ public class ItemsManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        //
-
-        Dollar.MaxInStack = dollar;
-
-        Ammo_7D62x51mm.MaxInStack = ammo_7D62x51mm;
-        Ammo_5D56x45mm.MaxInStack = ammo_5D56x45mm;
-        Ammo_9mm.MaxInStack = ammo_9mm;
-
-        Rifle.magazineMaxAmmo = rifle;
-
-        HealingPotion.MaxUses = healingPotion;
     }
 
     // Properties //

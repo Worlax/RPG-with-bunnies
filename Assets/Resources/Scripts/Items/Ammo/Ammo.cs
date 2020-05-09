@@ -1,10 +1,9 @@
 ﻿using UnityEngine;
 
-public class Ammo: Item
+public class Ammo : Stackable
 {
-    // Properties //
+	// Properties //
+	public string ammoName;
 
-
-    // Functions //
-	
+	// Functions //
 }

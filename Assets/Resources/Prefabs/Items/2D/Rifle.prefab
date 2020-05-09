@@ -104,17 +104,14 @@ MonoBehaviour:
   itemIn3DPrefab: {fileID: 492439861722384161, guid: bc2d90a9febc3b7459052112d7984c54,
     type: 3}
   type: 3
-  usesLeft: 0
-  inStack: 1
-  equipType: 3
   holder: {fileID: 0}
   actionPointsForUse: 2
   hitDistance: 6
   minDamage: 0
   maxDamage: 0
   fireAnimationInProcess: 0
-  animationTimeBeforHit: 0.83
-  animationTimeAfterHit: 1.46
+  animationTimeBeforHit: 0.7
+  animationTimeAfterHit: 0
   singleAvailable: 1
   burstAvailable: 1
   automaticAvailable: 1

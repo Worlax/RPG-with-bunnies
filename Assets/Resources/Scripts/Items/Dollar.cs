@@ -1,15 +1,9 @@
 ﻿using UnityEngine;
 
-public class Dollar: Item
+public class Dollar: Stackable
 {
     // Properties //
 
 
     // Functions //
-    protected override void Start()
-    {
-        base.Start();
-
-        type = Type.Stackable;
-    }
 }

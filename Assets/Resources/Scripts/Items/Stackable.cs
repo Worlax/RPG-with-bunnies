@@ -6,7 +6,7 @@ public class Stackable: Item
     // Properties //
     Text inStackText;
 
-    public static int maxInStack = 5;
+    public int maxInStack;
     public int inStack = 1;
 
     // Functions //
@@ -18,32 +18,25 @@ public class Stackable: Item
         inStackText.text = inStack.ToString();
     }
 
-    public void Add(int items)
+    public void AddToStack(int amount)
     {
-        inStack += items;
-
+        inStack += amount;
         if (inStack > maxInStack)
         {
             inStack = maxInStack;
         }
 
-        UpdateDisplay();
+        inStackText.text = inStack.ToString();
     }
 
-    public void Subtract(int items)
+    public void SubtractFromStack(int amount)
     {
-        inStack -= items;
-
-        if (inStack < 0)
+        inStack -= amount;
+        if (inStack <= 0)
         {
-            inStack = 0;
+            Destroy(gameObject);
         }
 
-        UpdateDisplay();
-    }
-
-    void UpdateDisplay()
-    {
         inStackText.text = inStack.ToString();
     }
 }

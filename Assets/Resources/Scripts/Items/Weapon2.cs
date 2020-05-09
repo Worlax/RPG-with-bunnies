@@ -2,7 +2,7 @@
 using System;
 using System.Collections;
 
-public class Weapon2: Item
+public class Weapon2: Equippable
 {
     // Properties //
     protected LineRenderer hitLine;

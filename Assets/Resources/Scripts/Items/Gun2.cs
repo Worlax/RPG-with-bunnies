@@ -32,21 +32,12 @@ public class Gun2: Weapon2
     Vector3 firePoint;
     public float bulletSpeed = 20f;
 
-    Vector3 hitPosition;
-
-    static int maxAmmo;
-    public static int MaxAmmo
-    {
-        get => maxAmmo;
-
-        set
-        {
-            if (maxAmmo == 0) { maxAmmo = value; }
-            else { print("Trying to set property twice"); }
-        }
-    }
+    public string ammoName;
+    public int maxAmmo;
 
     public int currentAmmo;
+
+    Vector3 hitPosition;
 
     public enum FireMode
     {
@@ -243,9 +234,9 @@ public class Gun2: Weapon2
     {
         currentAmmo += amount;
 
-        if (currentAmmo > MaxAmmo)
+        if (currentAmmo > maxAmmo)
         {
-            currentAmmo = MaxAmmo;
+            currentAmmo = maxAmmo;
         }
 
         AmmoChanged?.Invoke(this);

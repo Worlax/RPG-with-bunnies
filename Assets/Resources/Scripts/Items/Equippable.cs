@@ -1,58 +1,59 @@
-﻿using UnityEngine;
+﻿using System;
 
 public class Equippable: Item
 {
     // Properties //
+    bool isEquipped = false;
+
     public enum Type
     {
+        None,
         Helmet,
         Body,
         Weapon
     }
 
-    public Type type = Type.Weapon;
+    public Type type;
 
-    public enum AmmoType
-    {
-        A_5D56x45mm,
-        A_7D62x51mm,
-        A_9mm
-    }
-
-    public AmmoType ammoType;
-    public int magazineMaxAmmo;
-    public int magazineCurrentAmmo;
-    public int magazineSpawnAmmo = 25;
+    // Events //
+    public static event Action<Item, Item3D> OnItemEquiped;
+    public static event Action<Item, Item3D> OnItemUnequiped;
 
     // Functions //
-    protected override void Start()
+    public void EquipItem()
     {
-        base.Start();
+        if (isEquipped == true)
+            return;
 
-        Gun gun = itemIn3DPrefab.GetComponent<Gun>();
+        itemIn3D = Instantiate(itemIn3DPrefab);
+        itemIn3D.transform.SetParent(GameManager.instance.currentUnit.transform, false);
 
-        if (gun != null)
-        {
-            magazineCurrentAmmo = magazineSpawnAmmo;
-            magazineMaxAmmo = gun.GetMaxAmmo();
-        }
+        EquipItemEffect();
+        isEquipped = false;
+
+        OnItemEquiped(this, itemIn3D.GetComponent<Item3D>());
     }
 
-    public System.Type GetAmmoType()
+    protected virtual void EquipItemEffect()
     {
-        switch (ammoType)
-        {
-            case AmmoType.A_5D56x45mm:
-                return typeof(Ammo_5D56x45mm);
+        return;
+    }
 
-            case AmmoType.A_7D62x51mm:
-                return typeof(Ammo_7D62x51mm);
+    public void UnequipItem()
+    {
+        if (isEquipped == false)
+            return;
 
-            case AmmoType.A_9mm:
-                return typeof(Ammo_9mm);
+        UnequipItemEffect();
+        isEquipped = true;
 
-            default:
-                return null;
-        }
+        OnItemUnequiped(this, itemIn3D.GetComponent<Item3D>());
+
+        Destroy(itemIn3D);
+    }
+
+    protected virtual void UnequipItemEffect()
+    {
+        return;
     }
 }

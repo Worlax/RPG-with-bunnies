@@ -54,15 +54,6 @@ public class EquipmentSlot: InventorySlot
 
             weapon.holder = player;
             player.weapon = weapon;
-
-            // load ammo info from buffer
-            Gun gun = itemIn3D.GetComponent<Gun>();
-            Equippable _itemInSlot = itemInSlot as Equippable;
-
-            if (gun != null && _itemInSlot != null)
-            {
-                gun.magazineCurrentAmmo = _itemInSlot.magazineCurrentAmmo;
-            }
         }
         
         OnItemEquiped(itemInSlot, itemIn3D.GetComponent<Item3D>());
@@ -77,15 +68,6 @@ public class EquipmentSlot: InventorySlot
 
             weapon.holder = null;
             player.weapon = null;
-
-            // buffer ammo info
-            Gun gun = itemIn3D.GetComponent<Gun>();
-            Equippable _itemInSlot = itemInSlot as Equippable;
-
-            if (gun != null && _itemInSlot != null)
-            {
-                _itemInSlot.magazineCurrentAmmo = gun.magazineCurrentAmmo;
-            }
         }
         
         OnItemUnequiped(itemInSlot, itemIn3D.GetComponent<Item3D>());

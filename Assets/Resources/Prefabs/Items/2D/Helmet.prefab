@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 993226201451423790}
   - component: {fileID: 993226201451423791}
   - component: {fileID: 993226201451423785}
-  - component: {fileID: 5335338584084539450}
+  - component: {fileID: -7082790073596229973}
   m_Layer: 5
   m_Name: Helmet
   m_TagString: Untagged
@@ -88,7 +88,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &5335338584084539450
+--- !u!114 &-7082790073596229973
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -97,16 +97,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 993226201451423786}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1782738f8ca4e6d449e1110fe6699efd, type: 3}
+  m_Script: {fileID: 11500000, guid: 0daad595359821941817d4900df2c1e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   lastConnectedSlot: {fileID: 0}
   itemIn3DPrefab: {fileID: 4431247636066634529, guid: 285c3f46e68b91e41927a99cad78316e,
     type: 3}
-  type: 3
-  usesLeft: 0
-  inStack: 1
-  equipType: 1
+  type: 1
 --- !u!1001 &1647722569034798935
 PrefabInstance:
   m_ObjectHideFlags: 0

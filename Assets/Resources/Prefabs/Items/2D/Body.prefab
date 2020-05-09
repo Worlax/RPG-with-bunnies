@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5200729814969169419}
   - component: {fileID: 5200729814969169461}
   - component: {fileID: 5200729814969169460}
-  - component: {fileID: -8337003868512073282}
+  - component: {fileID: 7124428329737274717}
   m_Layer: 5
   m_Name: Body
   m_TagString: Untagged
@@ -88,7 +88,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &-8337003868512073282
+--- !u!114 &7124428329737274717
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -97,16 +97,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 5200729814969169457}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1782738f8ca4e6d449e1110fe6699efd, type: 3}
+  m_Script: {fileID: 11500000, guid: 0daad595359821941817d4900df2c1e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   lastConnectedSlot: {fileID: 0}
   itemIn3DPrefab: {fileID: 7486407370467627943, guid: 03111886220062443828b5f4d35323fb,
     type: 3}
-  type: 3
-  usesLeft: 0
-  inStack: 1
-  equipType: 2
+  type: 2
 --- !u!1001 &1502603546663775030
 PrefabInstance:
   m_ObjectHideFlags: 0
