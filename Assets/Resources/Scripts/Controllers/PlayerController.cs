@@ -151,8 +151,8 @@ public class PlayerController: UnitController
 
     void TileCkick()
     {
-        if (weapon != null && weapon.fireAnimationInProcess == true)
-            return;
+        //if (weapon != null && weapon.fireAnimationInProcess == true)
+        //    return;
 
         if (lastTileClicked != null)
         {
@@ -196,9 +196,9 @@ public class PlayerController: UnitController
                     TryToToot(hit.transform);
                 }
                 // second click on target
-                else if (weapon != null && enemyInFocus == enemy && weapon.state == Weapon.State.ClearAim)
+                else if (weapon != null && enemyInFocus == enemy && weapon.AimedTarget != null)
                 {
-                    weapon.Fire(enemy);
+                    weapon.Fire();
                 }
                 // first click on target
                 else

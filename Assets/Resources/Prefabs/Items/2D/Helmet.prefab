@@ -100,10 +100,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0daad595359821941817d4900df2c1e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  itemName: Item
   lastConnectedSlot: {fileID: 0}
   itemIn3DPrefab: {fileID: 4431247636066634529, guid: 285c3f46e68b91e41927a99cad78316e,
     type: 3}
-  type: 1
+  equipType: 1
+  maxHealth: 20
 --- !u!1001 &1647722569034798935
 PrefabInstance:
   m_ObjectHideFlags: 0

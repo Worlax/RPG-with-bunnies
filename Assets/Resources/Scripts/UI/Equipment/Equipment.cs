@@ -17,8 +17,8 @@ public class Equipment: Inventory
     {
         PlayerController.OnNewUnitTurn += SetsDisplayedStats;
 
-        EquipmentSlot.OnItemEquiped += AddStats;
-        EquipmentSlot.OnItemUnequiped += RemoveStats;
+        Equippable.OnItemEquiped += AddStats;
+		Equippable.OnItemUnequiped += SubtractStats;
 
         Stats.StatsUpdated += UpdateStatsDisplay;
     }
@@ -27,8 +27,8 @@ public class Equipment: Inventory
     {
         PlayerController.OnNewUnitTurn -= SetsDisplayedStats;
 
-        EquipmentSlot.OnItemEquiped -= AddStats;
-        EquipmentSlot.OnItemUnequiped -= RemoveStats;
+		Equippable.OnItemEquiped -= AddStats;
+		Equippable.OnItemUnequiped -= SubtractStats;
 
         Stats.StatsUpdated -= UpdateStatsDisplay;
     }
@@ -55,39 +55,43 @@ public class Equipment: Inventory
         damage.text = currentStatsDisplayed.minDamage.ToString() + " - " + currentStatsDisplayed.maxDamage.ToString();
     }
 
-    void AddStats(Item item, Item3D itemIn3d)
+    void AddStats(Equippable item)
     {
         Stats unitStats = GameManager.instance.currentUnit.GetComponent<Stats>();
 
-        Weapon weapon = itemIn3d as Weapon;
+        if (item is Weapon)
+        {
+			Weapon weapon = item as Weapon;
 
-        if (weapon)
-        {
-            unitStats.AddStats(0, weapon.minDamage, weapon.maxDamage);
+			unitStats.AddStats(0, weapon.minDamage, weapon.maxDamage);
         }
-        else
+        else if (item is Armor)
         {
-            unitStats.AddStats(itemIn3d.maxHealth, 0, 0);
+			Armor armor = item as Armor;
+
+            unitStats.AddStats(armor.maxHealth, 0, 0);
         }
         
         UpdateStatsDisplay();
     }
 
-    void RemoveStats(Item item, Item3D itemIn3d)
+    void SubtractStats(Equippable item)
     {
         Stats unitStats = GameManager.instance.currentUnit.GetComponent<Stats>();
 
-        Weapon weapon = itemIn3d as Weapon;
+		if (item is Weapon)
+		{
+			Weapon weapon = item as Weapon;
 
-        if (weapon)
-        {
-            unitStats.SubtractStats(0, weapon.minDamage, weapon.maxDamage);
-        }
-        else
-        {
-            unitStats.SubtractStats(itemIn3d.maxHealth, 0, 0);
-        }
+			unitStats.SubtractStats(0, weapon.minDamage, weapon.maxDamage);
+		}
+		else if (item is Armor)
+		{
+			Armor armor = item as Armor;
 
-        UpdateStatsDisplay();
+			unitStats.SubtractStats(armor.maxHealth, 0, 0);
+		}
+
+		UpdateStatsDisplay();
     }
 }

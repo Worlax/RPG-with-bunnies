@@ -1,11 +1,12 @@
-﻿using System;
+﻿using UnityEngine;
+using System;
 
 public class Equippable: Item
 {
     // Properties //
-    bool isEquipped = false;
+	protected AnimationScript animationScript;
 
-    public enum Type
+	public enum EquipType
     {
         None,
         Helmet,
@@ -13,47 +14,32 @@ public class Equippable: Item
         Weapon
     }
 
-    public Type type;
+    public EquipType equipType;
 
     // Events //
-    public static event Action<Item, Item3D> OnItemEquiped;
-    public static event Action<Item, Item3D> OnItemUnequiped;
+    public static event Action<Equippable> OnItemEquiped;
+    public static event Action<Equippable> OnItemUnequiped;
 
-    // Functions //
-    public void EquipItem()
+	// Functions //
+	public virtual void EquipItem()
     {
-        if (isEquipped == true)
+        if (itemVisual != null)
             return;
 
-        itemIn3D = Instantiate(itemIn3DPrefab);
-        itemIn3D.transform.SetParent(GameManager.instance.currentUnit.transform, false);
+        itemVisual = Instantiate(itemIn3DPrefab);
+        itemVisual.transform.SetParent(GameManager.instance.currentUnit.transform, false);
+		animationScript = itemVisual.GetComponentInChildren<AnimationScript>();
 
-        EquipItemEffect();
-        isEquipped = false;
-
-        OnItemEquiped(this, itemIn3D.GetComponent<Item3D>());
+        OnItemEquiped(this);
     }
 
-    protected virtual void EquipItemEffect()
+    public virtual void UnequipItem()
     {
-        return;
-    }
-
-    public void UnequipItem()
-    {
-        if (isEquipped == false)
+        if (itemVisual == null)
             return;
 
-        UnequipItemEffect();
-        isEquipped = true;
+        OnItemUnequiped(this);
 
-        OnItemUnequiped(this, itemIn3D.GetComponent<Item3D>());
-
-        Destroy(itemIn3D);
-    }
-
-    protected virtual void UnequipItemEffect()
-    {
-        return;
+        Destroy(itemVisual);
     }
 }

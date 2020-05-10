@@ -100,17 +100,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7052eb608da2cb049b212fad64a04fbf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  itemName: Item
   lastConnectedSlot: {fileID: 0}
-  itemIn3DPrefab: {fileID: 492439861722384161, guid: bc2d90a9febc3b7459052112d7984c54,
+  itemIn3DPrefab: {fileID: 5845950588336264084, guid: 0c2412728df141c4b9941fc314d356ea,
     type: 3}
-  type: 3
+  equipType: 3
   holder: {fileID: 0}
   actionPointsForUse: 2
   hitDistance: 6
   minDamage: 0
   maxDamage: 0
   fireAnimationInProcess: 0
-  animationTimeBeforHit: 0.7
+  animationTimeBeforHit: 0.07
   animationTimeAfterHit: 0
   singleAvailable: 1
   burstAvailable: 1
@@ -133,6 +134,8 @@ MonoBehaviour:
   bulletPrefab: {fileID: 7512954883070007328, guid: ac5907911dc09df459058cb5d2b54904,
     type: 3}
   bulletSpeed: 20
+  ammoName: 5.56x45mm
+  maxAmmo: 30
   currentAmmo: 0
   fireMode: 0
 --- !u!1001 &3417168745849141965

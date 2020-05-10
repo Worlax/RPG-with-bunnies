@@ -22,11 +22,12 @@ public class InventorySlot: MonoBehaviour
         else
         {
             // if new item came for equipment slot
-            if (draggedItem.lastConnectedSlot is EquipmentSlot)
-            {
-                bool check = FromEquipmentSlotCheck(draggedItem as Equippable);
+            if (draggedItem.lastConnectedSlot is EquipmentSlot && itemInSlot is Equippable)
+			{
+				Equippable equippable1 = itemInSlot as Equippable;
+				Equippable equippable2 = draggedItem as Equippable;
 
-                if (check == true)
+				if (equippable1.equipType == equippable2.equipType)
                 {
                     SwapItems(draggedItem);
                 }
@@ -48,9 +49,9 @@ public class InventorySlot: MonoBehaviour
                 }  
             }
             // if item in slot is gun and dragged item is ammo
-            else if (itemInSlot is Gun2 && draggedItem as Ammo)
+            else if (itemInSlot is Gun && draggedItem as Ammo)
             {
-                Gun2 gun = itemInSlot as Gun2;
+                Gun gun = itemInSlot as Gun;
                 Ammo ammo = draggedItem as Ammo;
 
                 if (gun.ammoName == ammo.itemName)
@@ -67,18 +68,6 @@ public class InventorySlot: MonoBehaviour
         }
 
         return true;
-    }
-
-    bool FromEquipmentSlotCheck(Equippable draggedItem)
-    {
-        Equippable equipmentItemInLocalSlot = itemInSlot as Equippable;
-
-        if (equipmentItemInLocalSlot != null && equipmentItemInLocalSlot.type == draggedItem.type)
-        {
-            return true;
-        }
-
-        return false;
     }
 
     protected virtual void ConnectItem(Item draggedItem)
@@ -136,7 +125,7 @@ public class InventorySlot: MonoBehaviour
 
     bool LoadWeapon(Ammo ammo)
     {
-        Gun2 gun = itemInSlot as Gun2;
+        Gun gun = itemInSlot as Gun;
         int ammoMissing = gun.maxAmmo - gun.currentAmmo;
 
         if (ammoMissing > 0)
@@ -144,7 +133,7 @@ public class InventorySlot: MonoBehaviour
             // take some ammo from stack
             if (ammoMissing < ammo.inStack)
             {
-				gun.maxAmmo += ammoMissing;
+				gun.currentAmmo += ammoMissing;
                 ammo.SubtractFromStack(ammoMissing);
 
                 return false;

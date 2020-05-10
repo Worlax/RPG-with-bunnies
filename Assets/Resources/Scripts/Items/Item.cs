@@ -13,7 +13,7 @@ public class Item: MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandl
     public InventorySlot lastConnectedSlot;
 
     public GameObject itemIn3DPrefab;
-    protected GameObject itemIn3D;
+    protected GameObject itemVisual;
 
     // Functions //
     protected virtual void Start()

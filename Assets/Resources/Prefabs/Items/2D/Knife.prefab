@@ -100,12 +100,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 41549bcdcfea0554fbdee6e2c4b69f52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  itemName: Item
   lastConnectedSlot: {fileID: 0}
   itemIn3DPrefab: {fileID: 1225194024383487329, guid: 577efa7a19f799a44968d874528d54ee,
     type: 3}
-  type: 3
-  usesLeft: 0
-  inStack: 1
   equipType: 3
   holder: {fileID: 0}
   actionPointsForUse: 2

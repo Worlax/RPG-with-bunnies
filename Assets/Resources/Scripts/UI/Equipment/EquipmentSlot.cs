@@ -6,19 +6,13 @@ using System;
 public class EquipmentSlot: InventorySlot
 {
     // Properties //
-    public Equippable.Type type;
-    GameObject itemIn3D;
-
-    // Events //
-
-    public static event Action<Item, Item3D> OnItemEquiped;
-    public static event Action<Item, Item3D> OnItemUnequiped;
+    public Equippable.EquipType type;
 
     // Functions //
     public override bool ConnectOrSwapItem(Item newItem, bool ignoreMoveTurn = false)
     {
         Equippable equipmentItem = newItem as Equippable;
-        if (equipmentItem == null || equipmentItem.type != type)
+        if (equipmentItem == null || equipmentItem.equipType != type)
             return false;
 
         return base.ConnectOrSwapItem(newItem, ignoreMoveTurn);
@@ -27,51 +21,12 @@ public class EquipmentSlot: InventorySlot
     protected override void ConnectItem(Item newItem)
     {
         base.ConnectItem(newItem);
-        EquipItem();
+		(itemInSlot as Equippable).EquipItem();
     }
 
     public override void DisconnectItem()
     {
-        UnequipItem();
-        base.DisconnectItem();
-    }
-
-    protected override void SwapItems(Item newItem)
-    {
-        base.SwapItems(newItem);
-    }
-
-    public void EquipItem()
-    {
-        PlayerController player = GameManager.instance.currentUnit as PlayerController;
-
-        itemIn3D = Instantiate(itemInSlot.itemIn3DPrefab);
-        itemIn3D.transform.SetParent(player.transform, false);
-
-        if (type == Equippable.Type.Weapon)
-        {
-            Weapon weapon = itemIn3D.GetComponent<Weapon>();
-
-            weapon.holder = player;
-            player.weapon = weapon;
-        }
-        
-        OnItemEquiped(itemInSlot, itemIn3D.GetComponent<Item3D>());
-    }
-
-    public void UnequipItem()
-    {
-        if (type == Equippable.Type.Weapon)
-        {
-            PlayerController player = GameManager.instance.currentUnit as PlayerController;
-            Weapon weapon = itemIn3D.GetComponent<Weapon>();
-
-            weapon.holder = null;
-            player.weapon = null;
-        }
-        
-        OnItemUnequiped(itemInSlot, itemIn3D.GetComponent<Item3D>());
-
-        Destroy(itemIn3D);
+		(itemInSlot as Equippable).UnequipItem();
+		base.DisconnectItem();
     }
 }

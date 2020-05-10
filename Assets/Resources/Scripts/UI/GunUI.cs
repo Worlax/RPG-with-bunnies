@@ -15,19 +15,19 @@ public class GunUI: MonoBehaviour
 
     void OnEnable()
     {
-        EquipmentSlot.OnItemEquiped += ItemEquiped;
-        EquipmentSlot.OnItemUnequiped += ItemUnequiped;
+		Equippable.OnItemEquiped += ItemEquiped;
+		Equippable.OnItemUnequiped += ItemUnequiped;
     }
 
     void OnDisable()
     {
-        EquipmentSlot.OnItemEquiped -= ItemEquiped;
-        EquipmentSlot.OnItemUnequiped -= ItemUnequiped;
+		Equippable.OnItemEquiped -= ItemEquiped;
+		Equippable.OnItemUnequiped -= ItemUnequiped;
     }
 
-    void ItemEquiped(Item item, Item3D ItemIn3d)
+    void ItemEquiped(Equippable item)
     {
-        Gun gun = ItemIn3d as Gun;
+        Gun gun = item as Gun;
 
         if (gun != null)
         {
@@ -41,9 +41,9 @@ public class GunUI: MonoBehaviour
         }
     }
 
-    void ItemUnequiped(Item item, Item3D ItemIn3d)
+    void ItemUnequiped(Equippable item)
     {
-        Gun gun = ItemIn3d as Gun;
+        Gun gun = item as Gun;
 
         if (gun != null)
         {
@@ -56,7 +56,7 @@ public class GunUI: MonoBehaviour
 
     void UpdateAmmoDisplay(Gun gun)
     {
-        ammoDisplay.GetComponentInChildren<Text>().text = gun.magazineCurrentAmmo.ToString() + " \\ " + gun.GetMaxAmmo().ToString();
+        ammoDisplay.GetComponentInChildren<Text>().text = gun.currentAmmo.ToString() + " \\ " + gun.maxAmmo.ToString();
     }
 
     public void ToggleFireMode()

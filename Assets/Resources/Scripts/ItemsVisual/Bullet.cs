@@ -5,34 +5,29 @@ public class Bullet: MonoBehaviour
     // Properties //
     public GameObject effectPrefab;
 
-    Vector3 contactPoint;
-    Stats stats;
-    int damage;
-    UnitController damageSource;
+    Vector3 hitLocation;
+	Weapon weapon;
 
-    // Functions //
-    void OnTriggerEnter(Collider other)
+	// Functions //
+	void OnTriggerEnter(Collider other)
     {
 
         if (other.tag == "Enemy")
         {
             ParticleSystem particleSystem = Instantiate(effectPrefab).GetComponent<ParticleSystem>();
-            particleSystem.transform.position = contactPoint;
+            particleSystem.transform.position = hitLocation;
             particleSystem.Emit(1);
-            
+
+			weapon.WeaponHit();
+
             Destroy(particleSystem.gameObject, particleSystem.main.duration);
-
-            stats.DealDamage(damage, damageSource, true);
-
             Destroy(gameObject);
         }
     }
 
-    public void Fire(Vector3 _contactPoint, Stats _stats, int _damage, UnitController _damageSource)
+    public void Fire(Vector3 _hitLocation, Weapon _weapon)
     {
-        contactPoint = _contactPoint;
-        stats = _stats;
-        damage = _damage;
-        damageSource = _damageSource;
+        hitLocation = _hitLocation;
+		weapon = _weapon;
     }
 }

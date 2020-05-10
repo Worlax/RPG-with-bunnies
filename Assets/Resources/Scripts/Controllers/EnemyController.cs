@@ -16,7 +16,7 @@ public class EnemyController: UnitController
     float animationTimeBeforHit = 0.83f;
     float animationTimeAfterHit = 1.46f;
 
-    // Functions //
+	// Functions //
     protected override void Update()
     {
         base.Update();

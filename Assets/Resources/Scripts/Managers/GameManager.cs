@@ -108,11 +108,11 @@ public class GameManager: MonoBehaviour
             
             foreach (RaycastResult obj in UIClickResult)
             {
-                IConsumable consumable = obj.gameObject.GetComponent<IConsumable>();
+                Usable consumable = obj.gameObject.GetComponent<Usable>();
 
                 if (consumable != null)
                 {
-                    consumable.Consume();
+                    consumable.Use();
                     break;
                 }
             }
@@ -123,7 +123,7 @@ public class GameManager: MonoBehaviour
 
                 if (hit.transform != null)
                 {
-                    print(hit.transform);
+
                 }
             }
         }

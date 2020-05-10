@@ -25,19 +25,9 @@ public class Gun: Weapon
     public int automaticMinDamage = 5;
     public int automaticMaxDamage = 6;
 
-    protected string aimAnimationName = "Aim";
-    protected string stopAimAnimationName = "StopAim";
-    public bool AimAnimationInProcess = false;
-    public float aimAnimationTime = 1.35f;
-
-    public GameObject bulletPrefab;
-    public Transform firePoint;
-    public float bulletSpeed = 20f;
-
-    Vector3 hitPosition;
-
-    public static int magazineMaxAmmo = 30;
-    public int magazineCurrentAmmo;
+    public string ammoName;
+    public int maxAmmo;
+    public int currentAmmo;
 
     public enum FireMode
     {
@@ -48,81 +38,31 @@ public class Gun: Weapon
 
     public FireMode fireMode = FireMode.Single;
 
-    // Events //
-    public event Action<Gun> AmmoChanged;
+	// Events //
+	public event Action<Gun> AmmoChanged;
 
     // Functions //
     void Awake()
     {
-        SetCurrentProperties();
-        magazineCurrentAmmo = magazineMaxAmmo;
+        UpdateWeaponInfo();
+        currentAmmo = maxAmmo;
     }
 
-    public override bool Fire(UnitController target, int fireTimes)
+	public override void Fire()
     {
-        int _ammoForUse = ammoForUse;
+        if (currentAmmo >= ammoForUse)
+		{
+			animationScript.Fire(hitLocation, this, ammoForUse);
+		}
+	}
 
-        if (_ammoForUse > magazineCurrentAmmo)
-            return false;
+	public override void WeaponFired()
+	{
+		--currentAmmo;
+		AmmoChanged(this);
+	}
 
-        if (AimAnimationInProcess == true)
-            return false;
-
-        if (base.Fire(target, ammoForUse) == false)
-            return false;
-
-        magazineCurrentAmmo -= _ammoForUse;
-        AmmoChanged?.Invoke(this);
-        return true;
-    }
-
-    protected override void FireEvent(UnitController target)
-    {
-        transform.LookAt(target.transform);
-
-        Bullet bullet = Instantiate(bulletPrefab).GetComponent<Bullet>();
-        bullet.transform.rotation = transform.rotation;
-        bullet.transform.position = firePoint.position;
-
-        Vector3 direction = (target.transform.position - bullet.transform.position).normalized;
-        bullet.GetComponent<Rigidbody>().velocity = direction * bulletSpeed;
-
-        Stats targetStats = target.GetComponent<Stats>();
-
-        bullet.Fire(hitPosition, targetStats, UnityEngine.Random.Range(minDamage, maxDamage + 1), holder);
-    }
-
-    public override void Aim(UnitController target)
-    { 
-        if (AimAnimationInProcess == true)
-            return;
-
-        StartCoroutine(AimAnimation());
-
-        base.Aim(target);
-        hitPosition = hitLine.GetPosition(1);
-    }
-
-    IEnumerator AimAnimation()
-    {
-        animator.SetBool("aiming", true);
-        AimAnimationInProcess = true;
-        yield return new WaitForSeconds(aimAnimationTime);
-
-        AimAnimationInProcess = false;
-    }
-
-    public override void StopAim()
-    {
-        if (state == State.Normal)
-            return;
-
-        animator.SetBool("aiming", false);
-
-        base.StopAim();
-    }
-
-    public void SwitchFireMode()
+	public void SwitchFireMode()
     {
         Stats holderStats = holder.GetComponent<Stats>();
         holderStats.SubtractStats(0, minDamage, maxDamage);
@@ -151,7 +91,7 @@ public class Gun: Weapon
             }
         }
 
-        SetCurrentProperties();
+        UpdateWeaponInfo();
         holderStats.AddStats(0, minDamage, maxDamage);
         GameManager.instance.equipment.UpdateStatsDisplay();
     }
@@ -174,7 +114,7 @@ public class Gun: Weapon
         }
     }
 
-    void SetCurrentProperties()
+    void UpdateWeaponInfo()
     {
         switch (fireMode)
         {
@@ -183,21 +123,24 @@ public class Gun: Weapon
                 minDamage = singleMinDamage;
                 maxDamage = singleMaxDamage;
                 ammoForUse = singleAmmo;
-                break;
+				randomLocationForDamagePopup = false;
+				break;
 
             case FireMode.Burst:
                 actionPointsForUse = burstActionPoints;
                 minDamage = burstMinDamage;
                 maxDamage = burstMaxDamage;
                 ammoForUse = burstAmmo;
-                break;
+				randomLocationForDamagePopup = true;
+				break;
 
             case FireMode.Automatic:
                 actionPointsForUse = automaticActionPoints;
                 minDamage = automaticMinDamage;
                 maxDamage = automaticMaxDamage;
                 ammoForUse = automaticAmmo;
-                break;
+				randomLocationForDamagePopup = true;
+				break;
         }
     }
 
@@ -215,30 +158,30 @@ public class Gun: Weapon
                 return "Auto";
 
             default:
-                return "None"; // test 3
+                return "None";
         }
     }
 
-    public virtual int GetMaxAmmo()
+    public void AddAmmo(int amount)
     {
-        return Gun.magazineMaxAmmo;
-    }
+        currentAmmo += amount;
 
-    public void AddAmmo(int ammo)
-    {
-        magazineCurrentAmmo += ammo;
-
-        if (magazineCurrentAmmo > GetMaxAmmo())
+        if (currentAmmo > maxAmmo)
         {
-            magazineCurrentAmmo = GetMaxAmmo();
+            currentAmmo = maxAmmo;
         }
 
         AmmoChanged?.Invoke(this);
     }
 
-    public void Reload()
+    public void SubtractAmmo(int amount)
     {
+        currentAmmo -= amount;
 
+        if (currentAmmo < 0)
+        {
+            currentAmmo = 0;
+        }
 
         AmmoChanged?.Invoke(this);
     }
