@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7648391855865677825}
-  - component: {fileID: 386712791920746637}
   m_Layer: 12
   m_Name: FirePoint
   m_TagString: Untagged
@@ -31,21 +30,6 @@ Transform:
   m_Father: {fileID: 6028617061146771567}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 48.836002, y: 14.205001, z: 6.4760003}
---- !u!114 &386712791920746637
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2331506901039862672}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 209f5d2baaa509f45923967abd55c23f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  firePoint: {fileID: 0}
-  bulletPrefab: {fileID: 0}
-  bulletSpeed: 20
 --- !u!1 &3846500088360086087
 GameObject:
   m_ObjectHideFlags: 0
@@ -59,7 +43,7 @@ GameObject:
   - component: {fileID: 6991570913438407469}
   - component: {fileID: 1440832189632689824}
   - component: {fileID: 904618576190613544}
-  - component: {fileID: 1015182549266553338}
+  - component: {fileID: 7700544760456822325}
   m_Layer: 12
   m_Name: Body
   m_TagString: Untagged
@@ -161,7 +145,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.11009159, y: 0.26348263, z: 0.74492323}
   m_Center: {x: -0.0010435322, y: -0.08376641, z: 0.37246183}
---- !u!114 &1015182549266553338
+--- !u!114 &7700544760456822325
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

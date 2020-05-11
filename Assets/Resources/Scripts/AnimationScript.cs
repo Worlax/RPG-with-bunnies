@@ -10,6 +10,7 @@ public class AnimationScript : MonoBehaviour
 
 	bool aimAnimationInProcess;
 	public bool AimAnimationInProcess { get; private set; }
+	string propertyInQueue;
 
 	int firesLeft = 0;
 
@@ -20,6 +21,14 @@ public class AnimationScript : MonoBehaviour
 	void Start()
 	{
 		animator = GetComponent<Animator>();
+	}
+
+	void Update()
+	{
+		if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1)
+		{
+
+		}
 	}
 
 	void AnimationEnded()
@@ -45,7 +54,7 @@ public class AnimationScript : MonoBehaviour
 		weapon = _weapon;
 		firesLeft = fireTimes;
 
-		animator.Play("Fire");
+		animator.SetBool("fire", true);
 	}
 
 	void WeaponFired()
@@ -63,19 +72,11 @@ public class AnimationScript : MonoBehaviour
 		bullet.GetComponent<Rigidbody>().velocity = direction * bulletSpeed;
 
 		bullet.Fire(hitLocation, weapon);
-	}
 
-	void WeaponFireAnimationEnd()
-	{
 		--firesLeft;
-
-		if (firesLeft > 0)
+		if (firesLeft <= 0)
 		{
-			animator.Play("Fire");
-		}
-		else
-		{
-			AnimationEnded();
+			animator.SetBool("fire", false);
 		}
 	}
 }

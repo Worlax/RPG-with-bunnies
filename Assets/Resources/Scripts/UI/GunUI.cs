@@ -5,7 +5,7 @@ public class GunUI: MonoBehaviour
 {
     // Properties //
     public Button fireMode;
-    public RectTransform ammoDisplay;
+    public RectTransform ammoUI;
 
     // Functions //
     void Start()
@@ -34,7 +34,7 @@ public class GunUI: MonoBehaviour
             fireMode.GetComponentInChildren<Text>().text = gun.GetFireModeName();
             UpdateAmmoDisplay(gun);
 
-            ammoDisplay.transform.localScale = Vector3.one;
+            ammoUI.transform.localScale = Vector3.one;
             fireMode.transform.localScale = Vector3.one;
 
             gun.AmmoChanged += UpdateAmmoDisplay;
@@ -47,7 +47,7 @@ public class GunUI: MonoBehaviour
 
         if (gun != null)
         {
-            ammoDisplay.transform.localScale = Vector3.zero;
+            ammoUI.transform.localScale = Vector3.zero;
             fireMode.transform.localScale = Vector3.zero;
 
             gun.AmmoChanged -= UpdateAmmoDisplay;
@@ -56,7 +56,7 @@ public class GunUI: MonoBehaviour
 
     void UpdateAmmoDisplay(Gun gun)
     {
-        ammoDisplay.GetComponentInChildren<Text>().text = gun.currentAmmo.ToString() + " \\ " + gun.maxAmmo.ToString();
+        ammoUI.GetComponentInChildren<Text>().text = gun.currentAmmo.ToString() + " \\ " + gun.maxAmmo.ToString();
     }
 
     public void ToggleFireMode()
