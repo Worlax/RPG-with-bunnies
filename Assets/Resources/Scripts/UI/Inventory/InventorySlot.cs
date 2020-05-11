@@ -1,6 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.EventSystems;
 
 public class InventorySlot: MonoBehaviour
 {
@@ -8,6 +6,7 @@ public class InventorySlot: MonoBehaviour
     public Item itemInSlot;
 
     // Functions //
+	// return false to give back dragged item (failed connect or swap)
     public virtual bool ConnectOrSwapItem(Item draggedItem, bool ignoreMoveTurn = false)
     {
         if (ignoreMoveTurn == false && GameManager.instance.playerMove == false)
@@ -101,53 +100,36 @@ public class InventorySlot: MonoBehaviour
     bool CombineStackable(Stackable draggedItem)
     {
         Stackable localItem = itemInSlot as Stackable;
+        int spaceInLocalStack = localItem.maxInStack - localItem.inStack;
 
-        int spaceInStack = localItem.maxInStack - localItem.inStack;
-        if (spaceInStack > 0)
-        {
-            if (spaceInStack >= draggedItem.inStack)
-            {
-                localItem.AddToStack(draggedItem.inStack);
+		draggedItem.TakeFromStack(spaceInLocalStack, out int wasTaken);
+		localItem.AddToStack(wasTaken);
 
-                Destroy(draggedItem.gameObject);
-
-                return true;
-            }
-            else
-            {
-                localItem.AddToStack(spaceInStack);
-                draggedItem.SubtractFromStack(spaceInStack);
-            }
-        }
-
-        return false;
-    }
+		if (draggedItem == null)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
 
     bool LoadWeapon(Ammo ammo)
     {
         Gun gun = itemInSlot as Gun;
         int ammoMissing = gun.maxAmmo - gun.currentAmmo;
 
-        if (ammoMissing > 0)
-        {
-            // take some ammo from stack
-            if (ammoMissing < ammo.inStack)
-            {
-				gun.currentAmmo += ammoMissing;
-                ammo.SubtractFromStack(ammoMissing);
+		ammo.TakeFromStack(ammoMissing, out int ammoWasTaken);
+		gun.AddAmmo(ammoWasTaken);
 
-                return false;
-            }
-            // take all ammo
-            else
-            {
-				gun.currentAmmo += ammo.inStack;
-                Destroy(ammo.gameObject);
-
-                return true;
-            }
-        }
-
-        return false;
+		if (ammo == null)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
     }
 }

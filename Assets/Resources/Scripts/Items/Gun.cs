@@ -1,10 +1,11 @@
-﻿using UnityEngine;
+﻿using UnityEngine.UI;
 using System;
-using System.Collections;
 
 public class Gun: Weapon
 {
-    // Properties //
+	// Properties //
+	Text ammoText;
+
     public bool singleAvailable = true;
     public bool burstAvailable = true;
     public bool automaticAvailable = true;
@@ -46,7 +47,10 @@ public class Gun: Weapon
     {
         UpdateWeaponInfo();
         currentAmmo = maxAmmo;
-    }
+
+		ammoText = GetComponentInChildren<Text>();
+		ammoText.text = currentAmmo.ToString();
+	}
 
 	public override void Fire()
     {
@@ -58,8 +62,7 @@ public class Gun: Weapon
 
 	public override void WeaponFired()
 	{
-		--currentAmmo;
-		AmmoChanged(this);
+		TakeAmmo(1);
 	}
 
 	public void SwitchFireMode()
@@ -171,18 +174,28 @@ public class Gun: Weapon
             currentAmmo = maxAmmo;
         }
 
-        AmmoChanged?.Invoke(this);
+		ammoText.text = currentAmmo.ToString();
+		AmmoChanged?.Invoke(this);
     }
 
-    public void SubtractAmmo(int amount)
+    public int TakeAmmo(int amount)
     {
-        currentAmmo -= amount;
+		int returnAmmo = 0;
 
-        if (currentAmmo < 0)
-        {
-            currentAmmo = 0;
-        }
+		if (currentAmmo >= amount)
+		{
+			returnAmmo = amount;
+			currentAmmo -= amount;
+		}
+		else
+		{
+			returnAmmo = currentAmmo;
+			currentAmmo = 0;
+		}
 
-        AmmoChanged?.Invoke(this);
+		ammoText.text = currentAmmo.ToString();
+		AmmoChanged?.Invoke(this);
+
+		return returnAmmo;
     }
 }

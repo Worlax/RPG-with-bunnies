@@ -8,7 +8,9 @@ public class AnimationScript : MonoBehaviour
 	public Bullet bulletPrefab;
 	public float bulletSpeed = 20f;
 
-	bool aimAnimationInProcess;
+	public bool AnimationInProcess { get; private set; }
+	const float secondsNeededToEndTheAnimation = 0.5f;
+	float timeWhenLastAnimationStopped = 0;
 	public bool AimAnimationInProcess { get; private set; }
 	string propertyInQueue;
 
@@ -25,27 +27,32 @@ public class AnimationScript : MonoBehaviour
 
 	void Update()
 	{
-		if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1)
+		if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1 && animator.IsInTransition(0) == false)
 		{
-
+			if (timeWhenLastAnimationStopped == 0)
+			{
+				timeWhenLastAnimationStopped = Time.time;
+			}
+			if ((Time.time - timeWhenLastAnimationStopped) > secondsNeededToEndTheAnimation)
+			{
+				timeWhenLastAnimationStopped = 0;
+				AnimationInProcess = false;
+			}
 		}
-	}
-
-	void AnimationEnded()
-	{
-		aimAnimationInProcess = false;
+		else
+		{
+			AnimationInProcess = true;
+		}
 	}
 
 	public void Aim(Transform target)
 	{
 		animator.SetBool("aim", true);
-		aimAnimationInProcess = true;
 	}
 
 	public void StopAim()
 	{
 		animator.SetBool("aim", false);
-		aimAnimationInProcess = true;
 	}
 
 	public void Fire(Vector3 _hitLocation, Weapon _weapon, int fireTimes)

@@ -29,14 +29,24 @@ public class Stackable: Item
         inStackText.text = inStack.ToString();
     }
 
-    public void SubtractFromStack(int amount)
+    public void TakeFromStack(int amount, out int wasTaken)
     {
-        inStack -= amount;
-        if (inStack <= 0)
-        {
-            Destroy(gameObject);
-        }
+		if (inStack >= amount)
+		{
+			wasTaken = amount;
+			inStack -= amount;
+		}
+		else
+		{
+			wasTaken = inStack;
+			inStack = 0;
+		}
 
         inStackText.text = inStack.ToString();
-    }
+
+		if (inStack <= 0)
+		{
+			Destroy(gameObject);
+		}
+	}
 }

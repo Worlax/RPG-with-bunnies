@@ -38,7 +38,7 @@ public class Item: MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandl
     {
         lastConnectedSlot.DisconnectItem();
 
-        InventorySlot slot = IsMouseOverSlot();
+        InventorySlot slot = GetSlotInMousePosition();
 
         if (slot != null)
         {
@@ -56,7 +56,7 @@ public class Item: MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandl
         canvasGroup.alpha = 1f;
     }
 
-    InventorySlot IsMouseOverSlot()
+    InventorySlot GetSlotInMousePosition()
     {
         GraphicRaycaster graphicRaycaster = GetComponentInParent<GraphicRaycaster>();
         EventSystem eventSystem = GetComponentInParent<EventSystem>();
