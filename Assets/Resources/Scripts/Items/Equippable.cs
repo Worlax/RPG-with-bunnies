@@ -23,7 +23,7 @@ public class Equippable: Item
 	// Functions //
 	public virtual void EquipItem()
     {
-        if (itemVisual != null)
+		if (itemVisual != null)
             return;
 
         itemVisual = Instantiate(itemIn3DPrefab);
@@ -31,15 +31,16 @@ public class Equippable: Item
 		animationScript = itemVisual.GetComponentInChildren<AnimationScript>();
 
         OnItemEquiped(this);
-    }
+	}
 
     public virtual void UnequipItem()
     {
-        if (itemVisual == null)
+		if (itemVisual == null)
             return;
 
         OnItemUnequiped(this);
 
         Destroy(itemVisual);
-    }
+		itemVisual = null;
+	}
 }

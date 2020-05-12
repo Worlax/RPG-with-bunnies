@@ -20,7 +20,7 @@ public class EquipmentSlot: InventorySlot
 
     protected override void ConnectItem(Item newItem)
     {
-        base.ConnectItem(newItem);
+		base.ConnectItem(newItem);
 		(itemInSlot as Equippable).EquipItem();
     }
 
