@@ -23,9 +23,6 @@ public class GameManager: MonoBehaviour
     }
 
     // Properties //
-    public GameObject popupDamagePrefab;
-    public GameObject popupExpPrefab;
-
     public List<UnitController> units = new List<UnitController>();
     public Queue<UnitController> unitsQueue = new Queue<UnitController>();
     public UnitController currentUnit;

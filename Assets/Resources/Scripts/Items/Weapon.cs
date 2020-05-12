@@ -129,6 +129,6 @@ public class Weapon: Equippable
 		Stats targetStats = AimedTarget.GetComponent<Stats>();
 		int damage = UnityEngine.Random.Range(minDamage, maxDamage + 1);
 
-		targetStats.DealDamage(damage, holder, randomLocationForDamagePopup);
+		targetStats.DealDamage(holder, damage, randomLocationForDamagePopup);
 	}
 }

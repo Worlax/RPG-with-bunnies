@@ -2925,6 +2925,7 @@ GameObject:
   - component: {fileID: 550589184}
   - component: {fileID: 550589183}
   - component: {fileID: 550589182}
+  - component: {fileID: 550589189}
   m_Layer: 0
   m_Name: Enemy (3)
   m_TagString: Enemy
@@ -3016,7 +3017,7 @@ MonoBehaviour:
   level: 1
   exp: 15
   expForLevelUp: 0
-  health: 10000
+  currentHealth: 70
   maxHealth: 70
   minDamage: 3
   maxDamage: 5
@@ -3081,6 +3082,22 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 550589180}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &550589189
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 550589180}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5709deb0ec158a146aa8633b477df834, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  popupDamagePrefab: {fileID: 4923193593983365595, guid: 087196aa682aa4347879e28398ab1345,
+    type: 3}
+  popupExpPrefab: {fileID: 1541061651400245893, guid: c810388baf3867b418571ce20706c1d6,
+    type: 3}
 --- !u!1 &572339926
 GameObject:
   m_ObjectHideFlags: 0
@@ -4888,10 +4905,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b9730d12d0c616489b76c6b556b0df0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  popupDamagePrefab: {fileID: 4923193593983365595, guid: 087196aa682aa4347879e28398ab1345,
-    type: 3}
-  popupExpPrefab: {fileID: 1541061651400245893, guid: c810388baf3867b418571ce20706c1d6,
-    type: 3}
   units: []
   currentUnit: {fileID: 0}
   playerMove: 0
@@ -8147,6 +8160,7 @@ GameObject:
   - component: {fileID: 1430551713}
   - component: {fileID: 1430551714}
   - component: {fileID: 1430551715}
+  - component: {fileID: 1430551716}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -8243,7 +8257,7 @@ MonoBehaviour:
   level: 1
   exp: 0
   expForLevelUp: 20
-  health: 60
+  currentHealth: 70
   maxHealth: 100
   minDamage: 0
   maxDamage: 0
@@ -8287,6 +8301,22 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &1430551716
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1430551708}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5709deb0ec158a146aa8633b477df834, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  popupDamagePrefab: {fileID: 4923193593983365595, guid: 087196aa682aa4347879e28398ab1345,
+    type: 3}
+  popupExpPrefab: {fileID: 1541061651400245893, guid: c810388baf3867b418571ce20706c1d6,
+    type: 3}
 --- !u!1 &1490546479
 GameObject:
   m_ObjectHideFlags: 0
@@ -8675,6 +8705,7 @@ GameObject:
   - component: {fileID: 1526350175}
   - component: {fileID: 1526350181}
   - component: {fileID: 1526350182}
+  - component: {fileID: 1526350183}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Enemy
@@ -8716,7 +8747,7 @@ MonoBehaviour:
   level: 1
   exp: 15
   expForLevelUp: 0
-  health: 10000
+  currentHealth: 70
   maxHealth: 70
   minDamage: 3
   maxDamage: 5
@@ -8830,6 +8861,22 @@ MonoBehaviour:
   canvas: {fileID: 1625173955}
   lootDistance: 1.5
   windowPrefab: {fileID: 7402927144472376262, guid: 6238543f234fbdc41b01a07be74e97ba,
+    type: 3}
+--- !u!114 &1526350183
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1526350174}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5709deb0ec158a146aa8633b477df834, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  popupDamagePrefab: {fileID: 4923193593983365595, guid: 087196aa682aa4347879e28398ab1345,
+    type: 3}
+  popupExpPrefab: {fileID: 1541061651400245893, guid: c810388baf3867b418571ce20706c1d6,
     type: 3}
 --- !u!1 &1526375768
 GameObject:
@@ -9343,6 +9390,7 @@ GameObject:
   - component: {fileID: 1571082558}
   - component: {fileID: 1571082557}
   - component: {fileID: 1571082556}
+  - component: {fileID: 1571082563}
   m_Layer: 0
   m_Name: Enemy (2)
   m_TagString: Enemy
@@ -9434,7 +9482,7 @@ MonoBehaviour:
   level: 1
   exp: 15
   expForLevelUp: 0
-  health: 10000
+  currentHealth: 70
   maxHealth: 70
   minDamage: 3
   maxDamage: 5
@@ -9499,6 +9547,22 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1571082554}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1571082563
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1571082554}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5709deb0ec158a146aa8633b477df834, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  popupDamagePrefab: {fileID: 4923193593983365595, guid: 087196aa682aa4347879e28398ab1345,
+    type: 3}
+  popupExpPrefab: {fileID: 1541061651400245893, guid: c810388baf3867b418571ce20706c1d6,
+    type: 3}
 --- !u!1 &1608898439
 GameObject:
   m_ObjectHideFlags: 0
@@ -10912,6 +10976,7 @@ GameObject:
   - component: {fileID: 1779504903}
   - component: {fileID: 1779504902}
   - component: {fileID: 1779504901}
+  - component: {fileID: 1779504908}
   m_Layer: 0
   m_Name: Enemy (1)
   m_TagString: Enemy
@@ -11003,7 +11068,7 @@ MonoBehaviour:
   level: 1
   exp: 15
   expForLevelUp: 0
-  health: 10000
+  currentHealth: 70
   maxHealth: 70
   minDamage: 3
   maxDamage: 5
@@ -11068,6 +11133,22 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1779504899}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1779504908
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1779504899}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5709deb0ec158a146aa8633b477df834, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  popupDamagePrefab: {fileID: 4923193593983365595, guid: 087196aa682aa4347879e28398ab1345,
+    type: 3}
+  popupExpPrefab: {fileID: 1541061651400245893, guid: c810388baf3867b418571ce20706c1d6,
+    type: 3}
 --- !u!1 &1781083138
 GameObject:
   m_ObjectHideFlags: 0
@@ -12579,6 +12660,7 @@ GameObject:
   - component: {fileID: 2066087508}
   - component: {fileID: 2066087507}
   - component: {fileID: 2066087506}
+  - component: {fileID: 2066087513}
   m_Layer: 0
   m_Name: Enemy (4)
   m_TagString: Enemy
@@ -12670,7 +12752,7 @@ MonoBehaviour:
   level: 1
   exp: 15
   expForLevelUp: 0
-  health: 10000
+  currentHealth: 70
   maxHealth: 70
   minDamage: 3
   maxDamage: 5
@@ -12735,6 +12817,22 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2066087504}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &2066087513
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2066087504}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5709deb0ec158a146aa8633b477df834, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  popupDamagePrefab: {fileID: 4923193593983365595, guid: 087196aa682aa4347879e28398ab1345,
+    type: 3}
+  popupExpPrefab: {fileID: 1541061651400245893, guid: c810388baf3867b418571ce20706c1d6,
+    type: 3}
 --- !u!1 &2071087360
 GameObject:
   m_ObjectHideFlags: 0

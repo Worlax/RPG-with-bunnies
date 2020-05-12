@@ -3,92 +3,78 @@ using System;
 
 public class Stats: MonoBehaviour
 {
-    // Properties //
+	// Properties //
+	UnitAnim unitAnim;
+
     public int level = 1;
     public int exp = 0;
     public int expForLevelUp = 50;
-    public int health = 70;
+    public int currentHealth = 70;
     public int maxHealth = 70;
     public int minDamage = 3;
     public int maxDamage = 5;
 
     public bool dead = false;
 
-    Vector3 popupOffset = new Vector3(0f, 0f, 0.8f);
-
     // Events //
     public static event Action<Transform> OnUnitDied;
     public static event Action StatsUpdated;
 
     // Functions //
-    public void DealDamage(int damage, UnitController source, bool randomLocation = false)
+	void Start()
+	{
+		unitAnim = GetComponent<UnitAnim>();
+	}
+
+    public void DealDamage(UnitController source, int damage, bool randomLocation = false)
     {
         if (dead)
             return;
 
-        if (health > damage)
+        if (currentHealth > damage)
         {
-            health -= damage;
-
-            Animator animator = GetComponent<Animator>();
-
-            if (animator != null)
-            {
-                transform.LookAt(source.transform);
-                animator.Play("Damaged", 0, 0);
-            }
+            currentHealth -= damage;
+			unitAnim.Damaged(source, damage, randomLocation);
         }
         else
         {
-            UnitController unit = GetComponent<UnitController>();
-
-            if (unit is EnemyController)
+            if (GetComponent<EnemyController>() == true)
             {
                 Stats killerStats = source.GetComponent<Stats>();
+
                 killerStats.AddExp(exp);
-                ExpPopup(source.transform.position);
-            }
+			}
 
             UnitDied();
-        }
-
-        GameObject damagePopup = Instantiate(GameManager.instance.popupDamagePrefab);
-        TextMesh textMesh = damagePopup.GetComponent<TextMesh>();
-
-        textMesh.text = "-" + damage.ToString();
-
-        float rand = UnityEngine.Random.Range(-0.5f, 0.5f);
-        float rand2 = UnityEngine.Random.Range(-0.2f, 0.2f);
-        Vector3 randomOffset = popupOffset + new Vector3(rand, 0, rand2);
-
-        if (randomLocation == true)
-        {
-            damagePopup.transform.position = transform.position + randomOffset;
-        }
-        else
-        {
-            damagePopup.transform.position = transform.position + popupOffset;
         }
     }
 
     public bool Heal(int _health)
     {
-        if (dead || _health < 1 || health == maxHealth)
+        if (dead || _health < 1 || currentHealth == maxHealth)
             return false;
 
-        health += _health;
+		int missingHealth = maxHealth - currentHealth;
 
-        if (health > maxHealth)
-        {
-            health = maxHealth;
-        }
+		if (_health <= missingHealth)
+		{
+			currentHealth += _health;
+			unitAnim.Heal(_health);
+		}
+		else
+		{
+			currentHealth += missingHealth;
+			unitAnim.Heal(missingHealth);
+		}
 
         return true;
     }
 
     void UnitDied()
     {
-        health = 0;
+		unitAnim.UnitDied();
+
+		currentHealth = 0;
         dead = true;
         UnitController unit = GetComponent<UnitController>();
 
@@ -100,22 +86,12 @@ public class Stats: MonoBehaviour
         OnUnitDied?.Invoke(transform);
     }
 
-    void ExpPopup(Vector3 position)
-    {
-        GameObject expPopup = Instantiate(GameManager.instance.popupExpPrefab);
-        TextMesh textMesh = expPopup.GetComponentInChildren<TextMesh>();
-
-        textMesh.text = "+" + exp.ToString() + " exp";
-
-        expPopup.transform.position = position + popupOffset;
-    }
-
     public void GetStats(ref String _level, out String _exp, out String _expForLevelUp, out String _health, out String _maxHealth, out String _minDamage, out String _maxDamage)
     {
         _level = level.ToString();
         _exp = exp.ToString();
         _expForLevelUp = expForLevelUp.ToString();
-        _health = health.ToString();
+        _health = currentHealth.ToString();
         _maxHealth = maxHealth.ToString();
         _minDamage = minDamage.ToString();
         _maxDamage = maxDamage.ToString();
@@ -130,7 +106,7 @@ public class Stats: MonoBehaviour
 
         exp = 0;
         expForLevelUp = 0;
-        health = 0;
+        currentHealth = 0;
     }
 
     public void SetStatsForUnit(int _level = 1, int _exp = 0, int _expForLevelUp = 100, int _health = 50, int _maxHealth = 100, int _minDamage = 2, int _maxDamage = 5)
@@ -138,7 +114,7 @@ public class Stats: MonoBehaviour
         level = _level;
         exp = _exp;
         expForLevelUp = _expForLevelUp;
-        health = _health;
+        currentHealth = _health;
         maxHealth = _maxHealth;
         minDamage = _minDamage;
         maxDamage = _maxDamage;
@@ -172,9 +148,10 @@ public class Stats: MonoBehaviour
         maxDamage -= _maxDamage;
     }
 
-    void AddExp(int _exp)
+    void AddExp(int amount)
     {
-        exp += _exp;
+        exp += amount;
+		unitAnim.AddExp(exp);
 
         if (exp >= expForLevelUp)
         {
@@ -189,6 +166,8 @@ public class Stats: MonoBehaviour
     void LevelUp()
     {
         ++level;
+		unitAnim.LevelUp(level);
+
         exp = exp - expForLevelUp;
         expForLevelUp = (int)(1.2 * expForLevelUp);
 

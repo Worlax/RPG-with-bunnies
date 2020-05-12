@@ -51,7 +51,7 @@ public class Equipment: Inventory
     {
         level.text = currentStatsDisplayed.level.ToString();
         exp.text = currentStatsDisplayed.exp.ToString() + " / " + currentStatsDisplayed.expForLevelUp.ToString();
-        health.text = currentStatsDisplayed.health.ToString() + " / " + currentStatsDisplayed.maxHealth.ToString();
+        health.text = currentStatsDisplayed.currentHealth.ToString() + " / " + currentStatsDisplayed.maxHealth.ToString();
         damage.text = currentStatsDisplayed.minDamage.ToString() + " - " + currentStatsDisplayed.maxDamage.ToString();
     }
 

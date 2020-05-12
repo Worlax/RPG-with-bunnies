@@ -4,7 +4,7 @@ using System;
 public class Equippable: Item
 {
     // Properties //
-	protected AnimationScript animationScript;
+	protected WeaponAnim animationScript;
 
 	public enum EquipType
     {
@@ -28,7 +28,7 @@ public class Equippable: Item
 
         itemVisual = Instantiate(itemIn3DPrefab);
         itemVisual.transform.SetParent(GameManager.instance.currentUnit.transform, false);
-		animationScript = itemVisual.GetComponentInChildren<AnimationScript>();
+		animationScript = itemVisual.GetComponentInChildren<WeaponAnim>();
 
         OnItemEquiped(this);
 	}

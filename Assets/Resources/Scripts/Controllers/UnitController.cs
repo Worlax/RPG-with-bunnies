@@ -19,8 +19,6 @@ public class UnitController : MonoBehaviour
 
     protected Stack<Tile> movePath = new Stack<Tile>();
 
-    protected Animator animator;
-
     public Weapon weapon;
 
     // Events //
@@ -47,20 +45,20 @@ public class UnitController : MonoBehaviour
         transform.position = grid.GetClosestTile(transform.position).spawnPoint;
 
         currentActionPoints = startActionPoints;
-
-        animator = GetComponent<Animator>();
     }
 
     protected virtual void Update()
     {
-        if (state == State.NotMyMove || state == State.ReadingInput || state == State.Waiting)
-        {
-            animator.SetBool("idle", true);
-        }
-        else
-        {
-            animator.SetBool("idle", false);
-        }
+		//Animator animator = GetComponent<Animator>();
+
+		//if (state == State.NotMyMove || state == State.ReadingInput || state == State.Waiting)
+		//{
+		//	animator.SetBool("idle", true);
+		//}
+		//else
+		//{
+		//	animator.SetBool("idle", false);
+		//}
     }
 
     public void StartRound()
