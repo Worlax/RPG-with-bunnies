@@ -5,7 +5,9 @@ using System.Collections.Generic;
 [SelectionBase]
 public class UnitController : MonoBehaviour
 {
-    // Properties //
+	// Properties //
+	UnitAnim unitAnim;
+
     public GameGrid grid;
     public float speed = 2;
     public const int maxActionPoints = 10;
@@ -19,10 +21,12 @@ public class UnitController : MonoBehaviour
 
     protected Stack<Tile> movePath = new Stack<Tile>();
 
-    public Weapon weapon;
+	public Weapon weapon;
 
-    // Events //
-    public static event Action<UnitController> OnNewUnitTurn;
+	public Canvas canvas;
+
+	// Events //
+	public static event Action<UnitController> OnNewUnitTurn;
     public static event Action<UnitController> OnActionPointsChanged;
     public static event Action<UnitController> OnUnitEndTurn;
 
@@ -43,23 +47,21 @@ public class UnitController : MonoBehaviour
     protected virtual void Start()
     {
         transform.position = grid.GetClosestTile(transform.position).spawnPoint;
-
-        currentActionPoints = startActionPoints;
-    }
+		unitAnim = GetComponent<UnitAnim>();
+		currentActionPoints = startActionPoints;
+	}
 
     protected virtual void Update()
     {
-		//Animator animator = GetComponent<Animator>();
-
-		//if (state == State.NotMyMove || state == State.ReadingInput || state == State.Waiting)
-		//{
-		//	animator.SetBool("idle", true);
-		//}
-		//else
-		//{
-		//	animator.SetBool("idle", false);
-		//}
-    }
+		if (state == State.Moving)
+		{
+			unitAnim.Idle(false);
+		}
+		else
+		{
+			unitAnim.Idle(true);
+		}
+	}
 
     public void StartRound()
     {
@@ -212,6 +214,12 @@ public class UnitController : MonoBehaviour
 
     public virtual void KillUnit()
     {
-        GetComponent<Animator>().Play("Death");
+		if (weapon != null)
+		{
+			weapon.ItemVisual.GetComponentInChildren<Animated>().Disable();
+			weapon.ItemVisual.transform.parent = null;
+		}
+
+		GetComponent<Animator>().Play("Death");
     }
 }

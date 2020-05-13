@@ -7,13 +7,18 @@ public class PlayerController: UnitController
     Tile lastTileOverlaped;
     Tile lastTileClicked;
 
-    public EnemyController enemyInFocus;
+	public EnemyController enemyInFocus;
 
     public bool ignoreNextClick = false;
 
     Texture2D cursorOverTarget;
 
-    enum CursorState
+	public Inventory inventoryPrefab;
+	public Inventory MyInventory { get; private set; }
+	public Equipment equipmentPrefab;
+	public Equipment MyEquipment { get; private set; }
+
+	enum CursorState
     {
         Normal,
         OverTarget
@@ -25,7 +30,24 @@ public class PlayerController: UnitController
     public static event Action<UnitController> OnFocusTarget;
     public static event Action OnDefocusTarget;
 
-    // Functions //
+	// Functions //
+	protected override void Start()
+	{
+		base.Start();
+
+		MyInventory = Instantiate(inventoryPrefab);
+		MyInventory.transform.SetParent(canvas.transform, false);
+		MyInventory.Owner = this;
+		MyInventory.name = "Inventory (" + transform.name + ")";
+
+		MyEquipment = Instantiate(equipmentPrefab);
+		MyEquipment.transform.SetParent(canvas.transform, false);
+		MyEquipment.Owner = this;
+		MyEquipment.name = "Equipment (" + transform.name + ")";
+
+		cursorOverTarget = Resources.Load<Texture2D>("Icons/Cursors/Selecting");
+	}
+
     protected override void Update()
     {
         base.Update();
@@ -89,13 +111,6 @@ public class PlayerController: UnitController
     void OnDisable()
     {
         Stats.OnUnitDied -= SomeUnitDied;
-    }
-
-    protected override void Start()
-    {
-        base.Start();
-
-        cursorOverTarget = Resources.Load<Texture2D>("Icons/Cursors/Selecting");
     }
 
     // Reading input //

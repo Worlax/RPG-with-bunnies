@@ -35,4 +35,10 @@ public class Animated: MonoBehaviour
 			AnimationInProcess = true;
 		}
 	}
+
+	public void Disable()
+	{
+		animator.enabled = false;
+		this.enabled = false;
+	}
 }

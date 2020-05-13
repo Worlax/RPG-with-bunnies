@@ -4,8 +4,6 @@ using System;
 public class Equippable: Item
 {
     // Properties //
-	protected WeaponAnim animationScript;
-
 	public enum EquipType
     {
         None,
@@ -16,31 +14,22 @@ public class Equippable: Item
 
     public EquipType equipType;
 
-    // Events //
-    public static event Action<Equippable> OnItemEquiped;
-    public static event Action<Equippable> OnItemUnequiped;
-
 	// Functions //
-	public virtual void EquipItem()
+	public virtual void EquipItem(UnitController ownerOfThisItem)
     {
-		if (itemVisual != null)
+		if (ItemVisual != null)
             return;
 
-        itemVisual = Instantiate(itemIn3DPrefab);
-        itemVisual.transform.SetParent(GameManager.instance.currentUnit.transform, false);
-		animationScript = itemVisual.GetComponentInChildren<WeaponAnim>();
-
-        OnItemEquiped(this);
+        ItemVisual = Instantiate(itemIn3DPrefab);
+        ItemVisual.transform.SetParent(ownerOfThisItem.transform, false);
 	}
 
     public virtual void UnequipItem()
     {
-		if (itemVisual == null)
+		if (ItemVisual == null)
             return;
 
-        OnItemUnequiped(this);
-
-        Destroy(itemVisual);
-		itemVisual = null;
+        Destroy(ItemVisual);
+		ItemVisual = null;
 	}
 }

@@ -4,8 +4,10 @@ using System.Collections;
 
 public class Weapon: Equippable
 {
-    // Properties //
-    protected LineRenderer hitLine;
+	// Properties //
+	protected WeaponAnim weaponAnim;
+
+	protected LineRenderer hitLine;
     public UnitController holder;
 
 	public bool randomLocationForDamagePopup = false;
@@ -28,22 +30,21 @@ public class Weapon: Equippable
 	public Stage stage;
 
     // Functions //
-    public override void EquipItem()
+    public override void EquipItem(UnitController ownerOfThisItem)
     {
-		PlayerController player = GameManager.instance.currentUnit as PlayerController;
+		base.EquipItem(ownerOfThisItem);
 
 		hitLine = GameManager.instance.WeaponAimLineRenderer;
-		holder = player;
-		player.weapon = this;
-
-		base.EquipItem();
+		holder = ownerOfThisItem;
+		ownerOfThisItem.weapon = this;
+		weaponAnim = ItemVisual.GetComponentInChildren<WeaponAnim>();
 	}
 
 	public override void UnequipItem()
     {
 		PlayerController player = GameManager.instance.currentUnit as PlayerController;
 
-		animationScript = null;
+		weaponAnim = null;
 		holder = null;
 		player.weapon = null;
 
@@ -52,7 +53,7 @@ public class Weapon: Equippable
 
 	public virtual void Aim(UnitController target)
     {
-		animationScript.Aim(target.transform);
+		weaponAnim.Aim(target.transform);
 
         LayerMask mask = LayerMask.GetMask("Tile") | LayerMask.GetMask("Item");
         Physics.Raycast(holder.transform.position, (target.transform.position - holder.transform.position).normalized, out RaycastHit hit, hitDistance, ~mask);
@@ -116,7 +117,7 @@ public class Weapon: Equippable
 
     public virtual void Fire()
     {
-		animationScript.Fire(hitLocation, this, 1);
+		weaponAnim.Fire(hitLocation, this);
     }
 
 	public virtual void WeaponFired()
@@ -126,6 +127,9 @@ public class Weapon: Equippable
 
 	public virtual void WeaponHit()
 	{
+		if (AimedTarget == null)
+			return;
+
 		Stats targetStats = AimedTarget.GetComponent<Stats>();
 		int damage = UnityEngine.Random.Range(minDamage, maxDamage + 1);
 

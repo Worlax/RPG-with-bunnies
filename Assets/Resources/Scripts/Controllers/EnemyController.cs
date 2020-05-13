@@ -16,8 +16,25 @@ public class EnemyController: UnitController
     float animationTimeBeforHit = 0.83f;
     float animationTimeAfterHit = 1.46f;
 
+	public Inventory inventoryPrefab;
+	Equipment equipment;
+	Inventory inventory;
+
 	// Functions //
-    protected override void Update()
+	protected override void Start()
+	{
+		base.Start();
+
+		inventory = Instantiate(inventoryPrefab);
+		inventory.transform.SetParent(canvas.transform, false);
+		inventory.Owner = this;
+		inventory.name = "Inventory (" + transform.name + ")";
+
+		equipment = inventory.GetComponent<Equipment>();
+		equipment.Owner = this;
+	}
+
+	protected override void Update()
     {
         base.Update();
 

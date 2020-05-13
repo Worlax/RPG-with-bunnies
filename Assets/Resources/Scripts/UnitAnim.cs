@@ -9,10 +9,27 @@ public class UnitAnim: Animated
 	Vector3 popupOffset = new Vector3(0f, 0f, 0.8f);
 
 	// Functions //
+	protected override void Start()
+	{
+		base.Start();
+
+		animator.SetBool("idle", true);
+	}
+
+	public void Idle(bool isIdling)
+	{
+		animator.SetBool("idle", isIdling);
+	}
+
+	public void Heal(int amount)
+	{
+
+	}
+
 	public void Damaged(UnitController source, int damage, bool randomLocation = false)
 	{
 		transform.LookAt(source.transform);
-		animator.Play("Damaged", 0, 0);
+		animator.SetTrigger("damaged");
 
 		GameObject damagePopup = Instantiate(popupDamagePrefab);
 		TextMesh textMesh = damagePopup.GetComponent<TextMesh>();
@@ -33,16 +50,6 @@ public class UnitAnim: Animated
 		}
 	}
 
-	public void Heal(int amount)
-	{
-
-	}
-
-	public void UnitDied()
-	{
-
-	}
-
 	public void AddExp(int amount)
 	{
 		GameObject expPopup = Instantiate(popupExpPrefab);
@@ -56,5 +63,12 @@ public class UnitAnim: Animated
 	public void LevelUp(int newLevel)
 	{
 
+	}
+
+	public void UnitDied()
+	{
+		animator.SetBool("idle", false);
+
+		animator.Play("Death", 0, 0);
 	}
 }

@@ -7,10 +7,13 @@ public class Inventory: MonoBehaviour
     public KeyCode toggleKey;
     public Button closeButton;
 
+	UnitController owner;
+	public UnitController Owner { get => owner; set { if (owner == null) { owner = value; } } }
+
     // Functions //
     protected virtual void Start()
     {
-        closeButton.onClick.AddListener(ToggleVisibility);
+        closeButton.onClick.AddListener(Close);
     }
 	
 	void Update()
@@ -32,4 +35,9 @@ public class Inventory: MonoBehaviour
             transform.localScale = Vector3.zero;
         }
     }
+
+	void Close()
+	{
+		transform.localScale = Vector3.zero;
+	}
 }

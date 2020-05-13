@@ -4,6 +4,8 @@ using System;
 public class Gun: Weapon
 {
 	// Properties //
+	new RifleAnim weaponAnim;
+
 	Text ammoText;
 
     public bool singleAvailable = true;
@@ -52,11 +54,25 @@ public class Gun: Weapon
 		ammoText.text = currentAmmo.ToString();
 	}
 
+	public override void EquipItem(UnitController ownerOfThisItem)
+	{
+		base.EquipItem(ownerOfThisItem);
+
+		weaponAnim = ItemVisual.GetComponentInChildren<RifleAnim>();
+	}
+
+	public override void UnequipItem()
+	{
+		base.UnequipItem();
+
+		weaponAnim = null;
+	}
+
 	public override void Fire()
     {
         if (currentAmmo >= ammoForUse)
 		{
-			animationScript.Fire(hitLocation, this, ammoForUse);
+			weaponAnim.Fire(hitLocation, this, ammoForUse);
 		}
 	}
 
@@ -96,7 +112,11 @@ public class Gun: Weapon
 
         UpdateWeaponInfo();
         holderStats.AddStats(0, minDamage, maxDamage);
-        GameManager.instance.equipment.UpdateStatsDisplay();
+
+		if (holder is PlayerController)
+		{
+			(holder as PlayerController).MyEquipment.UpdateStatsDisplay();
+		}
     }
 
     bool IsFireModeAvaible()

@@ -15,19 +15,19 @@ public class GunUI: MonoBehaviour
 
     void OnEnable()
     {
-		Equippable.OnItemEquiped += ItemEquiped;
-		Equippable.OnItemUnequiped += ItemUnequiped;
+		EquipmentSlot.PlayerEquipedWeapon += WeaponEquiped;
+		EquipmentSlot.PlayerUnequipedWeapon += WeaponUnequiped;
     }
 
     void OnDisable()
     {
-		Equippable.OnItemEquiped -= ItemEquiped;
-		Equippable.OnItemUnequiped -= ItemUnequiped;
-    }
+		EquipmentSlot.PlayerEquipedWeapon -= WeaponEquiped;
+		EquipmentSlot.PlayerUnequipedWeapon -= WeaponUnequiped;
+	}
 
-    void ItemEquiped(Equippable item)
+    void WeaponEquiped(Weapon weapon)
     {
-        Gun gun = item as Gun;
+        Gun gun = weapon as Gun;
 
         if (gun != null)
         {
@@ -41,9 +41,9 @@ public class GunUI: MonoBehaviour
         }
     }
 
-    void ItemUnequiped(Equippable item)
-    {
-        Gun gun = item as Gun;
+    void WeaponUnequiped(Weapon weapon)
+	{
+        Gun gun = weapon as Gun;
 
         if (gun != null)
         {
