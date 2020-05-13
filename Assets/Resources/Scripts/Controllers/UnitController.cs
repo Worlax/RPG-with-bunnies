@@ -6,7 +6,7 @@ using System.Collections.Generic;
 public class UnitController : MonoBehaviour
 {
 	// Properties //
-	UnitAnim unitAnim;
+	protected UnitAnim unitAnim;
 
     public GameGrid grid;
     public float speed = 2;
@@ -23,7 +23,7 @@ public class UnitController : MonoBehaviour
 
 	public Weapon weapon;
 
-	public Canvas canvas;
+	public Transform windowsRoot;
 
 	// Events //
 	public static event Action<UnitController> OnNewUnitTurn;
@@ -49,18 +49,13 @@ public class UnitController : MonoBehaviour
         transform.position = grid.GetClosestTile(transform.position).spawnPoint;
 		unitAnim = GetComponent<UnitAnim>();
 		currentActionPoints = startActionPoints;
+
+		unitAnim.Idle(true);
 	}
 
     protected virtual void Update()
     {
-		if (state == State.Moving)
-		{
-			unitAnim.Idle(false);
-		}
-		else
-		{
-			unitAnim.Idle(true);
-		}
+
 	}
 
     public void StartRound()
@@ -133,6 +128,8 @@ public class UnitController : MonoBehaviour
 
     protected void MakeStep()
     {
+		unitAnim.Idle(false);
+
         transform.position += direction * Time.deltaTime * speed;
 
         if (Vector3.Distance(targetPosition, transform.position) <= 0.10f)
@@ -140,7 +137,9 @@ public class UnitController : MonoBehaviour
             transform.position = targetPosition;
             WasteActionPoints(1, false);
             state = State.CalculatingStep;
-        }
+
+			unitAnim.Idle(true);
+		}
     }
 
     public void LookAt(Vector3 target)

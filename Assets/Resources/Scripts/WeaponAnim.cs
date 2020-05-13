@@ -24,4 +24,24 @@ public class WeaponAnim: Animated
 
 		animator.SetBool("fire", true);
 	}
+
+	protected override void IsAnimationInProcessCheck()
+	{
+		if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1 && animator.IsInTransition(0) == false)
+		{
+			if (timeWhenLastAnimationStopped == 0)
+			{
+				timeWhenLastAnimationStopped = Time.time;
+			}
+			if ((Time.time - timeWhenLastAnimationStopped) > secondsNeededToEndTheAnimation)
+			{
+				timeWhenLastAnimationStopped = 0;
+				AnimationInProcess = false;
+			}
+		}
+		else
+		{
+			AnimationInProcess = true;
+		}
+	}
 }

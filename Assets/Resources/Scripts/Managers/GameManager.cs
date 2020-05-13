@@ -32,11 +32,8 @@ public class GameManager: MonoBehaviour
 
     public Equipment equipment;
 
-    public GraphicRaycaster graphicRaycaster;
+    public GraphicRaycaster windowsGraphicRaycaster;
     public EventSystem eventSystem;
-
-    float lastTimeClicked = 0;
-    float doubleClickMaxSpread = 0.25f;
 
     // State //
     public enum State
@@ -52,11 +49,6 @@ public class GameManager: MonoBehaviour
     // Functions //
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            Click();
-        }
-
         if (state == State.StartOfTheRound)
         {
             StartOfTheRound();
@@ -89,54 +81,6 @@ public class GameManager: MonoBehaviour
         {
             state = State.StartOfTheRound;
         }
-    }
-
-    void Click()
-    {
-        if (lastTimeClicked == 0)
-        {
-            lastTimeClicked = Time.time;
-            return;
-        }
-
-        if (Time.time - lastTimeClicked < doubleClickMaxSpread)
-        {
-            List<RaycastResult> UIClickResult = UIMouseRaycast();
-            
-            foreach (RaycastResult obj in UIClickResult)
-            {
-                Usable consumable = obj.gameObject.GetComponent<Usable>();
-
-                if (consumable != null)
-                {
-                    consumable.Use();
-                    break;
-                }
-            }
-
-            if (UIClickResult.Count == 0)
-            {
-                Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit);
-
-                if (hit.transform != null)
-                {
-
-                }
-            }
-        }
-
-        lastTimeClicked = Time.time;
-    }
-
-    List<RaycastResult> UIMouseRaycast()
-    {
-        List<RaycastResult> results = new List<RaycastResult>();
-        PointerEventData pointerEventData = new PointerEventData(eventSystem);
-        pointerEventData.position = Input.mousePosition;
-
-        graphicRaycaster.Raycast(pointerEventData, results);
-
-        return results;
     }
 
     void OnEnable()

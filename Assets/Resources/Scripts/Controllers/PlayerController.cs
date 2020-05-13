@@ -1,5 +1,8 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using System;
+using System.Collections.Generic;
 
 public class PlayerController: UnitController
 {
@@ -36,12 +39,12 @@ public class PlayerController: UnitController
 		base.Start();
 
 		MyInventory = Instantiate(inventoryPrefab);
-		MyInventory.transform.SetParent(canvas.transform, false);
+		MyInventory.transform.SetParent(windowsRoot.transform, false);
 		MyInventory.Owner = this;
 		MyInventory.name = "Inventory (" + transform.name + ")";
 
 		MyEquipment = Instantiate(equipmentPrefab);
-		MyEquipment.transform.SetParent(canvas.transform, false);
+		MyEquipment.transform.SetParent(windowsRoot.transform, false);
 		MyEquipment.Owner = this;
 		MyEquipment.name = "Equipment (" + transform.name + ")";
 
@@ -52,7 +55,12 @@ public class PlayerController: UnitController
     {
         base.Update();
 
-        if (state == State.NotMyMove)
+		//if (weapon != null && weapon.IsAnimationInProcess() == true)
+		//{
+		//	return;
+		//}
+
+        if (state == State.NotMyMove || state == State.Waiting)
         {
             return;
         }
@@ -69,7 +77,10 @@ public class PlayerController: UnitController
         }
         else if (state == State.ReadingInput)
         {
-            MouseOverlapCheck();
+			if (IsMouseOverUI() == true)
+				return;
+
+			MouseOverlapCheck();
 
             if (Input.GetMouseButtonDown(1))
             {
@@ -79,11 +90,11 @@ public class PlayerController: UnitController
                     return;
                 }
 
-                TileCkick();
+                MovementClick();
             }
             if (Input.GetMouseButtonDown(0))
             {
-                TargetClick();
+                SelectingClick();
             }
         }
         else if (state == State.CalculatingStep)
@@ -113,8 +124,40 @@ public class PlayerController: UnitController
         Stats.OnUnitDied -= SomeUnitDied;
     }
 
-    // Reading input //
-    void MouseOverlapCheck()
+	// Reading input //
+	List<RaycastResult> UIMouseRaycast()
+	{
+		EventSystem eventSystem = GameManager.instance.eventSystem;
+		GraphicRaycaster graphicRaycaster = GameManager.instance.windowsGraphicRaycaster;
+
+		List<RaycastResult> results = new List<RaycastResult>();
+		PointerEventData pointerEventData = new PointerEventData(eventSystem);
+		pointerEventData.position = Input.mousePosition;
+
+		graphicRaycaster.Raycast(pointerEventData, results);
+
+		return results;
+	}
+
+	bool IsMouseOverUI()
+	{
+		if (UIMouseRaycast().Count == 0)
+		{
+			return false;
+		}
+		else
+		{
+			if (lastTileOverlaped != null)
+			{
+				lastTileOverlaped.SetStatePossible();
+				lastTileOverlaped = null;
+			}
+
+			return true;
+		}
+	}
+
+	void MouseOverlapCheck()
     {
         Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit);
 
@@ -164,7 +207,7 @@ public class PlayerController: UnitController
         cursorState = CursorState.Normal;
     }
 
-    void TileCkick()
+    void MovementClick()
     {
         //if (weapon != null && weapon.fireAnimationInProcess == true)
         //    return;
@@ -195,7 +238,7 @@ public class PlayerController: UnitController
         }
     }
 
-    void TargetClick()
+    void SelectingClick()
     {
         Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit);
 
@@ -213,7 +256,11 @@ public class PlayerController: UnitController
                 // second click on target
                 else if (weapon != null && enemyInFocus == enemy && weapon.AimedTarget != null)
                 {
-                    weapon.Fire();
+					if (WasteActionPoints(weapon.actionPointsForUse) == true)
+					{
+						state = State.Waiting;
+						weapon.Fire();
+					}
                 }
                 // first click on target
                 else
@@ -221,30 +268,32 @@ public class PlayerController: UnitController
                     if (weapon != null)
                     {
                         LookAtTarget(hit.transform);
+						unitAnim.Idle(false);
                         weapon.Aim(enemy);
                     }
-
+					
                     FocusTarget(enemy);
                 }
             }
         }
 
-        // click somewhere else
-        //if (enemyInFocus != null)
-        //{
-        //    if (hit.transform == null || hit.transform.tag != "Enemy")
-        //    {
-        //        DefocusTarget();
+		// click somewhere else
+		if (enemyInFocus != null)
+		{
+			if (hit.transform == null || hit.transform.tag != "Enemy")
+			{
+				DefocusTarget();
 
-        //        if (weapon != null)
-        //        {
-        //            weapon.StopAim();
-        //        }
-        //    }
-        //}
-    }
+				if (weapon != null)
+				{
+					unitAnim.Idle(true);
+					weapon.StopAim();
+				}
+			}
+		}
+	}
 
-    void TryToToot(Transform target)
+	void TryToToot(Transform target)
     {
         Vector3 direction = (target.position - transform.position).normalized;
         float maxLootDistance = 30;

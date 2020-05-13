@@ -26,9 +26,9 @@ public class EnemyController: UnitController
 		base.Start();
 
 		inventory = Instantiate(inventoryPrefab);
-		inventory.transform.SetParent(canvas.transform, false);
+		inventory.transform.SetParent(windowsRoot.transform, false);
 		inventory.Owner = this;
-		inventory.name = "Inventory (" + transform.name + ")";
+		inventory.name = "Inv + Equip (" + transform.name + ")";
 
 		equipment = inventory.GetComponent<Equipment>();
 		equipment.Owner = this;

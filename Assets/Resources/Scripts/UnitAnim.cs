@@ -9,10 +9,8 @@ public class UnitAnim: Animated
 	Vector3 popupOffset = new Vector3(0f, 0f, 0.8f);
 
 	// Functions //
-	protected override void Start()
+	void Start()
 	{
-		base.Start();
-
 		animator.SetBool("idle", true);
 	}
 

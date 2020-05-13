@@ -38,6 +38,12 @@ public class Weapon: Equippable
 		holder = ownerOfThisItem;
 		ownerOfThisItem.weapon = this;
 		weaponAnim = ItemVisual.GetComponentInChildren<WeaponAnim>();
+
+		if (ownerOfThisItem.GetComponent<Stats>().dead)
+		{
+			weaponAnim.Disable();
+			ItemVisual.transform.parent = null;
+		}
 	}
 
 	public override void UnequipItem()
@@ -105,6 +111,8 @@ public class Weapon: Equippable
 
     public virtual void StopAim()
     {
+		weaponAnim.StopAim();
+
         hitLine.positionCount = 0;
 		hitLocation = Vector3.zero;
 

@@ -1,15 +1,19 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
-public class Usable: Item
+public class Usable: Item, IPointerClickHandler
 {
     // Properties //
     public int maxUses = 3;
     public int usesLeft;
 
-	Slider usesSlider; 
-    // Functions //
-    protected override void Start()
+	Slider usesSlider;
+
+	float lastTimeClicked = 0;
+	const float doubleClickMaxSpread = 0.25f;
+	// Functions //
+	protected override void Start()
     {
         base.Start();
 
@@ -32,7 +36,22 @@ public class Usable: Item
         }
     }
 
-    protected virtual bool UseEffect()
+	public void OnPointerClick(PointerEventData eventData)
+	{
+		if (lastTimeClicked == 0)
+		{
+			lastTimeClicked = Time.time;
+			return;
+		}
+		else if (Time.time - lastTimeClicked < doubleClickMaxSpread && GameManager.instance.playerMove == true)
+		{
+			Use();
+		}
+
+		lastTimeClicked = Time.time;
+	}
+
+	protected virtual bool UseEffect()
     {
         return true;
     }

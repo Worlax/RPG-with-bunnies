@@ -4,7 +4,7 @@ using System;
 public class Gun: Weapon
 {
 	// Properties //
-	new RifleAnim weaponAnim;
+	new GunAnim weaponAnim;
 
 	Text ammoText;
 
@@ -58,7 +58,7 @@ public class Gun: Weapon
 	{
 		base.EquipItem(ownerOfThisItem);
 
-		weaponAnim = ItemVisual.GetComponentInChildren<RifleAnim>();
+		weaponAnim = ItemVisual.GetComponentInChildren<GunAnim>();
 	}
 
 	public override void UnequipItem()
@@ -70,7 +70,7 @@ public class Gun: Weapon
 
 	public override void Fire()
     {
-        if (currentAmmo >= ammoForUse)
+		if (currentAmmo >= ammoForUse)
 		{
 			weaponAnim.Fire(hitLocation, this, ammoForUse);
 		}

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class RifleAnim: WeaponAnim
+public class GunAnim: WeaponAnim
 {
 	// Properties //
 	public Transform firePoint;

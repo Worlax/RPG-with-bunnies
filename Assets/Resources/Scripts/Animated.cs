@@ -5,18 +5,23 @@ public class Animated: MonoBehaviour
 	// Properties //
 	protected Animator animator;
 
-	public bool AnimationInProcess { get; private set; }
+	public bool AnimationInProcess { get; protected set; }
 
-	const float secondsNeededToEndTheAnimation = 0.5f;
-	float timeWhenLastAnimationStopped = 0;
+	protected const float secondsNeededToEndTheAnimation = 0.5f;
+	protected float timeWhenLastAnimationStopped = 0;
 
 	// Functions //
-	protected virtual void Start()
+	void Awake()
 	{
 		animator = GetComponent<Animator>();
 	}
 
 	protected virtual void Update()
+	{
+		IsAnimationInProcessCheck();
+	}
+
+	protected virtual void IsAnimationInProcessCheck()
 	{
 		if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1 && animator.IsInTransition(0) == false)
 		{
