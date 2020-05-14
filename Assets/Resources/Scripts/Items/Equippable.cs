@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
-using System;
 
-public class Equippable: Item
+public abstract class Equippable: Item
 {
     // Properties //
 	public enum EquipType

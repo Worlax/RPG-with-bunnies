@@ -55,34 +55,36 @@ public class PlayerController: UnitController
     {
         base.Update();
 
-		//if (weapon != null && weapon.IsAnimationInProcess() == true)
-		//{
-		//	return;
-		//}
-
-        if (state == State.NotMyMove || state == State.Waiting)
+        if (state == State.Waiting)
         {
-            return;
+			return;
         }
-
-        if (currentActionPoints == 0)
+        else if (currentActionPoints == 0)
         {
             EndTurn();
         }
 
-        if (state == State.RoundStart)
-        {
-            CalculatePossibleMoves();
-            state = State.ReadingInput;
-        }
         else if (state == State.ReadingInput)
         {
 			if (IsMouseOverUI() == true)
+			{
+				if (lastTileOverlaped != null)
+				{
+					lastTileOverlaped.SetStatePossible();
+					lastTileOverlaped = null;
+				}
+
 				return;
+			}
 
 			MouseOverlapCheck();
 
-            if (Input.GetMouseButtonDown(1))
+			if (Input.GetMouseButtonDown(0))
+			{
+				SelectingClick();
+			}
+
+			if (Input.GetMouseButtonDown(1))
             {
                 if (ignoreNextClick)
                 {
@@ -91,22 +93,7 @@ public class PlayerController: UnitController
                 }
 
                 MovementClick();
-            }
-            if (Input.GetMouseButtonDown(0))
-            {
-                SelectingClick();
-            }
-        }
-        else if (state == State.CalculatingStep)
-        {
-            if (CalculateStep())
-            {
-                state = State.Moving;
-            }
-            else if (currentActionPoints > 0)
-            {
-                state = State.RoundStart;
-            }
+            } 
         }
         else if (state == State.Moving)
         {
@@ -147,12 +134,6 @@ public class PlayerController: UnitController
 		}
 		else
 		{
-			if (lastTileOverlaped != null)
-			{
-				lastTileOverlaped.SetStatePossible();
-				lastTileOverlaped = null;
-			}
-
 			return true;
 		}
 	}
@@ -209,9 +190,6 @@ public class PlayerController: UnitController
 
     void MovementClick()
     {
-        //if (weapon != null && weapon.fireAnimationInProcess == true)
-        //    return;
-
         if (lastTileClicked != null)
         {
             lastTileClicked.SetStatePossible();
@@ -232,8 +210,8 @@ public class PlayerController: UnitController
                 lastTileClicked = hit.transform.GetComponent<Tile>();
                 lastTileClicked.SetStateClicked();
 
-                CalculatePath(lastTileClicked);
-                state = State.CalculatingStep;
+                CalculateAllSteps(lastTileClicked);
+				state = State.Moving;
             }
         }
     }

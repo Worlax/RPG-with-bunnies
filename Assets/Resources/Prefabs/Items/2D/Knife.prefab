@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7295572343266643812}
   - component: {fileID: 7295572343266643814}
   - component: {fileID: 7295572343266643815}
-  - component: {fileID: 8579238913968484988}
+  - component: {fileID: 8101613176002088496}
   m_Layer: 5
   m_Name: Knife
   m_TagString: Untagged
@@ -87,7 +87,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &8579238913968484988
+--- !u!114 &8101613176002088496
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -96,7 +96,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 7295572343266643834}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 41549bcdcfea0554fbdee6e2c4b69f52, type: 3}
+  m_Script: {fileID: 11500000, guid: dd4dc61950e618b40b241a738a601bc9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: Item
@@ -107,7 +107,7 @@ MonoBehaviour:
   holder: {fileID: 0}
   randomLocationForDamagePopup: 0
   actionPointsForUse: 2
-  hitDistance: 1
+  hitDistance: 0.7
   minDamage: 3
   maxDamage: 5
   stage: 0

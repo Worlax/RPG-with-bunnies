@@ -3,9 +3,11 @@ using System;
 using System.Collections.Generic;
 
 [SelectionBase]
-public class UnitController : MonoBehaviour
+public abstract class UnitController : MonoBehaviour
 {
 	// Properties //
+	public bool MyTurn { get; protected set; } = false;
+
 	protected UnitAnim unitAnim;
 
     public GameGrid grid;
@@ -28,20 +30,16 @@ public class UnitController : MonoBehaviour
 	// Events //
 	public static event Action<UnitController> OnNewUnitTurn;
     public static event Action<UnitController> OnActionPointsChanged;
-    public static event Action<UnitController> OnUnitEndTurn;
 
     // State //
     public enum State
     {
-        NotMyMove,
-        RoundStart,
+        Waiting,
         ReadingInput,
-        CalculatingStep,
-        Moving,
-        Waiting
+        Moving
     }
 
-    public State state = State.NotMyMove;
+    public State state = State.Waiting;
 
     // Functions //
     protected virtual void Start()
@@ -55,23 +53,26 @@ public class UnitController : MonoBehaviour
 
     protected virtual void Update()
     {
-
+		return;
 	}
 
-    public void StartRound()
+    public virtual void StartRound()
     {
-        currentActionPoints = startActionPoints + reservedActionPoints;
+		currentActionPoints = startActionPoints + reservedActionPoints;
         if (currentActionPoints > maxActionPoints)
         {
             currentActionPoints = maxActionPoints;
         }
 
-        OnNewUnitTurn?.Invoke(this);
-        state = State.RoundStart;
+		CalculatePossibleMoves();
+		OnNewUnitTurn?.Invoke(this);
+
+		MyTurn = true;
+		state = State.ReadingInput;
     }
 
     // Unit movement //
-    public void CalculatePossibleMoves(int _distance = 0)
+    public virtual void CalculatePossibleMoves(int _distance = 0)
     {
         int distance;
 
@@ -110,7 +111,21 @@ public class UnitController : MonoBehaviour
         }
     }
 
-    protected bool CalculateStep()
+	protected void CalculateAllSteps(Tile toTile)
+	{
+		Tile currentTile = toTile;
+		movePath.Push(currentTile);
+
+		for (int i = 0; i < toTile.numberOfParents - 1; ++i)
+		{
+			currentTile = currentTile.parent;
+			movePath.Push(currentTile);
+		}
+
+		CalculateNextStep();
+	}
+
+	protected bool CalculateNextStep()
     {
         if (movePath.Count > 0)
         {
@@ -136,27 +151,23 @@ public class UnitController : MonoBehaviour
         {
             transform.position = targetPosition;
             WasteActionPoints(1, false);
-            state = State.CalculatingStep;
 
-			unitAnim.Idle(true);
+			if (CalculateNextStep() == true)
+			{
+				MakeStep();
+			}
+			else
+			{
+				CalculatePossibleMoves();
+				state = State.ReadingInput;
+				unitAnim.Idle(true);
+			}
 		}
     }
 
     public void LookAt(Vector3 target)
     {
         transform.LookAt(target);
-    }
-
-    protected void CalculatePath(Tile toTile)
-    {
-        Tile currentTile = toTile;
-        movePath.Push(currentTile);
-
-        for (int i = 0; i < toTile.numberOfParents - 1; ++i)
-        {
-            currentTile = currentTile.parent;
-            movePath.Push(currentTile);
-        }
     }
 
     // Overlap //
@@ -194,15 +205,16 @@ public class UnitController : MonoBehaviour
 
     public virtual void EndTurn()
     {
-        reservedActionPoints = currentActionPoints;
+		reservedActionPoints = currentActionPoints;
         if (reservedActionPoints > MaxReservedActionPoints)
         {
             reservedActionPoints = MaxReservedActionPoints;
         }
 
         ClearInfo();
-        state = State.NotMyMove;
-        OnUnitEndTurn?.Invoke(this);
+
+		MyTurn = false;
+		state = State.Waiting;
     }
 
     protected virtual void ClearInfo()
@@ -220,5 +232,6 @@ public class UnitController : MonoBehaviour
 		}
 
 		GetComponent<Animator>().Play("Death");
+		MyTurn = false;
     }
 }

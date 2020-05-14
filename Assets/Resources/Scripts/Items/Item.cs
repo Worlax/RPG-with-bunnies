@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
 
-public class Item: MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler
+public abstract class Item: MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler
 {
 	// Properties //
 	public string itemName = "Item";

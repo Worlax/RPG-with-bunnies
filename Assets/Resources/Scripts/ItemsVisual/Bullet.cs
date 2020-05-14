@@ -6,7 +6,8 @@ public class Bullet: MonoBehaviour
     public GameObject effectPrefab;
 
     Vector3 hitLocation;
-	Weapon weapon;
+	Gun gun;
+	bool lastBullet;
 
 	// Functions //
 	void OnTriggerEnter(Collider other)
@@ -18,16 +19,22 @@ public class Bullet: MonoBehaviour
             particleSystem.transform.position = hitLocation;
             particleSystem.Emit(1);
 
-			weapon.WeaponHit();
+			gun.WeaponHit();
+
+			if (lastBullet == true)
+			{
+				gun.WeaponFired();
+			}
 
             Destroy(particleSystem.gameObject, particleSystem.main.duration);
             Destroy(gameObject);
         }
     }
 
-    public void Fire(Vector3 _hitLocation, Weapon _weapon)
+    public void Fire(Vector3 _hitLocation, Gun _gun, bool _lastBullet)
     {
         hitLocation = _hitLocation;
-		weapon = _weapon;
+		gun = _gun;
+		lastBullet = _lastBullet;
     }
 }

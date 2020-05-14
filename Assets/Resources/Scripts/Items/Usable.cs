@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class Usable: Item, IPointerClickHandler
+public abstract class Usable: Item, IPointerClickHandler
 {
     // Properties //
     public int maxUses = 3;
@@ -51,8 +51,5 @@ public class Usable: Item, IPointerClickHandler
 		lastTimeClicked = Time.time;
 	}
 
-	protected virtual bool UseEffect()
-    {
-        return true;
-    }
+	protected abstract bool UseEffect();
 }

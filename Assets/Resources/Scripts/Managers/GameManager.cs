@@ -35,98 +35,61 @@ public class GameManager: MonoBehaviour
     public GraphicRaycaster windowsGraphicRaycaster;
     public EventSystem eventSystem;
 
-    // State //
-    public enum State
+	int roundN = 1;
+
+	// Functions //
+	void Update()
     {
-        StartOfTheRound,
-        GiveNextPlayerTurn,
-        WaitingForMove,
-        EndOfTheRound
-    }
+		if (currentUnit != null)
+		{
+			if (currentUnit.MyTurn == false)
+			{
+				GiveNextUnitTurn();
+			}
+		}
+	}
 
-    public State state = State.StartOfTheRound;
-
-    // Functions //
-    void Update()
-    {
-        if (state == State.StartOfTheRound)
-        {
-            StartOfTheRound();
-            state = State.GiveNextPlayerTurn;
-        }
-        else if (state == State.GiveNextPlayerTurn)
-        {
-            
-            if (unitsQueue.Count > 0)
-            {
-                if (GiveUnitATurn() == true)
-                {
-                    state = State.WaitingForMove;
-                }
-            }
-            else
-            {
-                state = State.EndOfTheRound;
-            }
-        }
-        else if (state == State.WaitingForMove)
-        {
-            if (currentUnit.state == UnitController.State.NotMyMove)
-            {
-                state = State.GiveNextPlayerTurn;
-            }
-
-        }
-        else if (state == State.EndOfTheRound)
-        {
-            state = State.StartOfTheRound;
-        }
-    }
-
-    void OnEnable()
-    {
-        PlayerController.OnUnitEndTurn += GiveNextPlayerTurn;
-        Stats.OnUnitDied += UnitDied;
-    }
-
-    void OnDisable()
-    {
-        PlayerController.OnUnitEndTurn -= GiveNextPlayerTurn;
-        Stats.OnUnitDied -= UnitDied;
-    }
-
-    void GiveNextPlayerTurn(UnitController unit)
-    {
-        state = State.GiveNextPlayerTurn;
-    }
-
-    void UnitDied(Transform unit)
-    {
-        currentUnit.CalculatePossibleMoves();
-    }
+	void Start()
+	{
+		StartOfTheRound();
+	}
 
     void StartOfTheRound()
     {
-        ClearInfo();
+		print("Round #" + roundN);
+		++roundN;
 
         foreach (UnitController unit in FindObjectsOfType<UnitController>())
         {
-            if (unit.GetComponent<Stats>().dead == false)
-            {
-                units.Add(unit);
-                unitsQueue.Enqueue(unit);
-            }
+            units.Add(unit);
+            unitsQueue.Enqueue(unit);
         }
 
-        //print(units.Count + " " + unitsQueue.Count);
-    }
+		GiveNextUnitTurn();
+	}
 
-    bool GiveUnitATurn()
+	void EndOfTheRound()
+	{
+		ClearInfo();
+		StartOfTheRound();
+	}
+
+    void GiveNextUnitTurn()
     {
+		if (unitsQueue.Count <= 0)
+		{
+			EndOfTheRound();
+			return;
+		}
+		
         currentUnit = unitsQueue.Dequeue();
 
         if (currentUnit.GetComponent<Stats>().dead == true)
-            return false;
+		{
+			currentUnit = null;
+			GiveNextUnitTurn();
+			return;
+		}
 
         if (currentUnit.tag == "Player")
         {
@@ -138,13 +101,24 @@ public class GameManager: MonoBehaviour
         }
 
         currentUnit.StartRound();
-
-        return true;
     }
 
-    //....//
+	void OnEnable()
+	{
+		Stats.OnUnitDied += UnitDied;
+	}
 
-    void ClearInfo()
+	void OnDisable()
+	{
+		Stats.OnUnitDied -= UnitDied;
+	}
+
+	void UnitDied(Transform unit)
+	{
+		currentUnit.CalculatePossibleMoves();
+	}
+
+	void ClearInfo()
     {
         units.Clear();
         unitsQueue.Clear();

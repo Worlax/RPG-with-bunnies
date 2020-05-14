@@ -1,11 +1,9 @@
 ﻿using UnityEngine;
-using System;
-using System.Collections;
 
-public class Weapon: Equippable
+public abstract class Weapon: Equippable
 {
 	// Properties //
-	protected WeaponAnim weaponAnim;
+	WeaponAnim weaponAnim;
 
 	protected LineRenderer hitLine;
     public UnitController holder;
@@ -123,15 +121,7 @@ public class Weapon: Equippable
         }
     }
 
-    public virtual void Fire()
-    {
-		weaponAnim.Fire(hitLocation, this);
-    }
-
-	public virtual void WeaponFired()
-	{
-		return;
-	}
+	public abstract void Fire();
 
 	public virtual void WeaponHit()
 	{
@@ -142,5 +132,10 @@ public class Weapon: Equippable
 		int damage = UnityEngine.Random.Range(minDamage, maxDamage + 1);
 
 		targetStats.DealDamage(holder, damage, randomLocationForDamagePopup);
+	}
+
+	public virtual void WeaponFired()
+	{
+		holder.state = UnitController.State.ReadingInput;
 	}
 }

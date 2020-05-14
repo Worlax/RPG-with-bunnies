@@ -4,13 +4,13 @@ using System;
 public class Gun: Weapon
 {
 	// Properties //
-	new GunAnim weaponAnim;
+	GunAnim gunAnim;
 
 	Text ammoText;
 
     public bool singleAvailable = true;
     public bool burstAvailable = true;
-    public bool automaticAvailable = true;
+	public bool automaticAvailable = true;
 
     public int singleActionPoints = 2;
     public int burstActionPoints = 3;
@@ -58,29 +58,31 @@ public class Gun: Weapon
 	{
 		base.EquipItem(ownerOfThisItem);
 
-		weaponAnim = ItemVisual.GetComponentInChildren<GunAnim>();
+		gunAnim = ItemVisual.GetComponentInChildren<GunAnim>();
+		gunAnim.Weapon = this;
 	}
 
 	public override void UnequipItem()
 	{
 		base.UnequipItem();
 
-		weaponAnim = null;
+		gunAnim.Weapon = null;
+		gunAnim = null;
 	}
 
 	public override void Fire()
     {
 		if (currentAmmo >= ammoForUse)
 		{
-			weaponAnim.Fire(hitLocation, this, ammoForUse);
+			gunAnim.Fire(hitLocation, ammoForUse);
 		}
 	}
 
-	public override void WeaponFired()
+	public void BulletFired()
 	{
 		TakeAmmo(1);
 	}
-
+	
 	public void SwitchFireMode()
     {
         Stats holderStats = holder.GetComponent<Stats>();

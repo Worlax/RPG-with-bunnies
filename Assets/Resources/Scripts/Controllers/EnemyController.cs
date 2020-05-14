@@ -38,7 +38,7 @@ public class EnemyController: UnitController
     {
         base.Update();
 
-        if (state == State.NotMyMove)
+        if (state == State.Waiting)
         {
             return;
         }
@@ -59,56 +59,56 @@ public class EnemyController: UnitController
             }
         }
 
-        if (state == State.RoundStart)
-        {
-            // calculating distance of sight and not just tiles that we can step on,
-            // so the map of the possible moves will be bigger than our action points can handle.
-            // we are trying to detect our target so we need more possible tiles
-            // and limit of our movement will be controlled by action points
-
-            CalculatePossibleMoves(distanceOfSight);
-            state = State.ReadingInput;
-        }
-        else if (state == State.ReadingInput)
-        {
-            if (CreatingPath())
-            {
-                state = State.CalculatingStep;
-            }
-            else
-            {
-                EndTurn();
-            }
-        }
-        else if (state == State.CalculatingStep)
-        {
-            if (IsInMeleeRange())
-            {
-                inMeleeRange = true;
-            }
-            else if (CalculateStep())
-            {
-                state = State.Moving;
-            }
-            else if (currentActionPoints > 0)
-            {
-                state = State.RoundStart;
-            }
-        }
-        else if (state == State.Moving)
-        {
-            MakeStep();
-        }
+        //else if (state == State.ReadingInput)
+        //{
+        //    if (CreatingPath())
+        //    {
+        //        state = State.CalculatingStep;
+        //    }
+        //    else
+        //    {
+        //        EndTurn();
+        //    }
+        //}
+        //else if (state == State.CalculatingStep)
+        //{
+        //    if (IsInMeleeRange())
+        //    {
+        //        inMeleeRange = true;
+        //    }
+        //    else if (CalculateStep())
+        //    {
+        //        state = State.Moving;
+        //    }
+        //    else if (currentActionPoints > 0)
+        //    {
+        //        state = State.RoundStart;
+        //    }
+        //}
+        //else if (state == State.Moving)
+        //{
+        //    MakeStep();
+        //}
     }
 
-    bool CreatingPath()
+	public override void CalculatePossibleMoves(int _distance)
+	{
+		// calculating distance of sight and not just tiles that we can step on,
+		// so the map of the possible moves will be bigger than our action points can handle.
+		// we are trying to detect our target so we need more possible tiles
+		// and limit of our movement will be controlled by action points
+
+		base.CalculatePossibleMoves(distanceOfSight);
+	}
+
+	bool CreatingPath()
     {
         targetPlayer = GetFirstTarget();
         Tile targetTile;
 
         if (GetTileForMelee(targetPlayer, out targetTile))
         {
-            CalculatePath(targetTile);
+            CalculateAllSteps(targetTile);
             return true;
         }
         else
