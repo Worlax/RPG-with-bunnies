@@ -10,8 +10,6 @@ public class PlayerController: UnitController
     Tile lastTileOverlaped;
     Tile lastTileClicked;
 
-	public EnemyController enemyInFocus;
-
     public bool ignoreNextClick = false;
 
     Texture2D cursorOverTarget;
@@ -30,8 +28,8 @@ public class PlayerController: UnitController
     CursorState cursorState = CursorState.Normal;
 
     // Events //
-    public static event Action<UnitController> OnFocusTarget;
-    public static event Action OnDefocusTarget;
+    public static event Action<UnitController> OnPlayerFocusedTarget;
+    public static event Action OnPlayerDefocusedTarget;
 
 	// Functions //
 	protected override void Start()
@@ -232,7 +230,7 @@ public class PlayerController: UnitController
                     TryToToot(hit.transform);
                 }
                 // second click on target
-                else if (weapon != null && enemyInFocus == enemy && weapon.AimedTarget != null)
+                else if (weapon != null && unitInFocus == enemy && weapon.AimedTarget != null)
                 {
 					if (WasteActionPoints(weapon.actionPointsForUse) == true)
 					{
@@ -256,7 +254,7 @@ public class PlayerController: UnitController
         }
 
 		// click somewhere else
-		if (enemyInFocus != null)
+		if (unitInFocus != null)
 		{
 			if (hit.transform == null || hit.transform.tag != "Enemy")
 			{
@@ -294,23 +292,18 @@ public class PlayerController: UnitController
     }
 
     // Focus target //
-    public void FocusTarget(EnemyController target)
+    public override void FocusTarget(UnitController target)
     {
-        enemyInFocus = target;
+		base.FocusTarget(target);
 
-        OnFocusTarget?.Invoke(target);
+        OnPlayerFocusedTarget?.Invoke(target);
     }
 
-    public void DefocusTarget()
+    public override void DefocusTarget()
     {
-        enemyInFocus = null;
+		base.DefocusTarget();
 
-        if (weapon != null)
-        {
-            weapon.StopAim();
-        }
-
-        OnDefocusTarget?.Invoke();
+        OnPlayerDefocusedTarget?.Invoke();
     }
 
     //....//
@@ -323,14 +316,13 @@ public class PlayerController: UnitController
     {
         base.EndTurn();
 
-        DefocusTarget();
         SetCursorNormal();
-        ClearInfo();
     }
 
     protected override void ClearInfo()
     {
         base.ClearInfo();
+
         lastTileOverlaped = null;
         lastTileClicked = null;
     }

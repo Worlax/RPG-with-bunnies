@@ -27,7 +27,7 @@ public class UnitAnim: Animated
 	public void Damaged(UnitController source, int damage, bool randomLocation = false)
 	{
 		transform.LookAt(source.transform);
-		animator.SetTrigger("damaged");
+		animator.Play("Damaged", 0, 0);
 
 		GameObject damagePopup = Instantiate(popupDamagePrefab);
 		TextMesh textMesh = damagePopup.GetComponent<TextMesh>();

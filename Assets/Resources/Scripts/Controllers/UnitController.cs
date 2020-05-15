@@ -3,15 +3,18 @@ using System;
 using System.Collections.Generic;
 
 [SelectionBase]
-public abstract class UnitController : MonoBehaviour
+public abstract class UnitController: MonoBehaviour, IComparable<UnitController>
 {
 	// Properties //
 	public bool MyTurn { get; protected set; } = false;
 
 	protected UnitAnim unitAnim;
 
-    public GameGrid grid;
+	public UnitController unitInFocus;
+
+	public GameGrid grid;
     public float speed = 2;
+    public float animSpeed = 2;
     public const int maxActionPoints = 10;
     public int startActionPoints = 5;
     public int currentActionPoints = 0;
@@ -56,15 +59,22 @@ public abstract class UnitController : MonoBehaviour
 		return;
 	}
 
-    public virtual void StartRound()
+	public int CompareTo(UnitController obj)
+	{
+		return obj.speed.CompareTo(speed);
+	}
+
+	public virtual void StartRound()
     {
+		print(name + " turn.");
+
 		currentActionPoints = startActionPoints + reservedActionPoints;
         if (currentActionPoints > maxActionPoints)
         {
             currentActionPoints = maxActionPoints;
         }
 
-		CalculatePossibleMoves();
+		CalculatePossibleTiles();
 		OnNewUnitTurn?.Invoke(this);
 
 		MyTurn = true;
@@ -72,7 +82,7 @@ public abstract class UnitController : MonoBehaviour
     }
 
     // Unit movement //
-    public virtual void CalculatePossibleMoves(int _distance = 0)
+    public virtual void CalculatePossibleTiles(int _distance = 0)
     {
         int distance;
 
@@ -111,12 +121,12 @@ public abstract class UnitController : MonoBehaviour
         }
     }
 
-	protected void CalculateAllSteps(Tile toTile)
+	protected void CalculateAllSteps(Tile finaleTile)
 	{
-		Tile currentTile = toTile;
+		Tile currentTile = finaleTile;
 		movePath.Push(currentTile);
 
-		for (int i = 0; i < toTile.numberOfParents - 1; ++i)
+		for (int i = 0; i < finaleTile.numberOfParents - 1; ++i)
 		{
 			currentTile = currentTile.parent;
 			movePath.Push(currentTile);
@@ -132,8 +142,7 @@ public abstract class UnitController : MonoBehaviour
             targetPosition = movePath.Pop().spawnPoint;
             direction = (targetPosition - transform.position).normalized;
 
-            LookAt(targetPosition);
-            return true;
+			return true;
         }
         else
         {
@@ -141,26 +150,28 @@ public abstract class UnitController : MonoBehaviour
         }
     }
 
-    protected void MakeStep()
+    protected void MakeStep(bool stopAfterOneTile = false)
     {
 		unitAnim.Idle(false);
 
-        transform.position += direction * Time.deltaTime * speed;
+		LookAt(targetPosition);
+		transform.position += direction * Time.deltaTime * animSpeed;
 
         if (Vector3.Distance(targetPosition, transform.position) <= 0.10f)
         {
             transform.position = targetPosition;
             WasteActionPoints(1, false);
 
-			if (CalculateNextStep() == true)
+			if (CalculateNextStep() == false)
 			{
-				MakeStep();
-			}
-			else
-			{
-				CalculatePossibleMoves();
+				CalculatePossibleTiles();
 				state = State.ReadingInput;
 				unitAnim.Idle(true);
+			}
+
+			if (stopAfterOneTile == true)
+			{
+				state = State.ReadingInput;
 			}
 		}
     }
@@ -187,7 +198,7 @@ public abstract class UnitController : MonoBehaviour
         if (currentActionPoints >= AP)
         {
             currentActionPoints -= AP;
-            if (RecalculatePossibleMoves) { CalculatePossibleMoves(); }
+            if (RecalculatePossibleMoves) { CalculatePossibleTiles(); }
             OnActionPointsChanged?.Invoke(this);
 
             return true;
@@ -198,7 +209,22 @@ public abstract class UnitController : MonoBehaviour
         }
     }
 
-    public virtual void WaitTurn()
+	public virtual void FocusTarget(UnitController target)
+	{
+		unitInFocus = target;
+	}
+
+	public virtual void DefocusTarget()
+	{
+		unitInFocus = null;
+
+		if (weapon != null)
+		{
+			weapon.StopAim();
+		}
+	}
+
+	public virtual void WaitTurn()
     {
 
     }
@@ -211,7 +237,9 @@ public abstract class UnitController : MonoBehaviour
             reservedActionPoints = MaxReservedActionPoints;
         }
 
-        ClearInfo();
+		unitAnim.Idle(true);
+		DefocusTarget();
+		ClearInfo();
 
 		MyTurn = false;
 		state = State.Waiting;

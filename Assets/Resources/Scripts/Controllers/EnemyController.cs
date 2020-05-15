@@ -1,22 +1,12 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 
 public class EnemyController: UnitController
 {
     // Properties //
     public int distanceOfSight = 20;
-    PlayerController targetPlayer;
-    Tile targetTile;
 
-    bool inMeleeRange = false;
-
-    bool damageAnimationInProcess = false;
-
-    float animationTimeBeforHit = 0.83f;
-    float animationTimeAfterHit = 1.46f;
-
-	public Inventory inventoryPrefab;
+	public Inventory enemyInventoryPrefab;
 	Equipment equipment;
 	Inventory inventory;
 
@@ -25,7 +15,7 @@ public class EnemyController: UnitController
 	{
 		base.Start();
 
-		inventory = Instantiate(inventoryPrefab);
+		inventory = Instantiate(enemyInventoryPrefab);
 		inventory.transform.SetParent(windowsRoot.transform, false);
 		inventory.Owner = this;
 		inventory.name = "Inv + Equip (" + transform.name + ")";
@@ -42,71 +32,80 @@ public class EnemyController: UnitController
         {
             return;
         }
-
-        if (currentActionPoints == 0 && damageAnimationInProcess == false)
+        else if (currentActionPoints == 0)
         {
             EndTurn();
         }
-        else if (inMeleeRange)
-        {
-            if (IsInMeleeRange())
-            {
-                StartDamageAnimation();
-            }
-            else
-            {
-                inMeleeRange = false;
-            }
-        }
 
-        //else if (state == State.ReadingInput)
-        //{
-        //    if (CreatingPath())
-        //    {
-        //        state = State.CalculatingStep;
-        //    }
-        //    else
-        //    {
-        //        EndTurn();
-        //    }
-        //}
-        //else if (state == State.CalculatingStep)
-        //{
-        //    if (IsInMeleeRange())
-        //    {
-        //        inMeleeRange = true;
-        //    }
-        //    else if (CalculateStep())
-        //    {
-        //        state = State.Moving;
-        //    }
-        //    else if (currentActionPoints > 0)
-        //    {
-        //        state = State.RoundStart;
-        //    }
-        //}
-        //else if (state == State.Moving)
-        //{
-        //    MakeStep();
-        //}
-    }
+		else if (state == State.ReadingInput)
+		{
+			TryToAim();
+		}
+		else if (state == State.Moving)
+		{
+			MakeStep(true);
+		}
+	}
 
-	public override void CalculatePossibleMoves(int _distance)
+	public override void StartRound()
+	{
+		base.StartRound();
+
+		if (CreatingPath() == false)
+		{
+			EndTurn();
+			return;
+		}
+	}
+
+	void TryToAim()
+	{
+		if (weapon == null)
+		{
+			EndTurn();
+			return;
+		}
+
+		weapon.Aim(unitInFocus);
+		
+		if (weapon.AimedTarget == null)
+		{
+			weapon.StopAim();
+			state = State.Moving;
+		}
+		else
+		{
+			if (WasteActionPoints(weapon.actionPointsForUse) == true)
+			{
+				LookAt(unitInFocus.transform.position);
+				unitAnim.Idle(false);
+				weapon.Fire();
+
+				state = State.Waiting;
+			}
+			else
+			{
+				EndTurn();
+			}
+		}
+	}
+
+	public override void CalculatePossibleTiles(int _distance = 0)
 	{
 		// calculating distance of sight and not just tiles that we can step on,
 		// so the map of the possible moves will be bigger than our action points can handle.
 		// we are trying to detect our target so we need more possible tiles
 		// and limit of our movement will be controlled by action points
 
-		base.CalculatePossibleMoves(distanceOfSight);
+		base.CalculatePossibleTiles(distanceOfSight);
 	}
 
 	bool CreatingPath()
     {
-        targetPlayer = GetFirstTarget();
+		FocusTarget(GetFirstTarget());
         Tile targetTile;
 
-        if (GetTileForMelee(targetPlayer, out targetTile))
+        if (GetTileForMelee(unitInFocus, out targetTile))
         {
             CalculateAllSteps(targetTile);
             return true;
@@ -130,7 +129,7 @@ public class EnemyController: UnitController
         return null;
     }
 
-    bool GetTileForMelee(PlayerController target, out Tile tileForMelee)
+    bool GetTileForMelee(UnitController target, out Tile tileForMelee)
     {
         Tile closestTile = grid.tiles[0, 0];
         float closestDistance = 999;
@@ -174,46 +173,5 @@ public class EnemyController: UnitController
         }
 
         return false;
-    }
-
-    void StartDamageAnimation()
-    {
-        if (damageAnimationInProcess == false)
-        {
-            if (WasteActionPoints(2))
-            {
-                damageAnimationInProcess = true;
-
-                PlayerController target = GetFirstTarget();
-                StartCoroutine(DealDamage(target, 5));
-            }
-            else
-            {
-                EndTurn();
-            }
-        }    
-    }
-
-    IEnumerator DealDamage(PlayerController target, int damage)
-    {
-        LookAt(target.transform.position);
-        GetComponentsInChildren<Animator>()[1].Play("Fire");
-        yield return new WaitForSeconds(animationTimeBeforHit);
-        
-        target.GetComponent<Stats>().DealDamage(this, damage);
-        target.FocusTarget(this);
-        yield return new WaitForSeconds(animationTimeAfterHit);
-
-        damageAnimationInProcess = false;
-    }
-
-    public override void EndTurn()
-    {
-        if (damageAnimationInProcess == true)
-            return;
-
-        base.EndTurn();
-
-        damageAnimationInProcess = false;
     }
 }

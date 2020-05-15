@@ -56,14 +56,19 @@ public class GameManager: MonoBehaviour
 
     void StartOfTheRound()
     {
-		print("Round #" + roundN);
+		// print("Round #" + roundN);
 		++roundN;
 
         foreach (UnitController unit in FindObjectsOfType<UnitController>())
         {
             units.Add(unit);
-            unitsQueue.Enqueue(unit);
         }
+
+		units.Sort();
+		foreach (UnitController unit in units)
+		{
+			unitsQueue.Enqueue(unit);
+		}
 
 		GiveNextUnitTurn();
 	}
@@ -115,7 +120,7 @@ public class GameManager: MonoBehaviour
 
 	void UnitDied(Transform unit)
 	{
-		currentUnit.CalculatePossibleMoves();
+		currentUnit.CalculatePossibleTiles();
 	}
 
 	void ClearInfo()

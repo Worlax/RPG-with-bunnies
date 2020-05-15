@@ -74,7 +74,7 @@ public class Gun: Weapon
     {
 		if (currentAmmo >= ammoForUse)
 		{
-			gunAnim.Fire(hitLocation, ammoForUse);
+			gunAnim.Fire(AimedTarget.transform, hitLocation, ammoForUse);
 		}
 	}
 

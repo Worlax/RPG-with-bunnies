@@ -16,15 +16,15 @@ public class UI: MonoBehaviour
 
     public void WaitTurn()
     {
-        if (GameManager.instance.playerMove == false)
-            return;
+		if (GameManager.instance.playerMove == false || GameManager.instance.currentUnit.state != UnitController.State.ReadingInput)
+			return;
 
-        GameManager.instance.currentUnit.GetComponent<PlayerController>().WaitTurn();
+		GameManager.instance.currentUnit.GetComponent<PlayerController>().WaitTurn();
     }
 
     public void EndTurn()
     {
-        if (GameManager.instance.playerMove == false)
+        if (GameManager.instance.playerMove == false || GameManager.instance.currentUnit.state != UnitController.State.ReadingInput)
             return;
 
         GameManager.instance.currentUnit.GetComponent<PlayerController>().EndTurn();

@@ -36,14 +36,14 @@ public class TargetHealthBar: MonoBehaviour
 
     void OnEnable()
     {
-        PlayerController.OnFocusTarget += ConnectStats;
-        PlayerController.OnDefocusTarget += DisconnectStats;
+        PlayerController.OnPlayerFocusedTarget += ConnectStats;
+        PlayerController.OnPlayerDefocusedTarget += DisconnectStats;
     }
 
     void OnDisable()
     {
-        PlayerController.OnFocusTarget -= ConnectStats;
-        PlayerController.OnDefocusTarget -= DisconnectStats;
+        PlayerController.OnPlayerFocusedTarget -= ConnectStats;
+        PlayerController.OnPlayerDefocusedTarget -= DisconnectStats;
     }
 
     void ConnectStats(UnitController target)

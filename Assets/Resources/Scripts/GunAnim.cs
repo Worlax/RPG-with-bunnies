@@ -9,13 +9,15 @@ public class GunAnim: WeaponAnim
 	public Bullet bulletPrefab;
 	public float bulletSpeed = 20f;
 
+	protected Transform target;
 	protected Vector3 hitLocation;
 
 	int firesLeft = 0;
 
 	// Functions //
-	public void Fire(Vector3 _hitLocation, int fireTimes)
+	public void Fire(Transform _target, Vector3 _hitLocation, int fireTimes)
 	{
+		target = _target;
 		hitLocation = _hitLocation;
 		firesLeft = fireTimes;
 
@@ -41,7 +43,7 @@ public class GunAnim: WeaponAnim
 			lastBullet = true;
 		}
 
-		bullet.Fire(hitLocation, Weapon, lastBullet);
+		bullet.Fire(target, hitLocation, Weapon, lastBullet);
 
 		--firesLeft;
 		Weapon.BulletFired();

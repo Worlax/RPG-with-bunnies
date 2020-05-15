@@ -46,11 +46,9 @@ public abstract class Weapon: Equippable
 
 	public override void UnequipItem()
     {
-		PlayerController player = GameManager.instance.currentUnit as PlayerController;
-
 		weaponAnim = null;
+		holder.weapon = null;
 		holder = null;
-		player.weapon = null;
 
 		base.UnequipItem();
 	}
