@@ -89,7 +89,7 @@ public class GameManager: MonoBehaviour
 		
         currentUnit = unitsQueue.Dequeue();
 
-        if (currentUnit.GetComponent<Stats>().dead == true)
+        if (currentUnit.GetComponent<Stats>().Dead == true)
 		{
 			currentUnit = null;
 			GiveNextUnitTurn();

@@ -2563,7 +2563,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemInSlot: {fileID: 0}
-  type: 3
+  _slotType: 3
 --- !u!1 &7170431512413835612
 GameObject:
   m_ObjectHideFlags: 0
@@ -2811,7 +2811,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemInSlot: {fileID: 0}
-  type: 2
+  _slotType: 2
 --- !u!1 &8956281725611822503
 GameObject:
   m_ObjectHideFlags: 0
@@ -2972,4 +2972,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemInSlot: {fileID: 0}
-  type: 1
+  _slotType: 1

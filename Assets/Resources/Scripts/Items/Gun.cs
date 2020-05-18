@@ -1,4 +1,5 @@
-﻿using UnityEngine.UI;
+﻿using UnityEngine;
+using UnityEngine.UI;
 using System;
 
 public class Gun: Weapon
@@ -8,38 +9,60 @@ public class Gun: Weapon
 
 	Text ammoText;
 
-    public bool singleAvailable = true;
-    public bool burstAvailable = true;
-	public bool automaticAvailable = true;
+	[SerializeField]
+	bool singleAvailable = true;
+	[SerializeField]
+	bool burstAvailable = true;
+	[SerializeField]
+	bool automaticAvailable = true;
 
-    public int singleActionPoints = 2;
-    public int burstActionPoints = 3;
-    public int automaticActionPoints = 4;
+	[SerializeField]
+	int singleActionPoints = 2;
+	[SerializeField]
+	int burstActionPoints = 3;
+	[SerializeField]
+	int automaticActionPoints = 4;
 
-    public int singleAmmo = 1;
-    public int burstAmmo = 3;
-    public int automaticAmmo = 6;
-    public int ammoForUse;
+	[SerializeField]
+	int singleAmmo = 1;
+	[SerializeField]
+	int burstAmmo = 3;
+	[SerializeField]
+	int automaticAmmo = 6;
 
-    public int singleMinDamage = 7;
-    public int singleMaxDamage = 10;
-    public int burstMinDamage = 6;
-    public int burstMaxDamage = 8;
-    public int automaticMinDamage = 5;
-    public int automaticMaxDamage = 6;
+	[SerializeField]
+	int singleMinDamage = 7;
+	[SerializeField]
+	int singleMaxDamage = 10;
+	[SerializeField]
+	int burstMinDamage = 6;
+	[SerializeField]
+	int burstMaxDamage = 8;
+	[SerializeField]
+	int automaticMinDamage = 5;
+	[SerializeField]
+	int automaticMaxDamage = 6;
 
-    public string ammoName;
-    public int maxAmmo;
-    public int currentAmmo;
+	[SerializeField]
+	string _ammoName;
+    public string AmmoName { get => _ammoName; set => _ammoName = value; }
+	[SerializeField]
+	int _currentAmmo;
+    public int CurrentAmmo { get => _currentAmmo; set => _currentAmmo = value; }
+	[SerializeField]
+	int _maxAmmo = 30;
+    public int MaxAmmo { get => _maxAmmo; set => _maxAmmo = value; }
 
-    public enum FireMode
+	protected int ammoForUse;
+
+	public enum FireMode
     {
         Single,
         Burst,
         Automatic
     }
 
-    public FireMode fireMode = FireMode.Single;
+	protected FireMode fireMode = FireMode.Single;
 
 	// Events //
 	public event Action<Gun> AmmoChanged;
@@ -48,10 +71,10 @@ public class Gun: Weapon
     void Awake()
     {
         UpdateWeaponInfo();
-        currentAmmo = maxAmmo;
+        CurrentAmmo = MaxAmmo;
 
 		ammoText = GetComponentInChildren<Text>();
-		ammoText.text = currentAmmo.ToString();
+		ammoText.text = CurrentAmmo.ToString();
 	}
 
 	public override void EquipItem(UnitController ownerOfThisItem)
@@ -72,7 +95,7 @@ public class Gun: Weapon
 
 	public override void Fire()
     {
-		if (currentAmmo >= ammoForUse)
+		if (CurrentAmmo >= ammoForUse)
 		{
 			gunAnim.Fire(AimedTarget.transform, hitLocation, ammoForUse);
 		}
@@ -86,7 +109,7 @@ public class Gun: Weapon
 	public void SwitchFireMode()
     {
         Stats holderStats = holder.GetComponent<Stats>();
-        holderStats.SubtractStats(0, minDamage, maxDamage);
+        holderStats.SubtractStats(0, MinDamage, MaxDamage);
 
         int fireModeElements = System.Enum.GetNames(typeof(FireMode)).Length;
 
@@ -113,11 +136,11 @@ public class Gun: Weapon
         }
 
         UpdateWeaponInfo();
-        holderStats.AddStats(0, minDamage, maxDamage);
+        holderStats.AddStats(0, MinDamage, MaxDamage);
 
 		if (holder is PlayerController)
 		{
-			(holder as PlayerController).MyEquipment.UpdateStatsDisplay();
+			(holder as PlayerController).Equipment.UpdateStatsDisplay();
 		}
     }
 
@@ -144,25 +167,25 @@ public class Gun: Weapon
         switch (fireMode)
         {
             case FireMode.Single:
-                actionPointsForUse = singleActionPoints;
-                minDamage = singleMinDamage;
-                maxDamage = singleMaxDamage;
+                ActionPointsForUse = singleActionPoints;
+                MinDamage = singleMinDamage;
+                MaxDamage = singleMaxDamage;
                 ammoForUse = singleAmmo;
 				randomLocationForDamagePopup = false;
 				break;
 
             case FireMode.Burst:
-                actionPointsForUse = burstActionPoints;
-                minDamage = burstMinDamage;
-                maxDamage = burstMaxDamage;
+                ActionPointsForUse = burstActionPoints;
+                MinDamage = burstMinDamage;
+                MaxDamage = burstMaxDamage;
                 ammoForUse = burstAmmo;
 				randomLocationForDamagePopup = true;
 				break;
 
             case FireMode.Automatic:
-                actionPointsForUse = automaticActionPoints;
-                minDamage = automaticMinDamage;
-                maxDamage = automaticMaxDamage;
+                ActionPointsForUse = automaticActionPoints;
+                MinDamage = automaticMinDamage;
+                MaxDamage = automaticMaxDamage;
                 ammoForUse = automaticAmmo;
 				randomLocationForDamagePopup = true;
 				break;
@@ -189,14 +212,14 @@ public class Gun: Weapon
 
     public void AddAmmo(int amount)
     {
-        currentAmmo += amount;
+        CurrentAmmo += amount;
 
-        if (currentAmmo > maxAmmo)
+        if (CurrentAmmo > MaxAmmo)
         {
-            currentAmmo = maxAmmo;
+            CurrentAmmo = MaxAmmo;
         }
 
-		ammoText.text = currentAmmo.ToString();
+		ammoText.text = CurrentAmmo.ToString();
 		AmmoChanged?.Invoke(this);
     }
 
@@ -204,18 +227,18 @@ public class Gun: Weapon
     {
 		int returnAmmo = 0;
 
-		if (currentAmmo >= amount)
+		if (CurrentAmmo >= amount)
 		{
 			returnAmmo = amount;
-			currentAmmo -= amount;
+			CurrentAmmo -= amount;
 		}
 		else
 		{
-			returnAmmo = currentAmmo;
-			currentAmmo = 0;
+			returnAmmo = CurrentAmmo;
+			CurrentAmmo = 0;
 		}
 
-		ammoText.text = currentAmmo.ToString();
+		ammoText.text = CurrentAmmo.ToString();
 		AmmoChanged?.Invoke(this);
 
 		return returnAmmo;

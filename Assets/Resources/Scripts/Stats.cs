@@ -6,41 +6,68 @@ public class Stats: MonoBehaviour
 	// Properties //
 	UnitAnim unitAnim;
 
-    public int level = 1;
-    public int exp = 0;
-    public int expForLevelUp = 50;
-    public int currentHealth = 70;
-    public int maxHealth = 70;
-    public int minDamage = 3;
-    public int maxDamage = 5;
+	[SerializeField]
+	int _level = 1;
+    public int Level { get => _level; private set => _level = value; }
 
-    public bool dead = false;
+	[SerializeField]
+	int _currentHealth = 70;
+	public int CurrentHealth { get => _currentHealth; private set => _currentHealth = value; }
+
+	[SerializeField]
+	int _maxHealth = 70;
+	public int MaxHealth { get => _maxHealth; private set => _maxHealth = value; }
+
+	[SerializeField]
+	int _minDamage = 3;
+	public int MinDamage { get => _minDamage; private set => _minDamage = value; }
+
+	[SerializeField]
+	int _maxDamage = 5;
+	public int MaxDamage { get => _maxDamage; private set => _maxDamage = value; }
+
+	[SerializeField]
+	int _playingTurnSpeed = 2;
+	public int PlayingTurnSpeed { get => _playingTurnSpeed; private set => _playingTurnSpeed = value; }
+
+	[SerializeField]
+	int _exp = 0;
+	public int Exp { get => _exp; private set => _exp = value; }
+
+	[SerializeField]
+	int _expForLevelUp = 50;
+	public int ExpForLevelUp { get => _expForLevelUp; private set => _expForLevelUp = value; }
+
+	[ReadOnly]
+	[SerializeField]
+	bool _dead = false;
+	public bool Dead { get => _dead; private set => _dead = value; }
 
     // Events //
     public static event Action<Transform> OnUnitDied;
     public static event Action StatsUpdated;
 
     // Functions //
-	void Start()
+	void Awake()
 	{
 		unitAnim = GetComponent<UnitAnim>();
 	}
 
 	public bool Heal(int _health)
 	{
-		if (dead || _health < 1 || currentHealth == maxHealth)
+		if (Dead || _health < 1 || CurrentHealth == MaxHealth)
 			return false;
 
-		int missingHealth = maxHealth - currentHealth;
+		int missingHealth = MaxHealth - CurrentHealth;
 
 		if (_health <= missingHealth)
 		{
-			currentHealth += _health;
+			CurrentHealth += _health;
 			unitAnim.Heal(_health);
 		}
 		else
 		{
-			currentHealth += missingHealth;
+			CurrentHealth += missingHealth;
 			unitAnim.Heal(missingHealth);
 		}
 
@@ -49,12 +76,12 @@ public class Stats: MonoBehaviour
 
 	public void DealDamage(UnitController source, int damage, bool randomLocation = false)
     {
-        if (dead)
+        if (Dead)
             return;
 
-        if (currentHealth > damage)
+        if (CurrentHealth > damage)
         {
-            currentHealth -= damage;
+            CurrentHealth -= damage;
 			unitAnim.Damaged(source, damage, randomLocation);
         }
         else
@@ -63,7 +90,7 @@ public class Stats: MonoBehaviour
             {
                 Stats killerStats = source.GetComponent<Stats>();
 
-                killerStats.AddExp(exp);
+                killerStats.AddExp(Exp);
 			}
 
             UnitDied();
@@ -74,8 +101,8 @@ public class Stats: MonoBehaviour
     {
 		unitAnim.UnitDied();
 
-		currentHealth = 0;
-        dead = true;
+		CurrentHealth = 0;
+        Dead = true;
 
         GetComponent<UnitController>().KillUnit();
         OnUnitDied?.Invoke(transform);
@@ -83,24 +110,24 @@ public class Stats: MonoBehaviour
 
     public void AddStats(int _maxHealth = 0, int _minDamage = 0, int _maxDamage = 0)
     {
-        maxHealth += _maxHealth;
-        minDamage += _minDamage;
-        maxDamage += _maxDamage;
+        MaxHealth += _maxHealth;
+        MinDamage += _minDamage;
+        MaxDamage += _maxDamage;
     }
 
     public void SubtractStats(int _maxHealth = 0, int _minDamage = 0, int _maxDamage = 0)
     {
-        maxHealth -= _maxHealth;
-        minDamage -= _minDamage;
-        maxDamage -= _maxDamage;
+        MaxHealth -= _maxHealth;
+        MinDamage -= _minDamage;
+        MaxDamage -= _maxDamage;
     }
 
     void AddExp(int amount)
     {
-        exp += amount;
-		unitAnim.AddExp(exp);
+        Exp += amount;
+		unitAnim.AddExp(Exp);
 
-        if (exp >= expForLevelUp)
+        if (Exp >= ExpForLevelUp)
         {
             LevelUp();
         }
@@ -112,13 +139,13 @@ public class Stats: MonoBehaviour
 
     void LevelUp()
     {
-        ++level;
-		unitAnim.LevelUp(level);
+        ++Level;
+		unitAnim.LevelUp(Level);
 
-        exp = exp - expForLevelUp;
-        expForLevelUp = (int)(1.2 * expForLevelUp);
+        Exp = Exp - ExpForLevelUp;
+        ExpForLevelUp = (int)(1.2 * ExpForLevelUp);
 
-        if (exp >= expForLevelUp)
+        if (Exp >= ExpForLevelUp)
         {
             LevelUp();
         }

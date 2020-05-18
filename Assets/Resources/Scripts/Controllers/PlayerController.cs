@@ -6,58 +6,67 @@ using System.Collections.Generic;
 
 public class PlayerController: UnitController
 {
-    // Properties //
-    Tile lastTileOverlaped;
-    Tile lastTileClicked;
-
-    public bool ignoreNextClick = false;
-
-    Texture2D cursorOverTarget;
-
+	// Properties //
+	// inspector
 	public Inventory inventoryPrefab;
-	public Inventory MyInventory { get; private set; }
 	public Equipment equipmentPrefab;
-	public Equipment MyEquipment { get; private set; }
 
+	// public set
+	[HideInInspector]
+	public bool ignoreNextClick = false;
+
+	// private set
+	public Inventory Inventory { get; private set; }
+	public Equipment Equipment { get; private set; }
+
+	Tile lastTileOverlaped;
+	Tile lastTileClicked;
+
+	Texture2D cursorOverTarget;
+
+	// states
 	enum CursorState
-    {
-        Normal,
-        OverTarget
-    }
+	{
+		Normal,
+		OverTarget
+	}
 
-    CursorState cursorState = CursorState.Normal;
+	CursorState cursorState = CursorState.Normal;
 
-    // Events //
-    public static event Action<UnitController> OnPlayerFocusedTarget;
+	// Events //
+	public static event Action<UnitController> OnPlayerFocusedTarget;
     public static event Action OnPlayerDefocusedTarget;
 
 	// Functions //
-	protected override void Start()
+	protected override void Awake()
 	{
-		base.Start();
-
-		MyInventory = Instantiate(inventoryPrefab);
-		MyInventory.transform.SetParent(windowsRoot.transform, false);
-		MyInventory.Owner = this;
-		MyInventory.name = "Inventory (" + transform.name + ")";
-
-		MyEquipment = Instantiate(equipmentPrefab);
-		MyEquipment.transform.SetParent(windowsRoot.transform, false);
-		MyEquipment.Owner = this;
-		MyEquipment.name = "Equipment (" + transform.name + ")";
+		base.Awake();
 
 		cursorOverTarget = Resources.Load<Texture2D>("Icons/Cursors/Selecting");
 	}
 
-    protected override void Update()
-    {
-        base.Update();
+	protected override void Start()
+	{
+		base.Start();
 
+		Inventory = Instantiate(inventoryPrefab);
+		Inventory.transform.SetParent(windowsRoot.transform, false);
+		Inventory.Owner = this;
+		Inventory.name = "Inventory (" + transform.name + ")";
+		
+		Equipment = Instantiate(equipmentPrefab);
+		Equipment.transform.SetParent(windowsRoot.transform, false);
+		Equipment.Owner = this;
+		Equipment.name = "Equipment (" + transform.name + ")";
+	}
+
+    void Update()
+    {
         if (state == State.Waiting)
         {
 			return;
         }
-        else if (currentActionPoints == 0)
+        else if (CurrentActionPoints == 0)
         {
             EndTurn();
         }
@@ -225,14 +234,14 @@ public class PlayerController: UnitController
                 EnemyController enemy = hit.transform.GetComponent<EnemyController>();
                 
                 // dead enemy
-                if (hit.transform.GetComponent<Stats>().dead == true)
+                if (hit.transform.GetComponent<Stats>().Dead == true)
                 {
                     TryToToot(hit.transform);
                 }
                 // second click on target
                 else if (weapon != null && unitInFocus == enemy && weapon.AimedTarget != null)
                 {
-					if (WasteActionPoints(weapon.actionPointsForUse) == true)
+					if (WasteActionPoints(weapon.ActionPointsForUse) == true)
 					{
 						state = State.Waiting;
 						weapon.Fire();
@@ -244,7 +253,7 @@ public class PlayerController: UnitController
                     if (weapon != null)
                     {
                         LookAtTarget(hit.transform);
-						unitAnim.Idle(false);
+						UnitAnim.Idle(false);
                         weapon.Aim(enemy);
                     }
 					
@@ -262,7 +271,7 @@ public class PlayerController: UnitController
 
 				if (weapon != null)
 				{
-					unitAnim.Idle(true);
+					UnitAnim.Idle(true);
 					weapon.StopAim();
 				}
 			}
@@ -278,8 +287,8 @@ public class PlayerController: UnitController
         {
             if (hit.transform == target.transform)
             {
-                Lootable loot = target.GetComponent<Lootable>();
-                loot.Open(transform);
+                //Lootable loot = target.GetComponent<Lootable>();
+                //loot.Open(transform);
 
                 return;
             }

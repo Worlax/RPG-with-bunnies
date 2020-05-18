@@ -24,15 +24,13 @@ public class EnemyController: UnitController
 		equipment.Owner = this;
 	}
 
-	protected override void Update()
+	void Update()
     {
-        base.Update();
-
         if (state == State.Waiting)
         {
             return;
         }
-        else if (currentActionPoints == 0)
+        else if (CurrentActionPoints == 0)
         {
             EndTurn();
         }
@@ -75,10 +73,10 @@ public class EnemyController: UnitController
 		}
 		else
 		{
-			if (WasteActionPoints(weapon.actionPointsForUse) == true)
+			if (WasteActionPoints(weapon.ActionPointsForUse) == true)
 			{
 				LookAt(unitInFocus.transform.position);
-				unitAnim.Idle(false);
+				UnitAnim.Idle(false);
 				weapon.Fire();
 
 				state = State.Waiting;

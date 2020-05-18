@@ -3,8 +3,7 @@ using System;
 
 public class EquipmentSlot: InventorySlot
 {
-    // Properties //
-    public Equippable.EquipType type;
+	// Properties //
 	UnitController owner;
 	Equipment equipment;
 
@@ -12,7 +11,19 @@ public class EquipmentSlot: InventorySlot
 	public static Action<Weapon> PlayerEquipedWeapon;
 	public static Action<Weapon> PlayerUnequipedWeapon;
 
-    // Functions //
+	public enum Type
+	{
+		None,
+		Helmet,
+		Body,
+		Weapon
+	}
+
+	[SerializeField]
+	Type _slotType;
+	public Type SlotType { get => _slotType; set => _slotType = value; }
+
+	// Functions //
 	void Start()
 	{
 		equipment = GetComponentInParent<Equipment>();
@@ -22,7 +33,7 @@ public class EquipmentSlot: InventorySlot
     public override bool ConnectOrSwapItem(Item newItem, bool ignoreMoveTurn = false)
     {
         Equippable equipmentItem = newItem as Equippable;
-        if (equipmentItem == null || equipmentItem.equipType != type)
+        if (equipmentItem == null || equipmentItem.SlotType != SlotType)
             return false;
 
         return base.ConnectOrSwapItem(newItem, ignoreMoveTurn);

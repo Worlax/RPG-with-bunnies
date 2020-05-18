@@ -35,10 +35,10 @@ public class Equipment: Inventory
 		if (ownerStats.GetComponent<EnemyController>() != null)
 			return;
 
-        level.text = ownerStats.level.ToString();
-        exp.text = ownerStats.exp.ToString() + " / " + ownerStats.expForLevelUp.ToString();
-        health.text = ownerStats.currentHealth.ToString() + " / " + ownerStats.maxHealth.ToString();
-        damage.text = ownerStats.minDamage.ToString() + " - " + ownerStats.maxDamage.ToString();
+        level.text = ownerStats.Level.ToString();
+        exp.text = ownerStats.Exp.ToString() + " / " + ownerStats.ExpForLevelUp.ToString();
+        health.text = ownerStats.CurrentHealth.ToString() + " / " + ownerStats.MaxHealth.ToString();
+        damage.text = ownerStats.MinDamage.ToString() + " - " + ownerStats.MaxDamage.ToString();
     }
 
     public void AddStats(Equippable item)
@@ -47,7 +47,7 @@ public class Equipment: Inventory
         {
 			Weapon weapon = item as Weapon;
 
-			ownerStats.AddStats(0, weapon.minDamage, weapon.maxDamage);
+			ownerStats.AddStats(0, weapon.MinDamage, weapon.MaxDamage);
         }
         else if (item is Armor)
         {
@@ -65,7 +65,7 @@ public class Equipment: Inventory
 		{
 			Weapon weapon = item as Weapon;
 
-			ownerStats.SubtractStats(0, weapon.minDamage, weapon.maxDamage);
+			ownerStats.SubtractStats(0, weapon.MinDamage, weapon.MaxDamage);
 		}
 		else if (item is Armor)
 		{

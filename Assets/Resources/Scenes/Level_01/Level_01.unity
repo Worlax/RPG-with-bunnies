@@ -145,7 +145,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 59602189}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -14.598671, y: 335.9623, z: -139.46875}
+  m_LocalPosition: {x: 0, y: 335.9623, z: -139.46875}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1625173956}
@@ -404,7 +404,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 319.5, y: -634.8}
+  m_AnchoredPosition: {x: 405.22, y: -634.8}
   m_SizeDelta: {x: 283.8, y: 22.1}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &159375405
@@ -3180,9 +3180,9 @@ GameObject:
   - component: {fileID: 1430551712}
   - component: {fileID: 1430551711}
   - component: {fileID: 1430551710}
-  - component: {fileID: 1430551713}
-  - component: {fileID: 1430551714}
   - component: {fileID: 1430551715}
+  - component: {fileID: 1430551714}
+  - component: {fileID: 1430551713}
   - component: {fileID: 1430551716}
   m_Layer: 0
   m_Name: Player
@@ -3199,7 +3199,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1430551708}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.1141434, y: 1.2082877, z: -6.4899993}
+  m_LocalPosition: {x: 1.16, y: 1.2082877, z: -6.4899993}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children: []
   m_Father: {fileID: 608329306}
@@ -3216,7 +3216,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 1, y: 3.04, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &1430551711
 MeshRenderer:
@@ -3277,14 +3277,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 096099057aacb5043876ce5d5f11a5ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  level: 1
-  exp: 0
-  expForLevelUp: 20
-  currentHealth: 99999
-  maxHealth: 100
-  minDamage: 0
-  maxDamage: 0
-  dead: 0
+  _level: 1
+  _currentHealth: 70
+  _maxHealth: 70
+  _minDamage: 3
+  _maxDamage: 5
+  _playingTurnSpeed: 2
+  _exp: 0
+  _expForLevelUp: 50
+  _dead: 0
 --- !u!114 &1430551714
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3297,20 +3298,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d3a51f9630b1294f95a8ad06e3d0b6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  unitInFocus: {fileID: 0}
   grid: {fileID: 234312572}
-  speed: 3
-  animSpeed: 2
-  startActionPoints: 10
-  currentActionPoints: 0
-  weapon: {fileID: 0}
   windowsRoot: {fileID: 1300130998}
+  speed: 1.5
+  startActionPoints: 10
+  weapon: {fileID: 0}
+  unitInFocus: {fileID: 0}
   state: 0
-  ignoreNextClick: 0
   inventoryPrefab: {fileID: 3942862058308897116, guid: 669a805736e9c3b478ab2b9e582c9253,
     type: 3}
   equipmentPrefab: {fileID: 8860063389202720577, guid: 0f18d00332b903d40b41c82ab772ab31,
     type: 3}
+  ignoreNextClick: 0
 --- !u!95 &1430551715
 Animator:
   serializedVersion: 3
@@ -3584,10 +3583,9 @@ GameObject:
   - component: {fileID: 1526350179}
   - component: {fileID: 1526350178}
   - component: {fileID: 1526350177}
-  - component: {fileID: 1526350176}
-  - component: {fileID: 1526350175}
   - component: {fileID: 1526350181}
-  - component: {fileID: 1526350182}
+  - component: {fileID: 1526350175}
+  - component: {fileID: 1526350176}
   - component: {fileID: 1526350183}
   m_Layer: 0
   m_Name: Enemy
@@ -3608,14 +3606,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c1741351bc64d84f8e086c41e1e80d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  unitInFocus: {fileID: 0}
   grid: {fileID: 234312572}
-  speed: 2
-  animSpeed: 2
-  startActionPoints: 8
-  currentActionPoints: 0
-  weapon: {fileID: 0}
   windowsRoot: {fileID: 1300130998}
+  speed: 1.5
+  startActionPoints: 8
+  weapon: {fileID: 0}
+  unitInFocus: {fileID: 0}
   state: 0
   distanceOfSight: 20
   enemyInventoryPrefab: {fileID: 2797462363862288742, guid: 2bb437ff9e695454bb63e78ea3a08a53,
@@ -3632,14 +3628,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 096099057aacb5043876ce5d5f11a5ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  level: 1
-  exp: 15
-  expForLevelUp: 0
-  currentHealth: 70
-  maxHealth: 70
-  minDamage: 3
-  maxDamage: 5
-  dead: 0
+  _level: 1
+  _currentHealth: 70
+  _maxHealth: 70
+  _minDamage: 3
+  _maxDamage: 5
+  _playingTurnSpeed: 2
+  _exp: 50
+  _expForLevelUp: 50
+  _dead: 0
 --- !u!65 &1526350177
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3733,22 +3730,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &1526350182
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1526350174}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: db51ebdc7e10883459da78bd28c27a1e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  canvas: {fileID: 1625173955}
-  lootDistance: 1.5
-  windowPrefab: {fileID: 7402927144472376262, guid: 6238543f234fbdc41b01a07be74e97ba,
-    type: 3}
 --- !u!114 &1526350183
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3776,9 +3757,8 @@ GameObject:
   - component: {fileID: 1625173956}
   - component: {fileID: 1625173955}
   - component: {fileID: 1625173954}
-  - component: {fileID: 1625173957}
-  - component: {fileID: 1625173958}
   - component: {fileID: 1625173953}
+  - component: {fileID: 1625173957}
   m_Layer: 5
   m_Name: UI
   m_TagString: Untagged
@@ -3884,20 +3864,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   wait: {fileID: 621229673}
   skip: {fileID: 1746283612}
---- !u!114 &1625173958
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1625173952}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 426f728422975954e88291dfb6a9aa2e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
   fireMode: {fileID: 147866396}
-  ammoUI: {fileID: 1658209254}
+  ammo: {fileID: 1658209254}
 --- !u!1 &1635588155
 GameObject:
   m_ObjectHideFlags: 0

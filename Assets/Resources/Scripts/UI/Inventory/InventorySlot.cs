@@ -3,6 +3,7 @@
 public class InventorySlot: MonoBehaviour
 {
     // Properties //
+	[ReadOnly]
     public Item itemInSlot;
 
     // Functions //
@@ -26,7 +27,7 @@ public class InventorySlot: MonoBehaviour
 				Equippable equippable1 = itemInSlot as Equippable;
 				Equippable equippable2 = draggedItem as Equippable;
 
-				if (equippable1.equipType == equippable2.equipType)
+				if (equippable1.SlotType == equippable2.SlotType)
                 {
                     SwapItems(draggedItem);
                 }
@@ -53,7 +54,7 @@ public class InventorySlot: MonoBehaviour
                 Gun gun = itemInSlot as Gun;
                 Ammo ammo = draggedItem as Ammo;
 
-                if (gun.ammoName == ammo.itemName)
+                if (gun.AmmoName == ammo.itemName)
                 {
                     return LoadWeapon(ammo);
                 }
@@ -118,7 +119,7 @@ public class InventorySlot: MonoBehaviour
     bool LoadWeapon(Ammo ammo)
     {
         Gun gun = itemInSlot as Gun;
-        int ammoMissing = gun.maxAmmo - gun.currentAmmo;
+        int ammoMissing = gun.MaxAmmo - gun.CurrentAmmo;
 
 		ammo.TakeFromStack(ammoMissing, out int ammoWasTaken);
 		gun.AddAmmo(ammoWasTaken);

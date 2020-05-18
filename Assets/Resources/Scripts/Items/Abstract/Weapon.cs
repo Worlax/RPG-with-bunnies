@@ -1,0 +1,143 @@
+﻿using UnityEngine;
+
+public abstract class Weapon: Equippable
+{
+	// Properties //
+	WeaponAnim weaponAnim;
+	protected LineRenderer hitLine;
+
+	[ReadOnly]
+	[SerializeField]
+    protected UnitController holder;
+
+	[SerializeField]
+	int _actionPointsForUse = 2;
+	public int ActionPointsForUse { get => _actionPointsForUse; protected set => _actionPointsForUse = value; }
+
+	[SerializeField]
+	float _hitDistance = 6;
+	public float HitDistance { get => _hitDistance; protected set => _hitDistance = value; }
+
+	[SerializeField]
+	int _minDamage = 3;
+	public int MinDamage { get => _minDamage; protected set => _minDamage = value; }
+
+	[SerializeField]
+	int _maxDamage = 5;
+	public int MaxDamage { get => _maxDamage; protected set => _maxDamage = value; }
+
+	public UnitController AimedTarget { get; private set; }
+	protected Vector3 hitLocation;
+
+	protected bool randomLocationForDamagePopup = false;
+
+    // Functions //
+    public override void EquipItem(UnitController ownerOfThisItem)
+    {
+		base.EquipItem(ownerOfThisItem);
+
+		hitLine = GameManager.instance.WeaponAimLineRenderer;
+		holder = ownerOfThisItem;
+		ownerOfThisItem.weapon = this;
+		weaponAnim = ItemVisual.GetComponentInChildren<WeaponAnim>();
+
+		if (ownerOfThisItem.GetComponent<Stats>().Dead)
+		{
+			weaponAnim.Disable();
+			ItemVisual.transform.parent = null;
+		}
+	}
+
+	public override void UnequipItem()
+    {
+		weaponAnim = null;
+		holder.weapon = null;
+		holder = null;
+
+		base.UnequipItem();
+	}
+
+	public virtual void Aim(UnitController target)
+    {
+		weaponAnim.Aim(target.transform);
+
+        LayerMask mask = LayerMask.GetMask("Tile") | LayerMask.GetMask("Item");
+        Physics.Raycast(holder.transform.position, (target.transform.position - holder.transform.position).normalized, out RaycastHit hit, HitDistance, ~mask);
+
+        // raycast hit
+        if (hit.transform != null)
+        {
+            // hit target
+            if (hit.transform.GetComponent<UnitController>() != null)
+            {
+                DrawHitLine(hit.point, false);
+
+                AimedTarget = target;
+                AimedTarget.Targeted();
+            }
+            // hit other object
+            else
+            {
+                DrawHitLine(hit.point, false);
+            }
+        }
+        // hit no object
+        else
+        {  
+            DrawHitLine(target.transform.position, true);
+        }
+    }
+
+    void DrawHitLine(Vector3 _secondPoint, bool useDistance)
+    {
+        Vector3 firstPoint = holder.transform.position;
+        Vector3 secondPoint;
+
+        if (useDistance)
+        {
+            secondPoint = firstPoint + ((_secondPoint - holder.transform.position).normalized) * HitDistance;
+        }
+        else
+        {
+            secondPoint = _secondPoint;
+        }
+
+        hitLine.positionCount = 2;
+        hitLine.SetPosition(0, firstPoint);
+        hitLine.SetPosition(1, secondPoint);
+
+		hitLocation = hitLine.GetPosition(1);
+	}
+
+    public virtual void StopAim()
+    {
+		weaponAnim.StopAim();
+
+        hitLine.positionCount = 0;
+		hitLocation = Vector3.zero;
+
+		if (AimedTarget != null)
+        {
+            AimedTarget.Untargeted();
+            AimedTarget = null;
+        }
+    }
+
+	public abstract void Fire();
+
+	public virtual void WeaponHit()
+	{
+		if (AimedTarget == null)
+			return;
+
+		Stats targetStats = AimedTarget.GetComponent<Stats>();
+		int damage = UnityEngine.Random.Range(holder.Stats.MinDamage, holder.Stats.MaxDamage + 1);
+
+		targetStats.DealDamage(holder, damage, randomLocationForDamagePopup);
+	}
+
+	public virtual void WeaponFired()
+	{
+		holder.state = UnitController.State.ReadingInput;
+	}
+}
