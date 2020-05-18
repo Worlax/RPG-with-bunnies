@@ -44,8 +44,8 @@ public class Gun: Weapon
 	int automaticMaxDamage = 6;
 
 	[SerializeField]
-	string _ammoName;
-    public string AmmoName { get => _ammoName; set => _ammoName = value; }
+	Ammo.AmmoType _AmmoType;
+	public Ammo.AmmoType AmmoType { get => _AmmoType; private set => _AmmoType = value; }
 	[SerializeField]
 	int _currentAmmo;
     public int CurrentAmmo { get => _currentAmmo; set => _currentAmmo = value; }

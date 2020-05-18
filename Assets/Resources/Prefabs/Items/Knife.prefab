@@ -106,6 +106,6 @@ MonoBehaviour:
   _slotType: 3
   holder: {fileID: 0}
   _actionPointsForUse: 2
-  _hitDistance: 6
+  _hitDistance: 1
   _minDamage: 3
   _maxDamage: 5

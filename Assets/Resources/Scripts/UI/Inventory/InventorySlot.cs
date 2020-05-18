@@ -54,7 +54,7 @@ public class InventorySlot: MonoBehaviour
                 Gun gun = itemInSlot as Gun;
                 Ammo ammo = draggedItem as Ammo;
 
-                if (gun.AmmoName == ammo.itemName)
+                if (gun.AmmoType == ammo.Type)
                 {
                     return LoadWeapon(ammo);
                 }

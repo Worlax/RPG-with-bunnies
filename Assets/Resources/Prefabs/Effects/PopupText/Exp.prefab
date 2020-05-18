@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1541061651400245892}
   m_Layer: 0
-  m_Name: PopupExp
+  m_Name: Exp
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -24,7 +24,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1541061651400245893}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -53.53, y: 0.196, z: -5.435}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 5728703465077912706}
@@ -46,7 +46,7 @@ GameObject:
   - component: {fileID: 1514048247033509701}
   - component: {fileID: 2637713192339875035}
   m_Layer: 0
-  m_Name: PopupExp
+  m_Name: Exp
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -61,7 +61,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5728703465077912717}
   m_LocalRotation: {x: 0.5, y: -0, z: -0, w: 0.8660254}
-  m_LocalPosition: {x: 0, y: 0, z: 0.322}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_Children: []
   m_Father: {fileID: 1541061651400245892}
@@ -121,9 +121,9 @@ TextMesh:
   m_CharacterSize: 1
   m_LineSpacing: 1
   m_Anchor: 4
-  m_Alignment: 0
+  m_Alignment: 1
   m_TabSize: 4
-  m_FontSize: 40
+  m_FontSize: 30
   m_FontStyle: 0
   m_RichText: 1
   m_Font: {fileID: 0}
@@ -174,12 +174,17 @@ PrefabInstance:
     - target: {fileID: 6451777078422309700, guid: 99483e13a60cef04688e7dd729888179,
         type: 3}
       propertyPath: m_FontSize
-      value: 40
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 6451777078422309700, guid: 99483e13a60cef04688e7dd729888179,
+        type: 3}
+      propertyPath: m_Alignment
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6451777078422309701, guid: 99483e13a60cef04688e7dd729888179,
         type: 3}
       propertyPath: m_Name
-      value: PopupExp
+      value: Exp
       objectReference: {fileID: 0}
     - target: {fileID: 6451777078422309706, guid: 99483e13a60cef04688e7dd729888179,
         type: 3}
@@ -194,7 +199,7 @@ PrefabInstance:
     - target: {fileID: 6451777078422309706, guid: 99483e13a60cef04688e7dd729888179,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.322
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6451777078422309706, guid: 99483e13a60cef04688e7dd729888179,
         type: 3}

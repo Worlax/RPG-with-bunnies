@@ -10,10 +10,21 @@ public class Inventory: MonoBehaviour
 	UnitController owner;
 	public UnitController Owner { get => owner; set { if (owner == null) { owner = value; } } }
 
+	public bool Closed { get; private set; }
+
     // Functions //
     protected virtual void Start()
     {
         closeButton.onClick.AddListener(Close);
+		
+		if (transform.localScale == Vector3.zero)
+		{
+			Closed = true;
+		}
+		else
+		{
+			Closed = false;
+		}
     }
 	
 	void Update()
@@ -28,16 +39,23 @@ public class Inventory: MonoBehaviour
     {
         if (transform.localScale == Vector3.zero)
         {
-            transform.localScale = Vector3.one;
+			Open();
         }
         else
         {
-            transform.localScale = Vector3.zero;
-        }
+			Close();
+		}
     }
 
-	void Close()
+	public void Open()
+	{
+		transform.localScale = Vector3.one;
+		Closed = false;
+	}
+
+	public void Close()
 	{
 		transform.localScale = Vector3.zero;
+		Closed = true;
 	}
 }

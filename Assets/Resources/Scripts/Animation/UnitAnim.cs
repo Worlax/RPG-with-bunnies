@@ -5,8 +5,10 @@ public class UnitAnim: Animated
 	// Properties //
 	public GameObject popupDamagePrefab;
 	public GameObject popupExpPrefab;
+	public GameObject popupLevelUpPrefab;
 
 	Vector3 popupOffset = new Vector3(0f, 0f, 0.8f);
+	Vector3 popupOffsetForLevelUp = new Vector3(0f, 0f, 1.3f);
 
 	// Functions //
 	void Start()
@@ -60,7 +62,8 @@ public class UnitAnim: Animated
 
 	public void LevelUp(int newLevel)
 	{
-
+		GameObject levelUp = Instantiate(popupLevelUpPrefab);
+		levelUp.transform.position = transform.position + popupOffsetForLevelUp;
 	}
 
 	public void UnitDied()

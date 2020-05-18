@@ -6,22 +6,18 @@ public class EnemyController: UnitController
     // Properties //
     public int distanceOfSight = 20;
 
-	public Inventory enemyInventoryPrefab;
-	Equipment equipment;
-	Inventory inventory;
-
 	// Functions //
 	protected override void Start()
 	{
 		base.Start();
 
-		inventory = Instantiate(enemyInventoryPrefab);
-		inventory.transform.SetParent(windowsRoot.transform, false);
-		inventory.Owner = this;
-		inventory.name = "Inv + Equip (" + transform.name + ")";
+		Inventory = Instantiate(inventoryPrefab);
+		Inventory.transform.SetParent(windowsRoot.transform, false);
+		Inventory.Owner = this;
+		Inventory.name = "Inv + Equip (" + transform.name + ")";
 
-		equipment = inventory.GetComponent<Equipment>();
-		equipment.Owner = this;
+		Equipment = Inventory.GetComponent<Equipment>();
+		Equipment.Owner = this;
 	}
 
 	void Update()

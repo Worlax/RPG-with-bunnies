@@ -8,6 +8,11 @@ public abstract class UnitController: MonoBehaviour, IComparable<UnitController>
 	// Properties //
 	// inspector
 	public GameGrid grid;
+
+	public Inventory inventoryPrefab;
+	public Inventory Inventory { get; protected set; }
+	public Equipment Equipment { get; protected set; }
+
 	public Transform windowsRoot;
 
 	[Range(0.5f, 5f)]
@@ -15,13 +20,12 @@ public abstract class UnitController: MonoBehaviour, IComparable<UnitController>
 	[Range(0, 10)]
 	public int startActionPoints = 5;
 
-	// public set
+	//
 	[ReadOnly]
 	public Weapon weapon;
 	[ReadOnly]
 	public UnitController unitInFocus;
 
-	// private set
 	public const int maxActionPoints = 10;
 	public const int maxReservedActionPoints = 3;
 	public int CurrentActionPoints { get; protected set; }
@@ -223,6 +227,22 @@ public abstract class UnitController: MonoBehaviour, IComparable<UnitController>
 		if (weapon != null)
 		{
 			weapon.StopAim();
+		}
+	}
+
+	public void OpenInventory()
+	{
+		if (Inventory != null)
+		{
+			Inventory.Open();
+		}
+	}
+
+	public void CloseInventory()
+	{
+		if (Inventory != null)
+		{
+			Inventory.Close();
 		}
 	}
 

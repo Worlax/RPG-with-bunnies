@@ -125,7 +125,7 @@ MonoBehaviour:
   burstMaxDamage: 8
   automaticMinDamage: 5
   automaticMaxDamage: 6
-  _ammoName: 
+  _AmmoType: 1
   _currentAmmo: 0
   _maxAmmo: 30
 --- !u!1001 &6763490927694344371

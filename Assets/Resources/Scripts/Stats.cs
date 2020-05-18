@@ -79,10 +79,11 @@ public class Stats: MonoBehaviour
         if (Dead)
             return;
 
-        if (CurrentHealth > damage)
+		unitAnim.Damaged(source, damage, randomLocation);
+
+		if (CurrentHealth > damage)
         {
             CurrentHealth -= damage;
-			unitAnim.Damaged(source, damage, randomLocation);
         }
         else
         {

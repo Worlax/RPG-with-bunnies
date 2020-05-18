@@ -8,21 +8,22 @@ public class PlayerController: UnitController
 {
 	// Properties //
 	// inspector
-	public Inventory inventoryPrefab;
 	public Equipment equipmentPrefab;
 
-	// public set
+	//
 	[HideInInspector]
 	public bool ignoreNextClick = false;
 
-	// private set
-	public Inventory Inventory { get; private set; }
-	public Equipment Equipment { get; private set; }
+
 
 	Tile lastTileOverlaped;
 	Tile lastTileClicked;
 
 	Texture2D cursorOverTarget;
+
+	float maxLootDistance = 1f;
+
+	UnitController lootableTarget;
 
 	// states
 	enum CursorState
@@ -236,7 +237,7 @@ public class PlayerController: UnitController
                 // dead enemy
                 if (hit.transform.GetComponent<Stats>().Dead == true)
                 {
-                    TryToToot(hit.transform);
+                    TryToTootEnemy(hit.transform);
                 }
                 // second click on target
                 else if (weapon != null && unitInFocus == enemy && weapon.AimedTarget != null)
@@ -278,21 +279,28 @@ public class PlayerController: UnitController
 		}
 	}
 
-	void TryToToot(Transform target)
+	void TryToTootEnemy(Transform target)
     {
-        Vector3 direction = (target.position - transform.position).normalized;
-        float maxLootDistance = 30;
+		if (lootableTarget != null && lootableTarget.transform == target && lootableTarget.Inventory.Closed == false)
+		{
+			lootableTarget.CloseInventory();
+			lootableTarget = null;
+		}
+		else
+		{
+			Vector3 direction = (target.position - transform.position).normalized;
 
-        foreach (RaycastHit hit in Physics.RaycastAll(transform.position, direction, maxLootDistance))
-        {
-            if (hit.transform == target.transform)
-            {
-                //Lootable loot = target.GetComponent<Lootable>();
-                //loot.Open(transform);
+			foreach (RaycastHit hit in Physics.RaycastAll(transform.position, direction, maxLootDistance))
+			{
+				if (hit.transform == target.transform)
+				{
+					lootableTarget = target.GetComponent<UnitController>();
+					lootableTarget.OpenInventory();
 
-                return;
-            }
-        } 
+					return;
+				}
+			}
+		}
     }
 
     void LookAtTarget(Transform target)
@@ -300,8 +308,7 @@ public class PlayerController: UnitController
         transform.LookAt(target);
     }
 
-    // Focus target //
-    public override void FocusTarget(UnitController target)
+	public override void FocusTarget(UnitController target)
     {
 		base.FocusTarget(target);
 
@@ -315,7 +322,6 @@ public class PlayerController: UnitController
         OnPlayerDefocusedTarget?.Invoke();
     }
 
-    //....//
     public override void WaitTurn()
     {
         base.WaitTurn();
@@ -332,8 +338,14 @@ public class PlayerController: UnitController
     {
         base.ClearInfo();
 
-        lastTileOverlaped = null;
+		lastTileOverlaped = null;
         lastTileClicked = null;
+
+		if (lootableTarget != null)
+		{
+			lootableTarget.CloseInventory();
+			lootableTarget = null;
+		}
     }
 
     void SomeUnitDied(Transform unit)
