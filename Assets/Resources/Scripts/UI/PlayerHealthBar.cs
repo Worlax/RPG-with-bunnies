@@ -25,9 +25,9 @@ public class PlayerHealthBar: MonoBehaviour
     {
         if (stats != null)
         {
-            slider.maxValue = stats.maxHealth;
-            slider.value = stats.health;
-            text.text = stats.health + " / " + stats.maxHealth;
+            slider.maxValue = stats.MaxHealth;
+            slider.value = stats.CurrentHealth;
+            text.text = stats.CurrentHealth + " / " + stats.MaxHealth;
         }
     }
 

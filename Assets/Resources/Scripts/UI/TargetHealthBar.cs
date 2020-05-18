@@ -28,22 +28,22 @@ public class TargetHealthBar: MonoBehaviour
     {
         if (stats != null)
         {
-            slider.maxValue = stats.maxHealth;
-            slider.value = stats.health;
-            text.text = stats.health + " / " + stats.maxHealth;
+            slider.maxValue = stats.MaxHealth;
+            slider.value = stats.CurrentHealth;
+            text.text = stats.CurrentHealth + " / " + stats.MaxHealth;
         }
     }
 
     void OnEnable()
     {
-        PlayerController.OnFocusTarget += ConnectStats;
-        PlayerController.OnDefocusTarget += DisconnectStats;
+        PlayerController.OnPlayerFocusedTarget += ConnectStats;
+        PlayerController.OnPlayerDefocusedTarget += DisconnectStats;
     }
 
     void OnDisable()
     {
-        PlayerController.OnFocusTarget -= ConnectStats;
-        PlayerController.OnDefocusTarget -= DisconnectStats;
+        PlayerController.OnPlayerFocusedTarget -= ConnectStats;
+        PlayerController.OnPlayerDefocusedTarget -= DisconnectStats;
     }
 
     void ConnectStats(UnitController target)

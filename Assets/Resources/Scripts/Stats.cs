@@ -3,180 +3,132 @@ using System;
 
 public class Stats: MonoBehaviour
 {
-    // Properties //
-    public int level = 1;
-    public int exp = 0;
-    public int expForLevelUp = 50;
-    public int health = 70;
-    public int maxHealth = 70;
-    public int minDamage = 3;
-    public int maxDamage = 5;
+	// Properties //
+	UnitAnim unitAnim;
 
-    public bool dead = false;
+	[SerializeField]
+	int _level = 1;
+    public int Level { get => _level; private set => _level = value; }
 
-    Vector3 popupOffset = new Vector3(0f, 0f, 0.8f);
+	[SerializeField]
+	int _currentHealth = 70;
+	public int CurrentHealth { get => _currentHealth; private set => _currentHealth = value; }
+
+	[SerializeField]
+	int _maxHealth = 70;
+	public int MaxHealth { get => _maxHealth; private set => _maxHealth = value; }
+
+	[SerializeField]
+	int _minDamage = 3;
+	public int MinDamage { get => _minDamage; private set => _minDamage = value; }
+
+	[SerializeField]
+	int _maxDamage = 5;
+	public int MaxDamage { get => _maxDamage; private set => _maxDamage = value; }
+
+	[SerializeField]
+	int _playingTurnSpeed = 2;
+	public int PlayingTurnSpeed { get => _playingTurnSpeed; private set => _playingTurnSpeed = value; }
+
+	[SerializeField]
+	int _exp = 0;
+	public int Exp { get => _exp; private set => _exp = value; }
+
+	[SerializeField]
+	int _expForLevelUp = 50;
+	public int ExpForLevelUp { get => _expForLevelUp; private set => _expForLevelUp = value; }
+
+	[ReadOnly]
+	[SerializeField]
+	bool _dead = false;
+	public bool Dead { get => _dead; private set => _dead = value; }
 
     // Events //
     public static event Action<Transform> OnUnitDied;
     public static event Action StatsUpdated;
 
     // Functions //
-    public void DealDamage(int damage, UnitController source, bool randomLocation = false)
+	void Awake()
+	{
+		unitAnim = GetComponent<UnitAnim>();
+	}
+
+	public bool Heal(int _health)
+	{
+		if (Dead || _health < 1 || CurrentHealth == MaxHealth)
+			return false;
+
+		int missingHealth = MaxHealth - CurrentHealth;
+
+		if (_health <= missingHealth)
+		{
+			CurrentHealth += _health;
+			unitAnim.Heal(_health);
+		}
+		else
+		{
+			CurrentHealth += missingHealth;
+			unitAnim.Heal(missingHealth);
+		}
+
+		return true;
+	}
+
+	public void DealDamage(UnitController source, int damage, bool randomLocation = false)
     {
-        if (dead)
+        if (Dead)
             return;
 
-        if (health > damage)
+		unitAnim.Damaged(source, damage, randomLocation);
+
+		if (CurrentHealth > damage)
         {
-            health -= damage;
-
-            Animator animator = GetComponent<Animator>();
-
-            if (animator != null)
-            {
-                transform.LookAt(source.transform);
-                animator.Play("Damaged", 0, 0);
-            }
+            CurrentHealth -= damage;
         }
         else
         {
-            UnitController unit = GetComponent<UnitController>();
-
-            if (unit is EnemyController)
+            if (GetComponent<EnemyController>() == true)
             {
                 Stats killerStats = source.GetComponent<Stats>();
-                killerStats.AddExp(exp);
-                ExpPopup(source.transform.position);
-            }
+
+                killerStats.AddExp(Exp);
+			}
 
             UnitDied();
         }
-
-        GameObject damagePopup = Instantiate(GameManager.instance.popupDamagePrefab);
-        TextMesh textMesh = damagePopup.GetComponent<TextMesh>();
-
-        textMesh.text = "-" + damage.ToString();
-
-        float rand = UnityEngine.Random.Range(-0.5f, 0.5f);
-        float rand2 = UnityEngine.Random.Range(-0.2f, 0.2f);
-        Vector3 randomOffset = popupOffset + new Vector3(rand, 0, rand2);
-
-        if (randomLocation == true)
-        {
-            damagePopup.transform.position = transform.position + randomOffset;
-        }
-        else
-        {
-            damagePopup.transform.position = transform.position + popupOffset;
-        }
-    }
-
-    public bool Heal(int _health)
-    {
-        if (dead || _health < 1 || health == maxHealth)
-            return false;
-
-        health += _health;
-
-        if (health > maxHealth)
-        {
-            health = maxHealth;
-        }
-
-        return true;
     }
 
     void UnitDied()
     {
-        health = 0;
-        dead = true;
-        UnitController unit = GetComponent<UnitController>();
+		unitAnim.UnitDied();
 
-        unit.weapon.GetComponent<Animator>().enabled = false;
-        unit.weapon.transform.parent = null;
+		CurrentHealth = 0;
+        Dead = true;
 
-        unit.KillUnit();
-
+        GetComponent<UnitController>().KillUnit();
         OnUnitDied?.Invoke(transform);
-    }
-
-    void ExpPopup(Vector3 position)
-    {
-        GameObject expPopup = Instantiate(GameManager.instance.popupExpPrefab);
-        TextMesh textMesh = expPopup.GetComponentInChildren<TextMesh>();
-
-        textMesh.text = "+" + exp.ToString() + " exp";
-
-        expPopup.transform.position = position + popupOffset;
-    }
-
-    public void GetStats(ref String _level, out String _exp, out String _expForLevelUp, out String _health, out String _maxHealth, out String _minDamage, out String _maxDamage)
-    {
-        _level = level.ToString();
-        _exp = exp.ToString();
-        _expForLevelUp = expForLevelUp.ToString();
-        _health = health.ToString();
-        _maxHealth = maxHealth.ToString();
-        _minDamage = minDamage.ToString();
-        _maxDamage = maxDamage.ToString();
-    }
-
-    public void SetStatsForItem(int _level = 1, int _maxHealth = 5, int _minDamage = 2, int _maxDamage = 3)
-    {
-        level = _level;
-        maxHealth = _maxHealth;
-        minDamage = _minDamage;
-        maxDamage = _maxDamage;
-
-        exp = 0;
-        expForLevelUp = 0;
-        health = 0;
-    }
-
-    public void SetStatsForUnit(int _level = 1, int _exp = 0, int _expForLevelUp = 100, int _health = 50, int _maxHealth = 100, int _minDamage = 2, int _maxDamage = 5)
-    {
-        level = _level;
-        exp = _exp;
-        expForLevelUp = _expForLevelUp;
-        health = _health;
-        maxHealth = _maxHealth;
-        minDamage = _minDamage;
-        maxDamage = _maxDamage;
-    }
-
-    public void AddStats(Stats a)
-    {
-        maxHealth += a.maxHealth;
-        minDamage += a.minDamage;
-        maxDamage += a.maxDamage;
     }
 
     public void AddStats(int _maxHealth = 0, int _minDamage = 0, int _maxDamage = 0)
     {
-        maxHealth += _maxHealth;
-        minDamage += _minDamage;
-        maxDamage += _maxDamage;
-    }
-
-    public void SubtractStats(Stats a)
-    {
-        maxHealth -= a.maxHealth;
-        minDamage -= a.minDamage;
-        maxDamage -= a.maxDamage;
+        MaxHealth += _maxHealth;
+        MinDamage += _minDamage;
+        MaxDamage += _maxDamage;
     }
 
     public void SubtractStats(int _maxHealth = 0, int _minDamage = 0, int _maxDamage = 0)
     {
-        maxHealth -= _maxHealth;
-        minDamage -= _minDamage;
-        maxDamage -= _maxDamage;
+        MaxHealth -= _maxHealth;
+        MinDamage -= _minDamage;
+        MaxDamage -= _maxDamage;
     }
 
-    void AddExp(int _exp)
+    void AddExp(int amount)
     {
-        exp += _exp;
+        Exp += amount;
+		unitAnim.AddExp(Exp);
 
-        if (exp >= expForLevelUp)
+        if (Exp >= ExpForLevelUp)
         {
             LevelUp();
         }
@@ -188,11 +140,13 @@ public class Stats: MonoBehaviour
 
     void LevelUp()
     {
-        ++level;
-        exp = exp - expForLevelUp;
-        expForLevelUp = (int)(1.2 * expForLevelUp);
+        ++Level;
+		unitAnim.LevelUp(Level);
 
-        if (exp >= expForLevelUp)
+        Exp = Exp - ExpForLevelUp;
+        ExpForLevelUp = (int)(1.2 * ExpForLevelUp);
+
+        if (Exp >= ExpForLevelUp)
         {
             LevelUp();
         }

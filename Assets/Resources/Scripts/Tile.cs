@@ -75,7 +75,7 @@ public class Tile: MonoBehaviour
 
     public bool IsEmpty()
     {
-        LayerMask mask = LayerMask.GetMask("Tile") | LayerMask.GetMask("Ground") | LayerMask.GetMask("Ignore Tile Raycast");
+        LayerMask mask = LayerMask.GetMask("Tile") | LayerMask.GetMask("Ground") | LayerMask.GetMask("Item");
         Vector3 size = GetComponent<BoxCollider>().bounds.size / 2;
 
         if (Physics.CheckBox(transform.position, size, Quaternion.identity, ~mask))

@@ -1,95 +1,69 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.EventSystems;
 using System;
 
 public class EquipmentSlot: InventorySlot
 {
-    // Properties //
-    public EquipmentItem.Type type;
-    GameObject itemIn3D;
+	// Properties //
+	UnitController owner;
+	Equipment equipment;
 
-    // Events //
+	// Events //
+	public static Action<Weapon> PlayerEquipedWeapon;
+	public static Action<Weapon> PlayerUnequipedWeapon;
 
-    public static event Action<Item2D, Item3D> OnItemEquiped;
-    public static event Action<Item2D, Item3D> OnItemUnequiped;
+	public enum Type
+	{
+		None,
+		Helmet,
+		Body,
+		Weapon
+	}
 
-    // Functions //
-    public override bool ConnectOrSwapItem(Item2D newItem, bool ignoreMoveTurn = false)
+	[SerializeField]
+	Type _slotType;
+	public Type SlotType { get => _slotType; set => _slotType = value; }
+
+	// Functions //
+	void Start()
+	{
+		equipment = GetComponentInParent<Equipment>();
+		owner = equipment.Owner;
+	}
+
+    public override bool ConnectOrSwapItem(Item newItem, bool ignoreMoveTurn = false)
     {
-        EquipmentItem equipmentItem = newItem as EquipmentItem;
-        if (equipmentItem == null || equipmentItem.type != type)
+        Equippable equipmentItem = newItem as Equippable;
+        if (equipmentItem == null || equipmentItem.SlotType != SlotType)
             return false;
 
         return base.ConnectOrSwapItem(newItem, ignoreMoveTurn);
     }
 
-    protected override void ConnectItem(Item2D newItem)
+    protected override void ConnectItem(Item newItem)
     {
-        base.ConnectItem(newItem);
-        EquipItem();
-    }
+		base.ConnectItem(newItem);
+
+		Equippable item = newItem as Equippable;
+		item.EquipItem(owner);
+		equipment.AddStats(item);
+
+		if (owner as PlayerController != null && newItem as Weapon != null)
+		{
+			PlayerEquipedWeapon?.Invoke(newItem as Weapon);
+		}
+	}
 
     public override void DisconnectItem()
     {
-        UnequipItem();
-        base.DisconnectItem();
-    }
+		Equippable item = itemInSlot as Equippable;
+		item.UnequipItem();
+		equipment.SubtractStats(item);
 
-    protected override void SwapItems(Item2D newItem)
-    {
-        base.SwapItems(newItem);
-    }
+		if (owner as PlayerController != null && itemInSlot as Weapon != null)
+		{
+			PlayerEquipedWeapon?.Invoke(itemInSlot as Weapon);
+		}
 
-    public void EquipItem()
-    {
-        PlayerController player = GameManager.instance.currentUnit as PlayerController;
-
-        itemIn3D = Instantiate(itemInSlot.ItemPrefab);
-        itemIn3D.transform.SetParent(player.transform, false);
-
-        if (type == EquipmentItem.Type.Weapon)
-        {
-            Weapon weapon = itemIn3D.GetComponent<Weapon>();
-
-            weapon.holder = player;
-            player.weapon = weapon;
-
-            // load ammo info from buffer
-            Gun gun = itemIn3D.GetComponent<Gun>();
-            EquipmentItem _itemInSlot = itemInSlot as EquipmentItem;
-
-            if (gun != null && _itemInSlot != null)
-            {
-                gun.magazineCurrentAmmo = _itemInSlot.magazineCurrentAmmo;
-            }
-        }
-        
-        OnItemEquiped(itemInSlot, itemIn3D.GetComponent<Item3D>());
-    }
-
-    public void UnequipItem()
-    {
-        if (type == EquipmentItem.Type.Weapon)
-        {
-            PlayerController player = GameManager.instance.currentUnit as PlayerController;
-            Weapon weapon = itemIn3D.GetComponent<Weapon>();
-
-            weapon.holder = null;
-            player.weapon = null;
-
-            // buffer ammo info
-            Gun gun = itemIn3D.GetComponent<Gun>();
-            EquipmentItem _itemInSlot = itemInSlot as EquipmentItem;
-
-            if (gun != null && _itemInSlot != null)
-            {
-                _itemInSlot.magazineCurrentAmmo = gun.magazineCurrentAmmo;
-            }
-        }
-        
-        OnItemUnequiped(itemInSlot, itemIn3D.GetComponent<Item3D>());
-
-        Destroy(itemIn3D);
+		base.DisconnectItem();
     }
 }

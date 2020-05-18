@@ -1,6 +1,7 @@
-﻿using System;
+﻿using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using System.Collections.Generic;
-using UnityEngine;
 
 public class GameManager: MonoBehaviour
 {
@@ -22,9 +23,6 @@ public class GameManager: MonoBehaviour
     }
 
     // Properties //
-    public GameObject popupDamagePrefab;
-    public GameObject popupExpPrefab;
-
     public List<UnitController> units = new List<UnitController>();
     public Queue<UnitController> unitsQueue = new Queue<UnitController>();
     public UnitController currentUnit;
@@ -34,98 +32,69 @@ public class GameManager: MonoBehaviour
 
     public Equipment equipment;
 
-    // State //
-    public enum State
+    public GraphicRaycaster windowsGraphicRaycaster;
+    public EventSystem eventSystem;
+
+	int roundN = 1;
+
+	// Functions //
+	void Update()
     {
-        StartOfTheRound,
-        GiveNextPlayerTurn,
-        WaitingForMove,
-        EndOfTheRound
-    }
+		if (currentUnit != null)
+		{
+			if (currentUnit.MyTurn == false)
+			{
+				GiveNextUnitTurn();
+			}
+		}
+	}
 
-    public State state = State.StartOfTheRound;
-
-    // Functions //
-    void Update()
-    {
-        if (state == State.StartOfTheRound)
-        {
-            StartOfTheRound();
-            state = State.GiveNextPlayerTurn;
-        }
-        else if (state == State.GiveNextPlayerTurn)
-        {
-            
-            if (unitsQueue.Count > 0)
-            {
-                if (GiveUnitATurn() == true)
-                {
-                    state = State.WaitingForMove;
-                }
-            }
-            else
-            {
-                state = State.EndOfTheRound;
-            }
-        }
-        else if (state == State.WaitingForMove)
-        {
-            if (currentUnit.state == UnitController.State.NotMyMove)
-            {
-                state = State.GiveNextPlayerTurn;
-            }
-
-        }
-        else if (state == State.EndOfTheRound)
-        {
-            state = State.StartOfTheRound;
-        }
-    }
-
-    void OnEnable()
-    {
-        PlayerController.OnUnitEndTurn += GiveNextPlayerTurn;
-        Stats.OnUnitDied += UnitDied;
-    }
-
-    void OnDisable()
-    {
-        PlayerController.OnUnitEndTurn -= GiveNextPlayerTurn;
-        Stats.OnUnitDied -= UnitDied;
-    }
-
-    void GiveNextPlayerTurn(UnitController unit)
-    {
-        state = State.GiveNextPlayerTurn;
-    }
-
-    void UnitDied(Transform unit)
-    {
-        currentUnit.CalculatePossibleMoves();
-    }
+	void Start()
+	{
+		StartOfTheRound();
+	}
 
     void StartOfTheRound()
     {
-        ClearInfo();
+		// print("Round #" + roundN);
+		++roundN;
 
         foreach (UnitController unit in FindObjectsOfType<UnitController>())
         {
-            if (unit.GetComponent<Stats>().dead == false)
-            {
-                units.Add(unit);
-                unitsQueue.Enqueue(unit);
-            }
+            units.Add(unit);
         }
 
-        //print(units.Count + " " + unitsQueue.Count);
-    }
+		units.Sort();
+		foreach (UnitController unit in units)
+		{
+			unitsQueue.Enqueue(unit);
+		}
 
-    bool GiveUnitATurn()
+		GiveNextUnitTurn();
+	}
+
+	void EndOfTheRound()
+	{
+		ClearInfo();
+		StartOfTheRound();
+	}
+
+    void GiveNextUnitTurn()
     {
+		if (unitsQueue.Count <= 0)
+		{
+			EndOfTheRound();
+			return;
+		}
+		
         currentUnit = unitsQueue.Dequeue();
 
-        if (currentUnit.GetComponent<Stats>().dead == true)
-            return false;
+        if (currentUnit.GetComponent<Stats>().Dead == true)
+		{
+			currentUnit = null;
+			GiveNextUnitTurn();
+			return;
+		}
 
         if (currentUnit.tag == "Player")
         {
@@ -137,13 +106,24 @@ public class GameManager: MonoBehaviour
         }
 
         currentUnit.StartRound();
-
-        return true;
     }
 
-    //....//
+	void OnEnable()
+	{
+		Stats.OnUnitDied += UnitDied;
+	}
 
-    void ClearInfo()
+	void OnDisable()
+	{
+		Stats.OnUnitDied -= UnitDied;
+	}
+
+	void UnitDied(Transform unit)
+	{
+		currentUnit.CalculatePossibleTiles();
+	}
+
+	void ClearInfo()
     {
         units.Clear();
         unitsQueue.Clear();

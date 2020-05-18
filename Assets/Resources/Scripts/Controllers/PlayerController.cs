@@ -1,55 +1,98 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using System;
+using System.Collections.Generic;
 
 public class PlayerController: UnitController
 {
-    // Properties //
-    Tile lastTileOverlaped;
-    Tile lastTileClicked;
+	// Properties //
+	// inspector
+	public Equipment equipmentPrefab;
 
-    public EnemyController enemyInFocus;
+	//
+	[HideInInspector]
+	public bool ignoreNextClick = false;
 
-    public bool ignoreNextClick = false;
 
-    Texture2D cursorOverTarget;
 
-    enum CursorState
+	Tile lastTileOverlaped;
+	Tile lastTileClicked;
+
+	Texture2D cursorOverTarget;
+
+	float maxLootDistance = 1f;
+
+	UnitController lootableTarget;
+
+	// states
+	enum CursorState
+	{
+		Normal,
+		OverTarget
+	}
+
+	CursorState cursorState = CursorState.Normal;
+
+	// Events //
+	public static event Action<UnitController> OnPlayerFocusedTarget;
+    public static event Action OnPlayerDefocusedTarget;
+
+	// Functions //
+	protected override void Awake()
+	{
+		base.Awake();
+
+		cursorOverTarget = Resources.Load<Texture2D>("Icons/Cursors/Selecting");
+	}
+
+	protected override void Start()
+	{
+		base.Start();
+
+		Inventory = Instantiate(inventoryPrefab);
+		Inventory.transform.SetParent(windowsRoot.transform, false);
+		Inventory.Owner = this;
+		Inventory.name = "Inventory (" + transform.name + ")";
+		
+		Equipment = Instantiate(equipmentPrefab);
+		Equipment.transform.SetParent(windowsRoot.transform, false);
+		Equipment.Owner = this;
+		Equipment.name = "Equipment (" + transform.name + ")";
+	}
+
+    void Update()
     {
-        Normal,
-        OverTarget
-    }
-
-    CursorState cursorState = CursorState.Normal;
-
-    // Events //
-    public static event Action<UnitController> OnFocusTarget;
-    public static event Action OnDefocusTarget;
-
-    // Functions //
-    protected override void Update()
-    {
-        base.Update();
-
-        if (state == State.NotMyMove)
+        if (state == State.Waiting)
         {
-            return;
+			return;
         }
-
-        if (currentActionPoints == 0)
+        else if (CurrentActionPoints == 0)
         {
             EndTurn();
         }
 
-        if (state == State.RoundStart)
-        {
-            CalculatePossibleMoves();
-            state = State.ReadingInput;
-        }
         else if (state == State.ReadingInput)
         {
-            MouseOverlapCheck();
+			if (IsMouseOverUI() == true)
+			{
+				if (lastTileOverlaped != null)
+				{
+					lastTileOverlaped.SetStatePossible();
+					lastTileOverlaped = null;
+				}
 
-            if (Input.GetMouseButtonDown(1))
+				return;
+			}
+
+			MouseOverlapCheck();
+
+			if (Input.GetMouseButtonDown(0))
+			{
+				SelectingClick();
+			}
+
+			if (Input.GetMouseButtonDown(1))
             {
                 if (ignoreNextClick)
                 {
@@ -57,23 +100,8 @@ public class PlayerController: UnitController
                     return;
                 }
 
-                TileCkick();
-            }
-            if (Input.GetMouseButtonDown(0))
-            {
-                TargetClick();
-            }
-        }
-        else if (state == State.CalculatingStep)
-        {
-            if (CalculateStep())
-            {
-                state = State.Moving;
-            }
-            else if (currentActionPoints > 0)
-            {
-                state = State.RoundStart;
-            }
+                MovementClick();
+            } 
         }
         else if (state == State.Moving)
         {
@@ -91,15 +119,34 @@ public class PlayerController: UnitController
         Stats.OnUnitDied -= SomeUnitDied;
     }
 
-    protected override void Start()
-    {
-        base.Start();
+	// Reading input //
+	List<RaycastResult> UIMouseRaycast()
+	{
+		EventSystem eventSystem = GameManager.instance.eventSystem;
+		GraphicRaycaster graphicRaycaster = GameManager.instance.windowsGraphicRaycaster;
 
-        cursorOverTarget = Resources.Load<Texture2D>("Icons/Cursors/Selecting");
-    }
+		List<RaycastResult> results = new List<RaycastResult>();
+		PointerEventData pointerEventData = new PointerEventData(eventSystem);
+		pointerEventData.position = Input.mousePosition;
 
-    // Reading input //
-    void MouseOverlapCheck()
+		graphicRaycaster.Raycast(pointerEventData, results);
+
+		return results;
+	}
+
+	bool IsMouseOverUI()
+	{
+		if (UIMouseRaycast().Count == 0)
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+
+	void MouseOverlapCheck()
     {
         Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit);
 
@@ -149,11 +196,8 @@ public class PlayerController: UnitController
         cursorState = CursorState.Normal;
     }
 
-    void TileCkick()
+    void MovementClick()
     {
-        if (weapon != null && weapon.fireAnimationInProcess == true)
-            return;
-
         if (lastTileClicked != null)
         {
             lastTileClicked.SetStatePossible();
@@ -174,13 +218,13 @@ public class PlayerController: UnitController
                 lastTileClicked = hit.transform.GetComponent<Tile>();
                 lastTileClicked.SetStateClicked();
 
-                CalculatePath(lastTileClicked);
-                state = State.CalculatingStep;
+                CalculateAllSteps(lastTileClicked);
+				state = State.Moving;
             }
         }
     }
 
-    void TargetClick()
+    void SelectingClick()
     {
         Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit);
 
@@ -191,14 +235,18 @@ public class PlayerController: UnitController
                 EnemyController enemy = hit.transform.GetComponent<EnemyController>();
                 
                 // dead enemy
-                if (hit.transform.GetComponent<Stats>().dead == true)
+                if (hit.transform.GetComponent<Stats>().Dead == true)
                 {
-                    TryToToot(hit.transform);
+                    TryToTootEnemy(hit.transform);
                 }
                 // second click on target
-                else if (weapon != null && enemyInFocus == enemy && weapon.state == Weapon.State.ClearAim)
+                else if (weapon != null && unitInFocus == enemy && weapon.AimedTarget != null)
                 {
-                    weapon.Fire(enemy);
+					if (WasteActionPoints(weapon.ActionPointsForUse) == true)
+					{
+						state = State.Waiting;
+						weapon.Fire();
+					}
                 }
                 // first click on target
                 else
@@ -206,44 +254,53 @@ public class PlayerController: UnitController
                     if (weapon != null)
                     {
                         LookAtTarget(hit.transform);
+						UnitAnim.Idle(false);
                         weapon.Aim(enemy);
                     }
-
+					
                     FocusTarget(enemy);
                 }
             }
         }
 
-        // click somewhere else
-        //if (enemyInFocus != null)
-        //{
-        //    if (hit.transform == null || hit.transform.tag != "Enemy")
-        //    {
-        //        DefocusTarget();
+		// click somewhere else
+		if (unitInFocus != null)
+		{
+			if (hit.transform == null || hit.transform.tag != "Enemy")
+			{
+				DefocusTarget();
 
-        //        if (weapon != null)
-        //        {
-        //            weapon.StopAim();
-        //        }
-        //    }
-        //}
-    }
+				if (weapon != null)
+				{
+					UnitAnim.Idle(true);
+					weapon.StopAim();
+				}
+			}
+		}
+	}
 
-    void TryToToot(Transform target)
+	void TryToTootEnemy(Transform target)
     {
-        Vector3 direction = (target.position - transform.position).normalized;
-        float maxLootDistance = 30;
+		if (lootableTarget != null && lootableTarget.transform == target && lootableTarget.Inventory.Closed == false)
+		{
+			lootableTarget.CloseInventory();
+			lootableTarget = null;
+		}
+		else
+		{
+			Vector3 direction = (target.position - transform.position).normalized;
 
-        foreach (RaycastHit hit in Physics.RaycastAll(transform.position, direction, maxLootDistance))
-        {
-            if (hit.transform == target.transform)
-            {
-                Lootable loot = target.GetComponent<Lootable>();
-                loot.Open(transform);
+			foreach (RaycastHit hit in Physics.RaycastAll(transform.position, direction, maxLootDistance))
+			{
+				if (hit.transform == target.transform)
+				{
+					lootableTarget = target.GetComponent<UnitController>();
+					lootableTarget.OpenInventory();
 
-                return;
-            }
-        } 
+					return;
+				}
+			}
+		}
     }
 
     void LookAtTarget(Transform target)
@@ -251,27 +308,20 @@ public class PlayerController: UnitController
         transform.LookAt(target);
     }
 
-    // Focus target //
-    public void FocusTarget(EnemyController target)
+	public override void FocusTarget(UnitController target)
     {
-        enemyInFocus = target;
+		base.FocusTarget(target);
 
-        OnFocusTarget?.Invoke(target);
+        OnPlayerFocusedTarget?.Invoke(target);
     }
 
-    public void DefocusTarget()
+    public override void DefocusTarget()
     {
-        enemyInFocus = null;
+		base.DefocusTarget();
 
-        if (weapon != null)
-        {
-            weapon.StopAim();
-        }
-
-        OnDefocusTarget?.Invoke();
+        OnPlayerDefocusedTarget?.Invoke();
     }
 
-    //....//
     public override void WaitTurn()
     {
         base.WaitTurn();
@@ -281,16 +331,21 @@ public class PlayerController: UnitController
     {
         base.EndTurn();
 
-        DefocusTarget();
         SetCursorNormal();
-        ClearInfo();
     }
 
     protected override void ClearInfo()
     {
         base.ClearInfo();
-        lastTileOverlaped = null;
+
+		lastTileOverlaped = null;
         lastTileClicked = null;
+
+		if (lootableTarget != null)
+		{
+			lootableTarget.CloseInventory();
+			lootableTarget = null;
+		}
     }
 
     void SomeUnitDied(Transform unit)
