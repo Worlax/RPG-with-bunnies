@@ -1,61 +1,57 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using System;
 
-public class Inventory: MonoBehaviour
+public class Inventory: Window
 {
-    // Properties //
-    public KeyCode toggleKey;
-    public Button closeButton;
+	// Properties //
+	int slotCount;
+	[SerializeField] RectTransform slotsRoot = default;
 
-	UnitController owner;
-	public UnitController Owner { get => owner; set { if (owner == null) { owner = value; } } }
+	[SerializeField] Item[] startItems;
 
-	public bool Closed { get; private set; }
-
-    // Functions //
-    protected virtual void Start()
-    {
-        closeButton.onClick.AddListener(Close);
-		
-		if (transform.localScale == Vector3.zero)
-		{
-			Closed = true;
-		}
-		else
-		{
-			Closed = false;
-		}
-    }
-	
-	void Update()
-    {
-        if (Input.GetKeyDown(toggleKey))
-        {
-            ToggleVisibility();
-        }
-    }
-
-    void ToggleVisibility()
-    {
-        if (transform.localScale == Vector3.zero)
-        {
-			Open();
-        }
-        else
-        {
-			Close();
-		}
-    }
-
-	public void Open()
+	// Functions //
+	protected override void Start()
 	{
-		transform.localScale = Vector3.one;
-		Closed = false;
+		base.Start();
+
+		InstantiatePrefabs();
 	}
 
-	public void Close()
+	void OnValidate()
 	{
-		transform.localScale = Vector3.zero;
-		Closed = true;
+		CountSlots();
+
+		if (startItems.Length > slotCount)
+		{
+			print("Size of default items is limited by amount of slots.");
+			Array.Resize(ref startItems, slotCount);
+		}
+	}
+
+	void CountSlots()
+	{
+		slotCount = 0;
+
+		foreach (Transform obj in slotsRoot)
+		{
+			InventorySlot slot = obj.GetComponent<InventorySlot>();
+			if (slot != null)
+			{
+				++slotCount;
+			}
+		}
+	}
+
+	void InstantiatePrefabs()
+	{
+		for (int i = 0; i < startItems.Length; ++i)
+		{
+			if (startItems[i] != null)
+			{
+				Item item = Instantiate(startItems[i]);
+				item.transform.SetParent(slotsRoot.GetChild(i), false);
+			}
+		}
 	}
 }

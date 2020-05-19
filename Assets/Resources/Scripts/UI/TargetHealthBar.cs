@@ -3,20 +3,14 @@ using UnityEngine.UI;
 
 public class TargetHealthBar: MonoBehaviour
 {
-    //============//
     // Properties //
-    //============//
-
     Stats stats;
     Text text;
     Slider slider;
 
     public CanvasGroup canvasGroup;
 
-    //===========//
     // Functions //
-    //===========//
-
     void Start()
     {
         text = GetComponentInChildren<Text>();

@@ -1,20 +1,33 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class Equipment: Inventory
+public class Equipment : Window
 {
-    // Properties //
-    public Text level;
-    public Text exp;
-    public Text health;
-    public Text damage;
+	// Properties //
+#pragma warning disable 0649
+
+	[SerializeField] RectTransform slotsRoot;
+
+	[Header("Visual Display")]
+	[SerializeField] Text level;
+	[SerializeField] Text exp;
+	[SerializeField] Text health;
+	[SerializeField] Text damage;
+
+	[Header("Start items")]
+	[SerializeField] Equippable helmet;
+	[SerializeField] Equippable body;
+	[SerializeField] Weapon weapon;
 
 	Stats ownerStats;
 
+#pragma warning restore 0649
 	// Functions //
 	protected override void Start()
 	{
 		base.Start();
+
+		InstantiatePrefabs();
 
 		ownerStats = Owner.GetComponent<Stats>();
 		UpdateStatsDisplay();
@@ -76,4 +89,23 @@ public class Equipment: Inventory
 
 		UpdateStatsDisplay();
     }
+
+	void InstantiatePrefabs()
+	{
+		if (helmet != null)
+		{
+			Equippable _helmet = Instantiate(helmet);
+			_helmet.transform.SetParent(slotsRoot.GetChild(0), false);
+		}
+		if (body != null)
+		{
+			Equippable _body = Instantiate(body);
+			_body.transform.SetParent(slotsRoot.GetChild(1), false);
+		}
+		if (weapon != null)
+		{
+			Weapon _weapon = Instantiate(weapon);
+			_weapon.transform.SetParent(slotsRoot.GetChild(2), false);
+		}
+	}
 }

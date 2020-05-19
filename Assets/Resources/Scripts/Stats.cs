@@ -6,41 +6,25 @@ public class Stats: MonoBehaviour
 	// Properties //
 	UnitAnim unitAnim;
 
-	[SerializeField]
-	int _level = 1;
-    public int Level { get => _level; private set => _level = value; }
+	[SerializeField] int _currentHealth = 70;
+	[SerializeField] int _maxHealth = 70;
+	[SerializeField] int _minDamage = 3;
+	[SerializeField] int _maxDamage = 5;
+	[SerializeField] int _playingTurnSpeed = 2;
+	[SerializeField] int _level = 1;
+	[SerializeField] int _exp = 0;
+	[SerializeField] int _expForLevelUp = 50;
 
-	[SerializeField]
-	int _currentHealth = 70;
+	public int Level { get => _level; private set => _level = value; }
 	public int CurrentHealth { get => _currentHealth; private set => _currentHealth = value; }
-
-	[SerializeField]
-	int _maxHealth = 70;
 	public int MaxHealth { get => _maxHealth; private set => _maxHealth = value; }
-
-	[SerializeField]
-	int _minDamage = 3;
 	public int MinDamage { get => _minDamage; private set => _minDamage = value; }
-
-	[SerializeField]
-	int _maxDamage = 5;
 	public int MaxDamage { get => _maxDamage; private set => _maxDamage = value; }
-
-	[SerializeField]
-	int _playingTurnSpeed = 2;
 	public int PlayingTurnSpeed { get => _playingTurnSpeed; private set => _playingTurnSpeed = value; }
-
-	[SerializeField]
-	int _exp = 0;
 	public int Exp { get => _exp; private set => _exp = value; }
-
-	[SerializeField]
-	int _expForLevelUp = 50;
 	public int ExpForLevelUp { get => _expForLevelUp; private set => _expForLevelUp = value; }
 
-	[ReadOnly]
-	[SerializeField]
-	bool _dead = false;
+	[ReadOnly][SerializeField] bool _dead = false;
 	public bool Dead { get => _dead; private set => _dead = value; }
 
     // Events //
@@ -126,7 +110,7 @@ public class Stats: MonoBehaviour
     void AddExp(int amount)
     {
         Exp += amount;
-		unitAnim.AddExp(Exp);
+		unitAnim.AddExp(amount);
 
         if (Exp >= ExpForLevelUp)
         {

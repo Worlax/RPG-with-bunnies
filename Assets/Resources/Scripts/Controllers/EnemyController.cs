@@ -18,6 +18,8 @@ public class EnemyController: UnitController
 
 		Equipment = Inventory.GetComponent<Equipment>();
 		Equipment.Owner = this;
+
+		Inventory.Close();
 	}
 
 	void Update()

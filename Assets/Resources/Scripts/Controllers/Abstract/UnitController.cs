@@ -15,16 +15,12 @@ public abstract class UnitController: MonoBehaviour, IComparable<UnitController>
 
 	public Transform windowsRoot;
 
-	[Range(0.5f, 5f)]
-	public float speed = 1.5f;
-	[Range(0, 10)]
-	public int startActionPoints = 5;
+	[Range(0.5f, 5f)] public float speed = 1.5f;
+	[Range(0, 10)] public int startActionPoints = 5;
 
 	//
-	[ReadOnly]
-	public Weapon weapon;
-	[ReadOnly]
-	public UnitController unitInFocus;
+	[ReadOnly] public Weapon weapon;
+	[ReadOnly] public UnitController unitInFocus;
 
 	public const int maxActionPoints = 10;
 	public const int maxReservedActionPoints = 3;

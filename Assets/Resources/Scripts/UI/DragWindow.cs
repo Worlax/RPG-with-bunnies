@@ -3,9 +3,9 @@ using UnityEngine.EventSystems;
 
 public class DragWindow: MonoBehaviour, IDragHandler, IPointerDownHandler
 {
-    // Properties //
-    public RectTransform mainWindow;
-    public bool limitByMainWindow = false;
+	// Properties //
+	[SerializeField] RectTransform mainWindow;
+	[SerializeField] bool limitByMainWindow = false;
 
     Vector2 resolution;
     Vector3 mainWindowScale;

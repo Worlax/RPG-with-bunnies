@@ -3,18 +3,12 @@ using UnityEngine.UI;
 
 public class PlayerHealthBar: MonoBehaviour
 {
-    //============//
     // Properties //
-    //============//
-
     Stats stats;
     Text text;
     Slider slider;
 
-    //===========//
     // Functions //
-    //===========//
-
     void Start()
     {
         text = GetComponentInChildren<Text>();

@@ -9,49 +9,35 @@ public class Gun: Weapon
 
 	Text ammoText;
 
-	[SerializeField]
-	bool singleAvailable = true;
-	[SerializeField]
-	bool burstAvailable = true;
-	[SerializeField]
-	bool automaticAvailable = true;
+	[Header("Single")]
+	[SerializeField] bool sAvailable = true;
+	[SerializeField] int sActionPoints = 2;
+	[SerializeField] int sAmmo = 1;
+	[SerializeField] int sMinDamage = 7;
+	[SerializeField] int sMaxDamage = 10;
 
-	[SerializeField]
-	int singleActionPoints = 2;
-	[SerializeField]
-	int burstActionPoints = 3;
-	[SerializeField]
-	int automaticActionPoints = 4;
+	[Header("Burst")]
+	[SerializeField] bool bAvailable = true;
+	[SerializeField] int bActionPoints = 3;
+	[SerializeField] int bAmmo = 3;
+	[SerializeField] int bMinDamage = 6;
+	[SerializeField] int bMaxDamage = 8;
 
-	[SerializeField]
-	int singleAmmo = 1;
-	[SerializeField]
-	int burstAmmo = 3;
-	[SerializeField]
-	int automaticAmmo = 6;
+	[Header("Automatic")]
+	[SerializeField] bool aAvailable = true;
+	[SerializeField] int aActionPoints = 4;
+	[SerializeField] int aAmmo = 6;
+	[SerializeField] int aMinDamage = 5;
+	[SerializeField] int aMaxDamage = 6;
 
-	[SerializeField]
-	int singleMinDamage = 7;
-	[SerializeField]
-	int singleMaxDamage = 10;
-	[SerializeField]
-	int burstMinDamage = 6;
-	[SerializeField]
-	int burstMaxDamage = 8;
-	[SerializeField]
-	int automaticMinDamage = 5;
-	[SerializeField]
-	int automaticMaxDamage = 6;
+	[Header("Ammo")]
+	[SerializeField] Ammo.AmmoType _AmmoType;
+	[SerializeField] int _currentAmmo;
+	[SerializeField] int _maxAmmo = 30;
 
-	[SerializeField]
-	Ammo.AmmoType _AmmoType;
 	public Ammo.AmmoType AmmoType { get => _AmmoType; private set => _AmmoType = value; }
-	[SerializeField]
-	int _currentAmmo;
-    public int CurrentAmmo { get => _currentAmmo; set => _currentAmmo = value; }
-	[SerializeField]
-	int _maxAmmo = 30;
-    public int MaxAmmo { get => _maxAmmo; set => _maxAmmo = value; }
+	public int CurrentAmmo { get => _currentAmmo; set => _currentAmmo = value; }
+	public int MaxAmmo { get => _maxAmmo; set => _maxAmmo = value; }
 
 	protected int ammoForUse;
 
@@ -149,13 +135,13 @@ public class Gun: Weapon
         switch (fireMode)
         {
             case FireMode.Single:
-                return singleAvailable;
+                return sAvailable;
 
             case FireMode.Burst:
-                return burstAvailable;
+                return bAvailable;
 
             case FireMode.Automatic:
-                return automaticAvailable;
+                return aAvailable;
 
             default:
                 return false;
@@ -167,26 +153,26 @@ public class Gun: Weapon
         switch (fireMode)
         {
             case FireMode.Single:
-                ActionPointsForUse = singleActionPoints;
-                MinDamage = singleMinDamage;
-                MaxDamage = singleMaxDamage;
-                ammoForUse = singleAmmo;
+                ActionPointsForUse = sActionPoints;
+                MinDamage = sMinDamage;
+                MaxDamage = sMaxDamage;
+                ammoForUse = sAmmo;
 				randomLocationForDamagePopup = false;
 				break;
 
             case FireMode.Burst:
-                ActionPointsForUse = burstActionPoints;
-                MinDamage = burstMinDamage;
-                MaxDamage = burstMaxDamage;
-                ammoForUse = burstAmmo;
+                ActionPointsForUse = bActionPoints;
+                MinDamage = bMinDamage;
+                MaxDamage = bMaxDamage;
+                ammoForUse = bAmmo;
 				randomLocationForDamagePopup = true;
 				break;
 
             case FireMode.Automatic:
-                ActionPointsForUse = automaticActionPoints;
-                MinDamage = automaticMinDamage;
-                MaxDamage = automaticMaxDamage;
-                ammoForUse = automaticAmmo;
+                ActionPointsForUse = aActionPoints;
+                MinDamage = aMinDamage;
+                MaxDamage = aMaxDamage;
+                ammoForUse = aAmmo;
 				randomLocationForDamagePopup = true;
 				break;
         }

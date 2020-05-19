@@ -912,6 +912,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   toggleKey: 0
   closeButton: {fileID: 3388679465461937778}
+  slotsRoot: {fileID: 3388679466063834062}
+  startItems:
+  - {fileID: -1628435061526178348, guid: 1b2c67719625b794696d0cb5a3b92076, type: 3}
+  - {fileID: -1628435061526178348, guid: 1b2c67719625b794696d0cb5a3b92076, type: 3}
+  - {fileID: -4110343493622071664, guid: e9fca56d459489649ad844886bc904e7, type: 3}
 --- !u!114 &4041450463389514714
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -926,10 +931,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   toggleKey: 0
   closeButton: {fileID: 3388679465461937778}
+  slotsRoot: {fileID: 913774982472940435}
   level: {fileID: 0}
   exp: {fileID: 0}
   health: {fileID: 0}
   damage: {fileID: 0}
+  helmet: {fileID: 0}
+  body: {fileID: 0}
+  weapon: {fileID: 8101613176002088496, guid: d137c67a4ba5a6c4c83b0be23133f573, type: 3}
 --- !u!1 &3388679465680760166
 GameObject:
   m_ObjectHideFlags: 0

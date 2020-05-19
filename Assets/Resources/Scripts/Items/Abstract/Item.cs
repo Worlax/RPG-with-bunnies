@@ -10,8 +10,7 @@ public abstract class Item: MonoBehaviour, IDragHandler, IBeginDragHandler, IEnd
 
     CanvasGroup canvasGroup;
 
-	[HideInInspector]
-    public InventorySlot lastConnectedSlot;
+	[HideInInspector] public InventorySlot lastConnectedSlot;
 
     public GameObject itemIn3DPrefab;
     public GameObject ItemVisual { get; protected set; }
@@ -20,8 +19,17 @@ public abstract class Item: MonoBehaviour, IDragHandler, IBeginDragHandler, IEnd
     protected virtual void Start()
     {
         canvasGroup = GetComponent<CanvasGroup>();
-        GetComponentInParent<InventorySlot>().ConnectOrSwapItem(this, true);
-    }
+
+		InventorySlot slot = GetComponentInParent<InventorySlot>();
+		if (slot == null)
+		{
+			Destroy(gameObject);
+		}
+		else if (slot.ConnectOrSwapItem(this, true) == false)
+		{
+			Destroy(gameObject);
+		}
+	}
 
     public void OnBeginDrag(PointerEventData eventData)
     {

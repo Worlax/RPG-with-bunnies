@@ -11,10 +11,7 @@ public class PlayerController: UnitController
 	public Equipment equipmentPrefab;
 
 	//
-	[HideInInspector]
-	public bool ignoreNextClick = false;
-
-
+	[HideInInspector] public bool ignoreNextClick = false;
 
 	Tile lastTileOverlaped;
 	Tile lastTileClicked;

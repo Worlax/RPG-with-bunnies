@@ -6,29 +6,21 @@ public abstract class Weapon: Equippable
 	WeaponAnim weaponAnim;
 	protected LineRenderer hitLine;
 
-	[ReadOnly]
-	[SerializeField]
-    protected UnitController holder;
+	[ReadOnly][SerializeField] protected UnitController holder;
 
-	[SerializeField]
-	int _actionPointsForUse = 2;
+	[SerializeField] int _actionPointsForUse = 2;
+	[SerializeField] float _hitDistance = 6;
+	[SerializeField] int _minDamage = 3;
+	[SerializeField] int _maxDamage = 5;
+
 	public int ActionPointsForUse { get => _actionPointsForUse; protected set => _actionPointsForUse = value; }
-
-	[SerializeField]
-	float _hitDistance = 6;
 	public float HitDistance { get => _hitDistance; protected set => _hitDistance = value; }
-
-	[SerializeField]
-	int _minDamage = 3;
 	public int MinDamage { get => _minDamage; protected set => _minDamage = value; }
-
-	[SerializeField]
-	int _maxDamage = 5;
 	public int MaxDamage { get => _maxDamage; protected set => _maxDamage = value; }
 
 	public UnitController AimedTarget { get; private set; }
-	protected Vector3 hitLocation;
 
+	protected Vector3 hitLocation;
 	protected bool randomLocationForDamagePopup = false;
 
     // Functions //
@@ -68,7 +60,7 @@ public abstract class Weapon: Equippable
         if (hit.transform != null)
         {
             // hit target
-            if (hit.transform.GetComponent<UnitController>() != null)
+            if (hit.transform.GetComponent<UnitController>() != null && hit.transform == target.transform)
             {
                 DrawHitLine(hit.point, false);
 
