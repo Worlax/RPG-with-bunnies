@@ -22,12 +22,12 @@ public class InventorySlot: MonoBehaviour
         else
         {
             // if new item came for equipment slot
-            if (draggedItem.lastConnectedSlot is EquipmentSlot && itemInSlot is Equippable)
+            if (draggedItem.lastConnectedSlot is EquipmentSlot)
 			{
 				Equippable equippable1 = itemInSlot as Equippable;
 				Equippable equippable2 = draggedItem as Equippable;
 
-				if (equippable1.SlotType == equippable2.SlotType)
+				if (equippable1 != null && equippable1.SlotType == equippable2.SlotType)
                 {
                     SwapItems(draggedItem);
                 }

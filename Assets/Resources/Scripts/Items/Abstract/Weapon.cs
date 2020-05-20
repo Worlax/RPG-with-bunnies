@@ -3,9 +3,6 @@
 public abstract class Weapon: Equippable
 {
 	// Properties //
-	WeaponAnim weaponAnim;
-	protected LineRenderer hitLine;
-
 	[ReadOnly][SerializeField] protected UnitController holder;
 
 	[SerializeField] int _actionPointsForUse = 2;
@@ -17,6 +14,9 @@ public abstract class Weapon: Equippable
 	public float HitDistance { get => _hitDistance; protected set => _hitDistance = value; }
 	public int MinDamage { get => _minDamage; protected set => _minDamage = value; }
 	public int MaxDamage { get => _maxDamage; protected set => _maxDamage = value; }
+
+	WeaponAnim weaponAnim;
+	protected LineRenderer hitLine;
 
 	public UnitController AimedTarget { get; private set; }
 
@@ -59,8 +59,9 @@ public abstract class Weapon: Equippable
         // raycast hit
         if (hit.transform != null)
         {
-            // hit target
-            if (hit.transform.GetComponent<UnitController>() != null && hit.transform == target.transform)
+			// hit target
+			UnitController hitedUnit = hit.transform.GetComponentInParent<UnitController>();
+			if (hitedUnit != null && hitedUnit == target)
             {
                 DrawHitLine(hit.point, false);
 

@@ -11,8 +11,8 @@ public class EnemyController: UnitController
 	{
 		base.Start();
 
-		Inventory = Instantiate(inventoryPrefab);
-		Inventory.transform.SetParent(windowsRoot.transform, false);
+		Inventory = Instantiate(InventoryPrefab);
+		Inventory.transform.SetParent(WindowsRoot.transform, false);
 		Inventory.Owner = this;
 		Inventory.name = "Inv + Equip (" + transform.name + ")";
 
@@ -127,9 +127,10 @@ public class EnemyController: UnitController
 
     bool GetTileForMelee(UnitController target, out Tile tileForMelee)
     {
-        Tile closestTile = grid.tiles[0, 0];
+        Tile closestTile = Grid.tiles[0, 0];
         float closestDistance = 999;
-        List<Tile> targetAdjacentTiles = target.grid.GetClosestTile(target.transform.position).GetAdjacentTiles();
+
+        List<Tile> targetAdjacentTiles = Grid.GetClosestTile(target.transform.position).GetAdjacentTiles();
 
         foreach (Tile tile in targetAdjacentTiles)
         {
@@ -156,8 +157,8 @@ public class EnemyController: UnitController
 
     bool IsInMeleeRange()
     {
-        Tile myTile = grid.GetClosestTile(transform.position);
-        Tile targetTile = grid.GetClosestTile(GetFirstTarget().transform.position);
+        Tile myTile = Grid.GetClosestTile(transform.position);
+        Tile targetTile = Grid.GetClosestTile(GetFirstTarget().transform.position);
         List<Tile> tilesForMelee = targetTile.GetAdjacentTiles();
 
         foreach (Tile tile in tilesForMelee)

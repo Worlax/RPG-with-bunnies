@@ -30,7 +30,7 @@ public class Bullet: MonoBehaviour
 
 	void OnTriggerEnter(Collider other)
     {
-        if (other.transform == target.transform)
+        if (other.transform.parent == target.transform)
         {
 			BulletHit();
 		}

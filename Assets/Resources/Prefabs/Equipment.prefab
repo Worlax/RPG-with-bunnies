@@ -1152,7 +1152,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -237.5, y: -215.33}
+  m_AnchoredPosition: {x: -110, y: -120}
   m_SizeDelta: {x: 170, y: 210.34}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8860063389202720583
@@ -1205,13 +1205,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   toggleKey: 111
   closeButton: {fileID: 8860063388478541993}
+  slotsRoot: {fileID: 8860063389939121811}
   level: {fileID: 8860063388822273837}
   exp: {fileID: 8860063389673024406}
   health: {fileID: 8860063389436982816}
   damage: {fileID: 8860063389057229036}
-  slotsRoot: {fileID: 8860063389939121811}
-  helmet: {fileID: -7082790073596229973, guid: f026ce982a9f064459d5ed215bde24b5, type: 3}
-  body: {fileID: 7124428329737274717, guid: 77c6ed4126a990d42b62908962937c1f, type: 3}
+  helmet: {fileID: 0}
+  body: {fileID: 0}
   weapon: {fileID: 7982174905121024512, guid: 83f40630516af0947809808ff66bab00, type: 3}
 --- !u!1 &8860063389222912001
 GameObject:

@@ -1,10 +1,13 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System;
 
 public class Stats: MonoBehaviour
 {
 	// Properties //
-	UnitAnim unitAnim;
+	[SerializeField] Slider healthBar;
+	[SerializeField] Color healthHighColor;
+	[SerializeField] Color healthLowColor;
 
 	[SerializeField] int _currentHealth = 70;
 	[SerializeField] int _maxHealth = 70;
@@ -27,14 +30,23 @@ public class Stats: MonoBehaviour
 	[ReadOnly][SerializeField] bool _dead = false;
 	public bool Dead { get => _dead; private set => _dead = value; }
 
-    // Events //
-    public static event Action<Transform> OnUnitDied;
+	UnitAnim unitAnim;
+
+	// Events //
+	public static event Action<Transform> OnUnitDied;
     public static event Action StatsUpdated;
 
     // Functions //
 	void Awake()
 	{
-		unitAnim = GetComponent<UnitAnim>();
+		unitAnim = GetComponentInChildren<UnitAnim>();
+	}
+
+	void Update()
+	{
+		healthBar.value = (float)CurrentHealth / (float)MaxHealth;
+
+		healthBar.fillRect.GetComponent<Image>().color = Color.Lerp(healthLowColor, healthHighColor, healthBar.value);
 	}
 
 	public bool Heal(int _health)

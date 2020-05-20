@@ -7,20 +7,25 @@ public abstract class UnitController: MonoBehaviour, IComparable<UnitController>
 {
 	// Properties //
 	// inspector
-	public GameGrid grid;
-
-	public Inventory inventoryPrefab;
-	public Inventory Inventory { get; protected set; }
-	public Equipment Equipment { get; protected set; }
-
-	public Transform windowsRoot;
-
-	[Range(0.5f, 5f)] public float speed = 1.5f;
-	[Range(0, 10)] public int startActionPoints = 5;
-
-	//
+	[SerializeField] Transform _visual;
+	[SerializeField] GameGrid _grid;
+	[SerializeField] Inventory _inventoryPrefab;
+	[SerializeField] Transform _windowsRoot;
+	[SerializeField] [Range(0.5f, 5f)] float _speed = 1.5f;
+	[SerializeField] [Range(0, 10)] int _startActionPoints = 5;
 	[ReadOnly] public Weapon weapon;
 	[ReadOnly] public UnitController unitInFocus;
+
+	public Transform Visual { get => _visual; }
+	public GameGrid Grid { get => _grid; }
+	public Inventory InventoryPrefab { get => _inventoryPrefab; }
+	public Transform WindowsRoot { get => _windowsRoot; }
+	public float Speed { get => _speed; }
+	public int StartActionPoints { get => _startActionPoints; }
+
+	//
+	public Inventory Inventory { get; protected set; }
+	public Equipment Equipment { get; protected set; }
 
 	public const int maxActionPoints = 10;
 	public const int maxReservedActionPoints = 3;
@@ -54,13 +59,13 @@ public abstract class UnitController: MonoBehaviour, IComparable<UnitController>
 	protected virtual void Awake()
 	{
 		Stats = GetComponent<Stats>();
-		UnitAnim = GetComponent<UnitAnim>();
+		UnitAnim = Visual.GetComponent<UnitAnim>();
 	}
 
 	protected virtual void Start()
     {
-		transform.position = grid.GetClosestTile(transform.position).spawnPoint;
-		CurrentActionPoints = startActionPoints;
+		transform.position = Grid.GetClosestTile(transform.position).spawnPoint;
+		CurrentActionPoints = StartActionPoints;
 		UnitAnim.Idle(true);
 	}
 
@@ -73,7 +78,7 @@ public abstract class UnitController: MonoBehaviour, IComparable<UnitController>
     {
 		print(name + " turn.");
 
-		CurrentActionPoints = startActionPoints + ReservedActionPoints;
+		CurrentActionPoints = StartActionPoints + ReservedActionPoints;
         if (CurrentActionPoints > maxActionPoints)
         {
             CurrentActionPoints = maxActionPoints;
@@ -101,10 +106,10 @@ public abstract class UnitController: MonoBehaviour, IComparable<UnitController>
 
         ClearInfo();
        
-        Tile currentTile = grid.GetClosestTile(transform.position);
+        Tile currentTile = Grid.GetClosestTile(transform.position);
         Queue<Tile> tilesQueue = new Queue<Tile>();
         currentTile.SetStateContainsUnit();
-        grid.FindAllBlocked();
+        Grid.FindAllBlocked();
 
         tilesQueue.Enqueue(currentTile);
         while (tilesQueue.Count > 0)
@@ -159,7 +164,7 @@ public abstract class UnitController: MonoBehaviour, IComparable<UnitController>
 		UnitAnim.Idle(false);
 
 		LookAt(nextTilePosition);
-		transform.position += nextTiledirection * Time.deltaTime * speed;
+		transform.position += nextTiledirection * Time.deltaTime * Speed;
 
         if (Vector3.Distance(nextTilePosition, transform.position) <= 0.10f)
         {
@@ -180,19 +185,24 @@ public abstract class UnitController: MonoBehaviour, IComparable<UnitController>
 		}
     }
 
-    public void LookAt(Vector3 target)
+    public void LookAt(Transform target)
     {
-        transform.LookAt(target);
+		Visual.transform.LookAt(target);
     }
 
-    public void Targeted()
+	public void LookAt(Vector3 target)
+	{
+		Visual.transform.LookAt(target);
+	}
+
+	public void Targeted()
     {
-        GetComponent<Renderer>().material.EnableKeyword("_EMISSION");
+        GetComponentInChildren<Renderer>().material.EnableKeyword("_EMISSION");
     }
 
     public void Untargeted()
     {
-        GetComponent<Renderer>().material.DisableKeyword("_EMISSION");
+        GetComponentInChildren<Renderer>().material.DisableKeyword("_EMISSION");
     }
 
     public bool WasteActionPoints(int AP, bool RecalculatePossibleMoves = true)
@@ -265,7 +275,7 @@ public abstract class UnitController: MonoBehaviour, IComparable<UnitController>
 
     protected virtual void ClearInfo()
     {
-        grid.ResetAll();
+        Grid.ResetAll();
         movePath.Clear();
     }
 
@@ -277,7 +287,7 @@ public abstract class UnitController: MonoBehaviour, IComparable<UnitController>
 			weapon.ItemVisual.transform.parent = null;
 		}
 
-		GetComponent<Animator>().Play("Death");
+		GetComponentInChildren<UnitAnim>().UnitDied();
 		MyTurn = false;
     }
 }

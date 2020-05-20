@@ -3,8 +3,8 @@
 public abstract class Equippable: Item
 {
 	// Properties //
-	[SerializeField]
-	EquipmentSlot.Type _slotType;
+	[SerializeField] EquipmentSlot.Type _slotType;
+
 	public EquipmentSlot.Type SlotType { get => _slotType; set => _slotType = value; }
 
 	// Functions //
@@ -14,7 +14,7 @@ public abstract class Equippable: Item
             return;
 
         ItemVisual = Instantiate(itemIn3DPrefab);
-        ItemVisual.transform.SetParent(ownerOfThisItem.transform, false);
+        ItemVisual.transform.SetParent(ownerOfThisItem.Visual, false);
 	}
 
     public virtual void UnequipItem()

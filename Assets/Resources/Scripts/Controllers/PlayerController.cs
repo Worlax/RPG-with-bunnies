@@ -7,10 +7,8 @@ using System.Collections.Generic;
 public class PlayerController: UnitController
 {
 	// Properties //
-	// inspector
-	public Equipment equipmentPrefab;
+	[SerializeField] Equipment equipmentPrefab;
 
-	//
 	[HideInInspector] public bool ignoreNextClick = false;
 
 	Tile lastTileOverlaped;
@@ -21,6 +19,7 @@ public class PlayerController: UnitController
 	float maxLootDistance = 1f;
 
 	UnitController lootableTarget;
+	Vector3 lootableInventoryPopupOffset = new Vector3(100, 0, 0);
 
 	// states
 	enum CursorState
@@ -47,13 +46,13 @@ public class PlayerController: UnitController
 	{
 		base.Start();
 
-		Inventory = Instantiate(inventoryPrefab);
-		Inventory.transform.SetParent(windowsRoot.transform, false);
+		Inventory = Instantiate(InventoryPrefab);
+		Inventory.transform.SetParent(WindowsRoot.transform, false);
 		Inventory.Owner = this;
 		Inventory.name = "Inventory (" + transform.name + ")";
 		
 		Equipment = Instantiate(equipmentPrefab);
-		Equipment.transform.SetParent(windowsRoot.transform, false);
+		Equipment.transform.SetParent(WindowsRoot.transform, false);
 		Equipment.Owner = this;
 		Equipment.name = "Equipment (" + transform.name + ")";
 	}
@@ -229,10 +228,10 @@ public class PlayerController: UnitController
         {
             if (hit.transform.tag == "Enemy")
             {
-                EnemyController enemy = hit.transform.GetComponent<EnemyController>();
+                EnemyController enemy = hit.transform.GetComponentInParent<EnemyController>();
                 
                 // dead enemy
-                if (hit.transform.GetComponent<Stats>().Dead == true)
+                if (hit.transform.GetComponentInParent<Stats>().Dead == true)
                 {
                     TryToTootEnemy(hit.transform);
                 }
@@ -250,7 +249,7 @@ public class PlayerController: UnitController
                 {
                     if (weapon != null)
                     {
-                        LookAtTarget(hit.transform);
+                        LookAt(hit.transform);
 						UnitAnim.Idle(false);
                         weapon.Aim(enemy);
                     }
@@ -278,7 +277,7 @@ public class PlayerController: UnitController
 
 	void TryToTootEnemy(Transform target)
     {
-		if (lootableTarget != null && lootableTarget.transform == target && lootableTarget.Inventory.Closed == false)
+		if (lootableTarget != null && lootableTarget.transform == target.parent && lootableTarget.Inventory.Closed == false)
 		{
 			lootableTarget.CloseInventory();
 			lootableTarget = null;
@@ -291,18 +290,16 @@ public class PlayerController: UnitController
 			{
 				if (hit.transform == target.transform)
 				{
-					lootableTarget = target.GetComponent<UnitController>();
+					lootableTarget = target.GetComponentInParent<UnitController>();
 					lootableTarget.OpenInventory();
+					lootableTarget.Inventory.transform.position = Input.mousePosition + lootableInventoryPopupOffset;
+
+					Inventory.Open();
 
 					return;
 				}
 			}
 		}
-    }
-
-    void LookAtTarget(Transform target)
-    {
-        transform.LookAt(target);
     }
 
 	public override void FocusTarget(UnitController target)
