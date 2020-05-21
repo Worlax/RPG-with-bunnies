@@ -25,7 +25,7 @@ public abstract class Item: MonoBehaviour, IDragHandler, IBeginDragHandler, IEnd
 		{
 			Destroy(gameObject);
 		}
-		else if (slot.ConnectOrSwapItem(this, true) == false)
+		else if (slot.ConnectOrSwapItem(this) == false)
 		{
 			Destroy(gameObject);
 		}
@@ -53,12 +53,12 @@ public abstract class Item: MonoBehaviour, IDragHandler, IBeginDragHandler, IEnd
         {
             if (slot.ConnectOrSwapItem(this) == false)
             {
-                lastConnectedSlot.ConnectOrSwapItem(this, true);
+                lastConnectedSlot.ConnectOrSwapItem(this);
             }
         }
         else
         {
-            lastConnectedSlot.ConnectOrSwapItem(this, true);
+            lastConnectedSlot.ConnectOrSwapItem(this);
         }
 
         canvasGroup.blocksRaycasts = true;

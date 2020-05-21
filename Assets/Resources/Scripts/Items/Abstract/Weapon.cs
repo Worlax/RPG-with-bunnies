@@ -28,7 +28,7 @@ public abstract class Weapon: Equippable
     {
 		base.EquipItem(ownerOfThisItem);
 
-		hitLine = GameManager.instance.WeaponAimLineRenderer;
+		hitLine = BattleManager.instance.WeaponAimLineRenderer;
 		holder = ownerOfThisItem;
 		ownerOfThisItem.weapon = this;
 		weaponAnim = ItemVisual.GetComponentInChildren<WeaponAnim>();
@@ -131,6 +131,6 @@ public abstract class Weapon: Equippable
 
 	public virtual void WeaponFired()
 	{
-		holder.state = UnitController.State.ReadingInput;
+		holder.battleState = UnitController.BattleState.ReadingInput;
 	}
 }

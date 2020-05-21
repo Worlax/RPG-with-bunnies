@@ -30,13 +30,13 @@ public class EquipmentSlot: InventorySlot
 		owner = equipment.Owner;
 	}
 
-    public override bool ConnectOrSwapItem(Item newItem, bool ignoreMoveTurn = false)
+    public override bool ConnectOrSwapItem(Item newItem)
     {
         Equippable equipmentItem = newItem as Equippable;
         if (equipmentItem == null || equipmentItem.SlotType != SlotType)
             return false;
 
-        return base.ConnectOrSwapItem(newItem, ignoreMoveTurn);
+        return base.ConnectOrSwapItem(newItem);
     }
 
     protected override void ConnectItem(Item newItem)
@@ -59,9 +59,9 @@ public class EquipmentSlot: InventorySlot
 		item.UnequipItem();
 		equipment.SubtractStats(item);
 
-		if (owner as PlayerController != null && itemInSlot as Weapon != null)
+		if (owner as PlayerController != null && item as Weapon != null)
 		{
-			PlayerEquipedWeapon?.Invoke(itemInSlot as Weapon);
+			PlayerUnequipedWeapon?.Invoke(itemInSlot as Weapon);
 		}
 
 		base.DisconnectItem();

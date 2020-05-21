@@ -19,9 +19,11 @@ public class Equipment : Window
 	[SerializeField] Equippable body;
 	[SerializeField] Weapon weapon;
 
+#pragma warning restore 0649
+
 	Stats ownerStats;
 
-#pragma warning restore 0649
+
 	// Functions //
 	protected override void Start()
 	{

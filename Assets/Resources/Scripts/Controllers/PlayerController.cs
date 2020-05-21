@@ -7,7 +7,11 @@ using System.Collections.Generic;
 public class PlayerController: UnitController
 {
 	// Properties //
+#pragma warning disable 0649
+
 	[SerializeField] Equipment equipmentPrefab;
+
+#pragma warning restore 0649
 
 	[HideInInspector] public bool ignoreNextClick = false;
 
@@ -50,26 +54,54 @@ public class PlayerController: UnitController
 		Inventory.transform.SetParent(WindowsRoot.transform, false);
 		Inventory.Owner = this;
 		Inventory.name = "Inventory (" + transform.name + ")";
+		Inventory.Close();
 		
 		Equipment = Instantiate(equipmentPrefab);
 		Equipment.transform.SetParent(WindowsRoot.transform, false);
 		Equipment.Owner = this;
 		Equipment.name = "Equipment (" + transform.name + ")";
+		Equipment.Close();
+
+		CalculatePossibleTiles();
 	}
 
     void Update()
     {
-        if (state == State.Waiting)
-        {
-			return;
-        }
-        else if (CurrentActionPoints == 0)
-        {
-            EndTurn();
-        }
+		if (InBattle)
+		{
+			BattleLogic();
+		}
+		else
+		{
+			OutOfBattleLogic();
+		}
+    }
 
-        else if (state == State.ReadingInput)
-        {
+    void OnEnable()
+    {
+        Stats.OnUnitDied += SomeUnitDied;
+    }
+
+    void OnDisable()
+    {
+        Stats.OnUnitDied -= SomeUnitDied;
+    }
+
+	public override void EndBattle()
+	{
+		base.EndBattle();
+
+		CalculatePossibleTiles();
+	}
+
+	void OutOfBattleLogic()
+	{
+		if (battleState == BattleState.Moving)
+		{
+			MakeStep();
+		}
+		else
+		{
 			if (IsMouseOverUI() == true)
 			{
 				if (lastTileOverlaped != null)
@@ -89,37 +121,70 @@ public class PlayerController: UnitController
 			}
 
 			if (Input.GetMouseButtonDown(1))
-            {
-                if (ignoreNextClick)
-                {
-                    ignoreNextClick = false;
-                    return;
-                }
+			{
+				if (ignoreNextClick)
+				{
+					ignoreNextClick = false;
+					return;
+				}
 
-                MovementClick();
-            } 
-        }
-        else if (state == State.Moving)
-        {
-            MakeStep();
-        }
-    }
+				MovementClick();
+			}
+		}
+	}
 
-    void OnEnable()
-    {
-        Stats.OnUnitDied += SomeUnitDied;
-    }
+	void BattleLogic()
+	{
+		if (battleState == BattleState.Waiting)
+		{
+			return;
+		}
+		else if (CurrentActionPoints == 0)
+		{
+			EndTurn();
+		}
 
-    void OnDisable()
-    {
-        Stats.OnUnitDied -= SomeUnitDied;
-    }
+		else if (battleState == BattleState.ReadingInput)
+		{
+			if (IsMouseOverUI() == true)
+			{
+				if (lastTileOverlaped != null)
+				{
+					lastTileOverlaped.SetStatePossible();
+					lastTileOverlaped = null;
+				}
 
-	// Reading input //
+				return;
+			}
+
+			MouseOverlapCheck();
+
+			if (Input.GetMouseButtonDown(0))
+			{
+				SelectingClick();
+			}
+
+			if (Input.GetMouseButtonDown(1))
+			{
+				if (ignoreNextClick)
+				{
+					ignoreNextClick = false;
+					return;
+				}
+
+				MovementClick();
+			}
+		}
+		else if (battleState == BattleState.Moving)
+		{
+			MakeStep();
+		}
+	}
+
 	List<RaycastResult> UIMouseRaycast()
 	{
-		EventSystem eventSystem = GameManager.instance.eventSystem;
-		GraphicRaycaster graphicRaycaster = GameManager.instance.windowsGraphicRaycaster;
+		EventSystem eventSystem = BattleManager.instance.eventSystem;
+		GraphicRaycaster graphicRaycaster = BattleManager.instance.windowsGraphicRaycaster;
 
 		List<RaycastResult> results = new List<RaycastResult>();
 		PointerEventData pointerEventData = new PointerEventData(eventSystem);
@@ -215,7 +280,7 @@ public class PlayerController: UnitController
                 lastTileClicked.SetStateClicked();
 
                 CalculateAllSteps(lastTileClicked);
-				state = State.Moving;
+				battleState = BattleState.Moving;
             }
         }
     }
@@ -240,7 +305,12 @@ public class PlayerController: UnitController
                 {
 					if (WasteActionPoints(weapon.ActionPointsForUse) == true)
 					{
-						state = State.Waiting;
+						if (InBattle == false)
+						{
+							BattleManager.instance.Provoke(this, enemy);
+						}
+
+						battleState = BattleState.Waiting;
 						weapon.Fire();
 					}
                 }

@@ -5,9 +5,13 @@ using System;
 public class Stats: MonoBehaviour
 {
 	// Properties //
+#pragma warning disable 0649
+
 	[SerializeField] Slider healthBar;
 	[SerializeField] Color healthHighColor;
 	[SerializeField] Color healthLowColor;
+
+#pragma warning restore 0649
 
 	[SerializeField] int _currentHealth = 70;
 	[SerializeField] int _maxHealth = 70;
@@ -98,6 +102,7 @@ public class Stats: MonoBehaviour
     {
 		unitAnim.UnitDied();
 
+		healthBar.fillRect.GetComponent<Image>().enabled = false;
 		CurrentHealth = 0;
         Dead = true;
 

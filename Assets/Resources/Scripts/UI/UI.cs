@@ -1,14 +1,18 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class UI: MonoBehaviour
+public class UI : MonoBehaviour
 {
-    // Properties //
-    public Button wait;
-    public Button skip;
+	// Properties //
+#pragma warning disable 0649
 
-	public Button fireMode;
-	public RectTransform ammo;
+	[SerializeField] Button wait;
+	[SerializeField] Button skip;
+
+	[SerializeField] Button fireMode;
+	[SerializeField] RectTransform ammo;
+
+#pragma warning restore 0649
 
 	// Functions //
 	void Start()
@@ -32,18 +36,18 @@ public class UI: MonoBehaviour
 
 	public void WaitTurn()
     {
-		if (GameManager.instance.playerMove == false || GameManager.instance.currentUnit.state != UnitController.State.ReadingInput)
+		if (BattleManager.instance.PlayerMove == false || BattleManager.instance.CurrentUnit.battleState != UnitController.BattleState.ReadingInput)
 			return;
 
-		GameManager.instance.currentUnit.GetComponent<PlayerController>().WaitTurn();
+		BattleManager.instance.CurrentUnit.GetComponent<PlayerController>().WaitTurn();
     }
 
     public void EndTurn()
     {
-        if (GameManager.instance.playerMove == false || GameManager.instance.currentUnit.state != UnitController.State.ReadingInput)
+        if (BattleManager.instance.PlayerMove == false || BattleManager.instance.CurrentUnit.battleState != UnitController.BattleState.ReadingInput)
             return;
 
-        GameManager.instance.currentUnit.GetComponent<PlayerController>().EndTurn();
+        BattleManager.instance.CurrentUnit.GetComponent<PlayerController>().EndTurn();
     }
 
 	void WeaponEquiped(Weapon weapon)
@@ -82,10 +86,10 @@ public class UI: MonoBehaviour
 
 	public void ToggleFireMode()
 	{
-		if (GameManager.instance.playerMove == false)
+		if (BattleManager.instance.PlayerMove == false)
 			return;
 
-		PlayerController player = GameManager.instance.currentUnit.GetComponent<PlayerController>();
+		PlayerController player = BattleManager.instance.CurrentUnit.GetComponent<PlayerController>();
 
 		Gun gun = player.weapon as Gun;
 		if (gun == null)

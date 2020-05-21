@@ -24,7 +24,7 @@ public class EnemyController: UnitController
 
 	void Update()
     {
-        if (state == State.Waiting)
+        if (battleState == BattleState.Waiting)
         {
             return;
         }
@@ -33,11 +33,11 @@ public class EnemyController: UnitController
             EndTurn();
         }
 
-		else if (state == State.ReadingInput)
+		else if (battleState == BattleState.ReadingInput)
 		{
 			TryToAim();
 		}
-		else if (state == State.Moving)
+		else if (battleState == BattleState.Moving)
 		{
 			MakeStep(true);
 		}
@@ -67,7 +67,7 @@ public class EnemyController: UnitController
 		if (weapon.AimedTarget == null)
 		{
 			weapon.StopAim();
-			state = State.Moving;
+			battleState = BattleState.Moving;
 		}
 		else
 		{
@@ -77,7 +77,7 @@ public class EnemyController: UnitController
 				UnitAnim.Idle(false);
 				weapon.Fire();
 
-				state = State.Waiting;
+				battleState = BattleState.Waiting;
 			}
 			else
 			{
@@ -114,7 +114,7 @@ public class EnemyController: UnitController
 
     PlayerController GetFirstTarget()
     {
-        foreach (UnitController unit in GameManager.instance.units)
+        foreach (UnitController unit in BattleManager.instance.BattlingUnits)
         {
             if (unit.tag == "Player")
             {
@@ -127,14 +127,14 @@ public class EnemyController: UnitController
 
     bool GetTileForMelee(UnitController target, out Tile tileForMelee)
     {
-        Tile closestTile = Grid.tiles[0, 0];
+        Tile closestTile = Grid.Tiles[0, 0];
         float closestDistance = 999;
 
         List<Tile> targetAdjacentTiles = Grid.GetClosestTile(target.transform.position).GetAdjacentTiles();
 
         foreach (Tile tile in targetAdjacentTiles)
         {
-            float distance = Vector3.Distance(transform.position, tile.spawnPoint);
+            float distance = Vector3.Distance(transform.position, tile.SpawnPoint);
 
             if (distance < closestDistance && tile.state == Tile.State.Possible)
             {

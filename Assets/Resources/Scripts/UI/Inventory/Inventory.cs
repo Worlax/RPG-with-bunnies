@@ -54,4 +54,12 @@ public class Inventory: Window
 			}
 		}
 	}
+
+	public override void Open()
+	{
+		if (Owner.InBattle == false)
+		{
+			base.Open();
+		}
+	}
 }

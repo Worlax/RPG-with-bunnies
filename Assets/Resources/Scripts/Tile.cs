@@ -4,20 +4,25 @@ using System.Collections.Generic;
 [SelectionBase]
 public class Tile: MonoBehaviour
 {
-    // Properties //
-    public Material mDisabled;
-    public Material mPossible;
-    public Material mOverlapped;
-    public Material mClicked;
-    public Material mWithPlayer;
+	// Properties //
+#pragma warning disable 0649
 
-    public Vector3 spawnPoint;
+	[SerializeField] Transform _spawnPoint;
 
-    public bool bChecked = false;
-    public Tile parent;
-    public int numberOfParents = 0;
+	[SerializeField] Material mDisabled;
+	[SerializeField] Material mPossible;
+	[SerializeField] Material mOverlapped;
+	[SerializeField] Material mClicked;
+	[SerializeField] Material mWithPlayer;
 
-    List<Tile> adjacentTiles = new List<Tile>();
+#pragma warning restore 0649
+
+	public Vector3 SpawnPoint { get => _spawnPoint.position; }
+
+	[HideInInspector] public bool bChecked = false;
+	[HideInInspector] public Tile parent;
+	[HideInInspector] public int numberOfParents = 0;
+    List<Tile> adjacentTiles;
 
     // State //
     public enum State
@@ -30,13 +35,13 @@ public class Tile: MonoBehaviour
         ContainsUnit
     }
 
-    public State state = State.Disabled;
+    [ReadOnly] public State state = State.Disabled;
 
     // Functions //
-    void Awake()
+    void Start()
     {
-        spawnPoint = transform.GetChild(0).transform.position;
-    }
+		adjacentTiles = new List<Tile>();
+	}
 
     public void FindAdjacentTiles()
     {
@@ -84,10 +89,9 @@ public class Tile: MonoBehaviour
             return true;
         }
 
-        return false; // test 3
+        return false;
     }
 
-    // Set state //
     public void SetStateDisabled()
     {
         state = State.Disabled;
@@ -126,7 +130,6 @@ public class Tile: MonoBehaviour
         SetMaterial(mWithPlayer);
     }
 
-    //....//
     void SetMaterial(Material mat)
     {
         transform.GetComponent<Renderer>().material = mat;

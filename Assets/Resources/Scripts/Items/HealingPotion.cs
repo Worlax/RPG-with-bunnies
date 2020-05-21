@@ -9,7 +9,7 @@ public class HealingPotion: Usable
     // Functions //
     protected override bool UseEffect()
     {
-        Stats stats = GameManager.instance.currentUnit.GetComponent<Stats>();
+        Stats stats = BattleManager.instance.CurrentUnit.GetComponent<Stats>();
 
         return stats.Heal(HealthForUse);
     }

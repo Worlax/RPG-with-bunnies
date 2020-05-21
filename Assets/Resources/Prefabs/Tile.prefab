@@ -44,7 +44,7 @@ GameObject:
   - component: {fileID: 2647226524013225347}
   - component: {fileID: 992570432517859141}
   m_Layer: 11
-  m_Name: TilePrefab
+  m_Name: Tile
   m_TagString: Tile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -103,7 +103,7 @@ MonoBehaviour:
   mOverlapped: {fileID: 2100000, guid: e0959fbed908dd3478addf354c731f3a, type: 2}
   mClicked: {fileID: 2100000, guid: ee0d469ff9e602247a096b0ce1768c91, type: 2}
   mWithPlayer: {fileID: 2100000, guid: 5550b5cd34db8df4f94aff9cde0ff1f5, type: 2}
-  spawnPoint: {x: 0, y: 0, z: 0}
+  _spawnPoint: {fileID: 2137442806905812515}
   bChecked: 0
   parent: {fileID: 0}
   numberOfParents: 0

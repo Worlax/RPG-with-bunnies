@@ -46,5 +46,5 @@ MonoBehaviour:
   columns: 10
   rows: 10
   gap: 0.8
-  tileClassRef: {fileID: 2647226524013225347, guid: 2127fb561a0aa0742ac37c96246eb5b0,
+  tilePrefab: {fileID: 2647226524013225347, guid: 2127fb561a0aa0742ac37c96246eb5b0,
     type: 3}

@@ -47,7 +47,7 @@ public class Window: MonoBehaviour
 		}
 	}
 
-	public void Open()
+	public virtual void Open()
 	{
 		transform.localScale = Vector3.one;
 		Closed = false;

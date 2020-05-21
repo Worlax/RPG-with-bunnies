@@ -40,6 +40,6 @@ public class PlayerHealthBar: MonoBehaviour
         if (unit.tag != "Player")
             return;
 
-        stats = GameManager.instance.currentUnit.GetComponent<Stats>();
+        stats = BattleManager.instance.CurrentUnit.GetComponent<Stats>();
     }
 }

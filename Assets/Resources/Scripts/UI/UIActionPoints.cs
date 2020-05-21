@@ -4,45 +4,55 @@ using UnityEngine.UI;
 
 public class UIActionPoints: MonoBehaviour
 {
-    // Properties //
-    public int UIMaxActionPoints = 10;
-    int UIActiveActionPoints;
-    List<Image> actionPoints = new List<Image>();
-    public Color pointActive;
-    public Color pointNotActive;
+	// Properties //
+#pragma warning disable 0649
 
-    // Functions //
-    void Start()
+	[SerializeField] Color activePoints;
+	[SerializeField] Color notActivePoints;
+
+#pragma warning restore 0649
+
+	PlayerController currentPlayer;
+
+	public const int UIMaxActionPoints = 10;
+    int UIActiveActionPoints;
+    List<Image> actionPoints;
+
+	// Functions //
+	void Start()
     {
-        foreach (Transform child in transform)
+		currentPlayer = GameManager.instance.CurrenPlayer;
+
+		actionPoints = new List<Image>();
+		UIActiveActionPoints = UIMaxActionPoints;
+
+		foreach (Transform child in transform)
         {
             Image ActionPointIMG = child.GetComponent<Image>();
-            ActionPointIMG.color = pointActive;
+            ActionPointIMG.color = activePoints;
 
             actionPoints.Add(ActionPointIMG);
         }
+	}
 
-        UIActiveActionPoints = UIMaxActionPoints;
-    }
+	void Update()
+	{
+		ChangeActionPoints();
+	}
 
     void OnEnable()
     {
-        UnitController.OnActionPointsChanged += ChangeActionPoints;
-        UnitController.OnNewUnitTurn += ChangeActionPoints;
+        //UnitController.OnNewUnitTurn += ChangeActionPoints;
     }
 
     void OnDisable()
     {
-        UnitController.OnActionPointsChanged -= ChangeActionPoints;
-        UnitController.OnNewUnitTurn -= ChangeActionPoints;
+        //UnitController.OnNewUnitTurn -= ChangeActionPoints;
     }
 
-    void ChangeActionPoints(UnitController unit)
+    void ChangeActionPoints()
     {
-        if (unit.tag != "Player")
-            return;
-
-        int playerActionPoints = GameManager.instance.currentUnit.CurrentActionPoints;
+		int playerActionPoints = currentPlayer.CurrentActionPoints;
 
         if (UIActiveActionPoints > playerActionPoints)
         {
@@ -50,7 +60,7 @@ public class UIActionPoints: MonoBehaviour
 
             for (int i = UIMaxActionPoints - 1; i >= UIActiveActionPoints; --i)
             {
-                actionPoints[i].color = pointNotActive;
+                actionPoints[i].color = notActivePoints;
             }
         }
         else if (UIActiveActionPoints < playerActionPoints)
@@ -59,7 +69,7 @@ public class UIActionPoints: MonoBehaviour
 
             for (int i = 0; i < UIActiveActionPoints; ++i)
             {
-                actionPoints[i].color = pointActive;
+                actionPoints[i].color = activePoints;
             }
         }
     }

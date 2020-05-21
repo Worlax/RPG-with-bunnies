@@ -43,7 +43,7 @@ public abstract class Usable: Item, IPointerClickHandler
 			lastTimeClicked = Time.time;
 			return;
 		}
-		else if (Time.time - lastTimeClicked < doubleClickMaxSpread && GameManager.instance.playerMove == true)
+		else if (Time.time - lastTimeClicked < doubleClickMaxSpread && BattleManager.instance.PlayerMove == true)
 		{
 			Use();
 		}

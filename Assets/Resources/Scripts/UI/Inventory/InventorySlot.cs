@@ -8,13 +8,8 @@ public class InventorySlot: MonoBehaviour
 
     // Functions //
 	// return false to give back dragged item (failed connect or swap)
-    public virtual bool ConnectOrSwapItem(Item draggedItem, bool ignoreMoveTurn = false)
+    public virtual bool ConnectOrSwapItem(Item draggedItem)
     {
-        if (ignoreMoveTurn == false && GameManager.instance.playerMove == false)
-        {
-            return false;
-        }
-
         if (itemInSlot == null)
         {
             ConnectItem(draggedItem);

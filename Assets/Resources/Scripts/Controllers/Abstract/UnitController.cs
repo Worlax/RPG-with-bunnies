@@ -7,10 +7,15 @@ public abstract class UnitController: MonoBehaviour, IComparable<UnitController>
 {
 	// Properties //
 	// inspector
+#pragma warning disable 0649
+
 	[SerializeField] Transform _visual;
 	[SerializeField] GameGrid _grid;
 	[SerializeField] Inventory _inventoryPrefab;
 	[SerializeField] Transform _windowsRoot;
+
+#pragma warning restore 0649
+
 	[SerializeField] [Range(0.5f, 5f)] float _speed = 1.5f;
 	[SerializeField] [Range(0, 10)] int _startActionPoints = 5;
 	[ReadOnly] public Weapon weapon;
@@ -34,6 +39,9 @@ public abstract class UnitController: MonoBehaviour, IComparable<UnitController>
 
 	public Stats Stats { get; private set; }
 	public UnitAnim UnitAnim { get; private set; }
+
+	[SerializeField] [ReadOnly] bool _inBattle = false;
+	public bool InBattle { get => _inBattle; private set => _inBattle = value; }
 	public bool MyTurn { get; protected set; } = false;
 
 	protected Stack<Tile> movePath = new Stack<Tile>();
@@ -42,18 +50,16 @@ public abstract class UnitController: MonoBehaviour, IComparable<UnitController>
 
 	// Events //
 	public static event Action<UnitController> OnNewUnitTurn;
-    public static event Action<UnitController> OnActionPointsChanged;
 
     // State //
-    public enum State
+    public enum BattleState
     {
         Waiting,
         ReadingInput,
         Moving
     }
 
-	[HideInInspector]
-	public State state = State.Waiting;
+	[ReadOnly] public BattleState battleState = BattleState.Waiting;
 
 	// Functions //
 	protected virtual void Awake()
@@ -64,7 +70,7 @@ public abstract class UnitController: MonoBehaviour, IComparable<UnitController>
 
 	protected virtual void Start()
     {
-		transform.position = Grid.GetClosestTile(transform.position).spawnPoint;
+		transform.position = Grid.GetClosestTile(transform.position).SpawnPoint;
 		CurrentActionPoints = StartActionPoints;
 		UnitAnim.Idle(true);
 	}
@@ -74,10 +80,20 @@ public abstract class UnitController: MonoBehaviour, IComparable<UnitController>
 		return obj.Stats.PlayingTurnSpeed.CompareTo(Stats.PlayingTurnSpeed);
 	}
 
+	public virtual void StartBattle()
+	{
+		InBattle = true;
+		Inventory.Close();
+		Equipment.Close();
+	}
+
+	public virtual void EndBattle()
+	{
+		InBattle = false;
+	}
+
 	public virtual void StartRound()
     {
-		print(name + " turn.");
-
 		CurrentActionPoints = StartActionPoints + ReservedActionPoints;
         if (CurrentActionPoints > maxActionPoints)
         {
@@ -88,7 +104,7 @@ public abstract class UnitController: MonoBehaviour, IComparable<UnitController>
 		OnNewUnitTurn?.Invoke(this);
 
 		MyTurn = true;
-		state = State.ReadingInput;
+		battleState = BattleState.ReadingInput;
     }
 
     public virtual void CalculatePossibleTiles(int _distance = 0)
@@ -99,10 +115,14 @@ public abstract class UnitController: MonoBehaviour, IComparable<UnitController>
         {
             distance = _distance;
         }
-        else
+        else if (InBattle == false)
         {
-            distance = CurrentActionPoints;
+            distance = 999;
         }
+		else
+		{
+			distance = CurrentActionPoints;
+		}
 
         ClearInfo();
        
@@ -148,7 +168,7 @@ public abstract class UnitController: MonoBehaviour, IComparable<UnitController>
     {
         if (movePath.Count > 0)
         {
-            nextTilePosition = movePath.Pop().spawnPoint;
+            nextTilePosition = movePath.Pop().SpawnPoint;
             nextTiledirection = (nextTilePosition - transform.position).normalized;
 
 			return true;
@@ -168,19 +188,23 @@ public abstract class UnitController: MonoBehaviour, IComparable<UnitController>
 
         if (Vector3.Distance(nextTilePosition, transform.position) <= 0.10f)
         {
-            transform.position = nextTilePosition;
-            WasteActionPoints(1, false);
+			if (InBattle)
+			{
+				WasteActionPoints(1, false);
+			}
+
+			transform.position = nextTilePosition;
 
 			if (CalculateNextStep() == false)
 			{
-				CalculatePossibleTiles();
-				state = State.ReadingInput;
 				UnitAnim.Idle(true);
+				CalculatePossibleTiles();
+				battleState = BattleState.ReadingInput;
 			}
 
 			if (stopAfterOneTile == true)
 			{
-				state = State.ReadingInput;
+				battleState = BattleState.ReadingInput;
 			}
 		}
     }
@@ -211,7 +235,6 @@ public abstract class UnitController: MonoBehaviour, IComparable<UnitController>
         {
             CurrentActionPoints -= AP;
             if (RecalculatePossibleMoves) { CalculatePossibleTiles(); }
-            OnActionPointsChanged?.Invoke(this);
 
             return true;
         }
@@ -270,7 +293,7 @@ public abstract class UnitController: MonoBehaviour, IComparable<UnitController>
 		ClearInfo();
 
 		MyTurn = false;
-		state = State.Waiting;
+		battleState = BattleState.Waiting;
     }
 
     protected virtual void ClearInfo()
