@@ -100,8 +100,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: Item
-  lastConnectedSlot: {fileID: 0}
-  itemIn3DPrefab: {fileID: 4431247636066634529, guid: 285c3f46e68b91e41927a99cad78316e,
+  _price: 100
+  _itemIn3DPrefab: {fileID: 4431247636066634529, guid: 285c3f46e68b91e41927a99cad78316e,
     type: 3}
+  lastConnectedSlot: {fileID: 0}
   _slotType: 1
   maxHealth: 20

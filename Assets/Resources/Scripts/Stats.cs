@@ -74,7 +74,7 @@ public class Stats: MonoBehaviour
 		return true;
 	}
 
-	public void DealDamage(UnitController source, int damage, bool randomLocation = false)
+	public void DealDamage(Unit source, int damage, bool randomLocation = false)
     {
         if (Dead)
             return;
@@ -87,7 +87,7 @@ public class Stats: MonoBehaviour
         }
         else
         {
-            if (GetComponent<EnemyController>() == true)
+            if (GetComponent<Enemy>() == true)
             {
                 Stats killerStats = source.GetComponent<Stats>();
 
@@ -106,7 +106,7 @@ public class Stats: MonoBehaviour
 		CurrentHealth = 0;
         Dead = true;
 
-        GetComponent<UnitController>().KillUnit();
+        GetComponent<Unit>().KillUnit();
         OnUnitDied?.Invoke(transform);
     }
 

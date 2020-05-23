@@ -101,30 +101,31 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: Item
-  lastConnectedSlot: {fileID: 0}
-  itemIn3DPrefab: {fileID: 5845950588336264084, guid: 0c2412728df141c4b9941fc314d356ea,
+  _price: 100
+  _itemIn3DPrefab: {fileID: 5845950588336264084, guid: 0c2412728df141c4b9941fc314d356ea,
     type: 3}
+  lastConnectedSlot: {fileID: 0}
   _slotType: 3
   holder: {fileID: 0}
   _actionPointsForUse: 2
   _hitDistance: 6
   _minDamage: 3
   _maxDamage: 5
-  singleAvailable: 1
-  burstAvailable: 1
-  automaticAvailable: 1
-  singleActionPoints: 2
-  burstActionPoints: 3
-  automaticActionPoints: 4
-  singleAmmo: 1
-  burstAmmo: 3
-  automaticAmmo: 6
-  singleMinDamage: 7
-  singleMaxDamage: 10
-  burstMinDamage: 6
-  burstMaxDamage: 8
-  automaticMinDamage: 5
-  automaticMaxDamage: 6
+  sAvailable: 1
+  sActionPoints: 2
+  sAmmo: 1
+  sMinDamage: 7
+  sMaxDamage: 10
+  bAvailable: 1
+  bActionPoints: 3
+  bAmmo: 3
+  bMinDamage: 6
+  bMaxDamage: 8
+  aAvailable: 1
+  aActionPoints: 4
+  aAmmo: 6
+  aMinDamage: 5
+  aMaxDamage: 6
   _AmmoType: 1
   _currentAmmo: 0
   _maxAmmo: 30

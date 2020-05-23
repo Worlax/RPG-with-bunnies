@@ -12,7 +12,7 @@ public class UIActionPoints: MonoBehaviour
 
 #pragma warning restore 0649
 
-	PlayerController currentPlayer;
+	Unit currentUnit;
 
 	public const int UIMaxActionPoints = 10;
     int UIActiveActionPoints;
@@ -21,8 +21,6 @@ public class UIActionPoints: MonoBehaviour
 	// Functions //
 	void Start()
     {
-		currentPlayer = GameManager.instance.CurrenPlayer;
-
 		actionPoints = new List<Image>();
 		UIActiveActionPoints = UIMaxActionPoints;
 
@@ -33,6 +31,8 @@ public class UIActionPoints: MonoBehaviour
 
             actionPoints.Add(ActionPointIMG);
         }
+
+		ConnectUnit(GameManager.instance.CurrenPlayer);
 	}
 
 	void Update()
@@ -40,19 +40,25 @@ public class UIActionPoints: MonoBehaviour
 		ChangeActionPoints();
 	}
 
-    void OnEnable()
-    {
-        //UnitController.OnNewUnitTurn += ChangeActionPoints;
-    }
+	void ConnectUnit(Unit unit)
+	{
+		currentUnit = unit;
 
-    void OnDisable()
-    {
-        //UnitController.OnNewUnitTurn -= ChangeActionPoints;
-    }
+		currentUnit.OnInvolvedInBattle += Show;
+		currentUnit.OnLeavesTheBattle += Hide;
+	}
+
+	void DisconnectUnit()
+	{
+		currentUnit.OnInvolvedInBattle -= Show;
+		currentUnit.OnLeavesTheBattle -= Hide;
+
+		currentUnit = null;
+	}
 
     void ChangeActionPoints()
     {
-		int playerActionPoints = currentPlayer.CurrentActionPoints;
+		int playerActionPoints = currentUnit.CurrentActionPoints;
 
         if (UIActiveActionPoints > playerActionPoints)
         {
@@ -73,4 +79,20 @@ public class UIActionPoints: MonoBehaviour
             }
         }
     }
+
+	void Show()
+	{
+		foreach (Image image in actionPoints)
+		{
+			image.transform.localScale = new Vector3(1, 1, 1);
+		}
+	}
+
+	void Hide()
+	{
+		foreach (Image image in actionPoints)
+		{
+			image.transform.localScale = new Vector3(0, 0, 0);
+		}
+	}
 }

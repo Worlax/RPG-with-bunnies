@@ -26,7 +26,7 @@ public class UnitAnim: Animated
 
 	}
 
-	public void Damaged(UnitController source, int damage, bool randomLocation = false)
+	public void Damaged(Unit source, int damage, bool randomLocation = false)
 	{
 		transform.LookAt(source.transform);
 		animator.Play("Damaged", 0, 0);

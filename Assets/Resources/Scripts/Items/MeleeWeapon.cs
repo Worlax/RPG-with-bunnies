@@ -6,7 +6,7 @@ public class MeleeWeapon: Weapon
 	MeleeWeaponAnim meleeWeaponAnim;
 
 	// Functions //
-	public override void EquipItem(UnitController ownerOfThisItem)
+	public override void EquipItem(Unit ownerOfThisItem)
 	{
 		base.EquipItem(ownerOfThisItem);
 

@@ -23,7 +23,6 @@ public class Equipment : Window
 
 	Stats ownerStats;
 
-
 	// Functions //
 	protected override void Start()
 	{
@@ -47,7 +46,7 @@ public class Equipment : Window
 
     public void UpdateStatsDisplay()
     {
-		if (ownerStats.GetComponent<EnemyController>() != null)
+		if (ownerStats.GetComponent<Enemy>() != null)
 			return;
 
         level.text = ownerStats.Level.ToString();

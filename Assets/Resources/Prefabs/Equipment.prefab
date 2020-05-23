@@ -322,7 +322,7 @@ GameObject:
   - component: {fileID: 8860063388633766848}
   - component: {fileID: 8860063388633766849}
   m_Layer: 5
-  m_Name: BackSlotsImages
+  m_Name: EquipBackground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2109,7 +2109,7 @@ GameObject:
   - component: {fileID: 8860063389939121808}
   - component: {fileID: 8860063389939121810}
   m_Layer: 5
-  m_Name: FrontGridSlots
+  m_Name: EquipSlots
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

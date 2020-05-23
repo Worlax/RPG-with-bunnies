@@ -27,15 +27,15 @@ public class PlayerHealthBar: MonoBehaviour
 
     void OnEnable()
     {
-        UnitController.OnNewUnitTurn += ConnectStats;
+        Unit.OnNewUnitTurn += ConnectStats;
     }
 
     void OnDisable()
     {
-        UnitController.OnNewUnitTurn -= ConnectStats;
+        Unit.OnNewUnitTurn -= ConnectStats;
     }
 
-    void ConnectStats(UnitController unit)
+    void ConnectStats(Unit unit)
     {
         if (unit.tag != "Player")
             return;

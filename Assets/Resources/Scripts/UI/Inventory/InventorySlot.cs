@@ -3,21 +3,68 @@
 public class InventorySlot: MonoBehaviour
 {
     // Properties //
-	[ReadOnly]
-    public Item itemInSlot;
+	[ReadOnly] public Item itemInSlot;
 
     // Functions //
 	// return false to give back dragged item (failed connect or swap)
     public virtual bool ConnectOrSwapItem(Item draggedItem)
     {
+		// Money
+		if (draggedItem is Dollar)
+		{
+			Inventory inventory = GetComponentInParent<Inventory>();
+			
+			if (inventory != null && inventory.Owner is Player)
+			{
+				Dollar moneyItem = draggedItem as Dollar;
+				int moneyTaken;
+
+				moneyItem.TakeFromStack(moneyItem.inStack, out moneyTaken);
+				inventory.Owner.AddMoney(moneyTaken);
+			}
+		}
+		// connect
         if (itemInSlot == null)
         {
-            ConnectItem(draggedItem);
+			// item came from shop
+			if (draggedItem.lastConnectedSlot is ShopSlot)
+			{
+				if (this is ShopSlot)
+				{
+					// do nothing
+				}
+				else
+				{
+					ShopSlot shopSlot = draggedItem.lastConnectedSlot as ShopSlot;
+
+					if (shopSlot.SlotType != ShopSlot.Type.Sell)
+						return false;
+				}	
+			}
+
+			ConnectItem(draggedItem);
         }
+		// swap
         else
         {
-            // if new item came for equipment slot
-            if (draggedItem.lastConnectedSlot is EquipmentSlot)
+			// item came from shop
+			if (draggedItem.lastConnectedSlot is ShopSlot)
+			{
+				if (this is ShopSlot)
+				{
+					// do nothing
+				}
+				else
+				{
+					ShopSlot shopSlot = draggedItem.lastConnectedSlot as ShopSlot;
+
+					if (shopSlot.SlotType != ShopSlot.Type.Sell)
+						return false;
+				}
+			}
+
+			// item came from equipment slot
+			if (draggedItem.lastConnectedSlot is EquipmentSlot)
 			{
 				Equippable equippable1 = itemInSlot as Equippable;
 				Equippable equippable2 = draggedItem as Equippable;
@@ -31,7 +78,7 @@ public class InventorySlot: MonoBehaviour
                     return false;
                 }
             }
-            // if item in slot and dragged item are StackableItems
+            // item in slot and dragged item are StackableItems
             else if (itemInSlot is Stackable && draggedItem is Stackable)
             {
                 if (itemInSlot.itemName == draggedItem.itemName)
@@ -43,7 +90,7 @@ public class InventorySlot: MonoBehaviour
                     SwapItems(draggedItem);
                 }  
             }
-            // if item in slot is gun and dragged item is ammo
+            // item in slot is gun and dragged item is ammo
             else if (itemInSlot is Gun && draggedItem as Ammo)
             {
                 Gun gun = itemInSlot as Gun;
@@ -65,9 +112,20 @@ public class InventorySlot: MonoBehaviour
         return true;
     }
 
-    protected virtual void ConnectItem(Item draggedItem)
+	public void ConnectOrSwapItem(Item draggedItem, bool forceConnection)
+	{
+		if (draggedItem.lastConnectedSlot != null)
+		{
+			draggedItem.lastConnectedSlot.DisconnectItem();
+		}
+
+		ConnectItem(draggedItem);
+	}
+
+
+	protected virtual void ConnectItem(Item draggedItem)
     {
-        itemInSlot = draggedItem;
+		itemInSlot = draggedItem;
         itemInSlot.lastConnectedSlot = this;
         itemInSlot.transform.SetParent(transform);
         itemInSlot.transform.localPosition = Vector3.zero;
@@ -128,4 +186,27 @@ public class InventorySlot: MonoBehaviour
 			return false;
 		}
     }
+
+	public bool IsEmpty()
+	{
+		foreach (Transform trans in transform)
+		{
+			if (trans.GetComponent<Item>() != null)
+				return false;
+		}
+
+		return true;
+	}
+
+	public Item GetItem()
+	{
+		foreach (Transform trans in transform)
+		{
+			Item item = trans.GetComponent<Item>();
+			if (item != null)
+				return item;
+		}
+
+		return null;
+	}
 }

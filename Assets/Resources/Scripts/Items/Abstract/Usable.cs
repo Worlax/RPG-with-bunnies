@@ -22,9 +22,9 @@ public abstract class Usable: Item, IPointerClickHandler
 		usesSlider.value = 1;
 	}
 
-    public void Use()
+    public void Use(Unit user)
     {
-        if (UseEffect() == true)
+        if (UseEffect(user) == true)
         {
             --usesLeft;
 			usesSlider.value = (float)usesLeft / (float)maxUses;
@@ -43,13 +43,13 @@ public abstract class Usable: Item, IPointerClickHandler
 			lastTimeClicked = Time.time;
 			return;
 		}
-		else if (Time.time - lastTimeClicked < doubleClickMaxSpread && BattleManager.instance.PlayerMove == true)
+		else if (Time.time - lastTimeClicked < doubleClickMaxSpread)
 		{
-			Use();
+			Use(GameManager.instance.CurrenPlayer);
 		}
 
 		lastTimeClicked = Time.time;
 	}
 
-	protected abstract bool UseEffect();
+	protected abstract bool UseEffect(Unit user);
 }

@@ -28,9 +28,9 @@ public class BattleManager: MonoBehaviour
 	public bool battleActive { get; private set; } = false;
 	public int roundN { get; private set; }
 
-	public List<UnitController> BattlingUnits { get; private set; }
-	public Queue<UnitController> UnitsTurnQueue { get; private set; }
-	public UnitController CurrentUnit { get; private set; }
+	public List<Unit> BattlingUnits { get; private set; }
+	public Queue<Unit> UnitsTurnQueue { get; private set; }
+	public Unit CurrentUnit { get; private set; }
 
 	public bool PlayerMove { get; private set; } = false;
 	
@@ -61,8 +61,8 @@ public class BattleManager: MonoBehaviour
 
 	void Start()
 	{
-		BattlingUnits = new List<UnitController>();
-		UnitsTurnQueue = new Queue<UnitController>();
+		BattlingUnits = new List<Unit>();
+		UnitsTurnQueue = new Queue<Unit>();
 	}
 
 	void OnEnable()
@@ -87,16 +87,16 @@ public class BattleManager: MonoBehaviour
 		}
 	}
 
-	public void Provoke(UnitController provoker, UnitController target)
+	public void Provoke(Unit provoker, Unit target)
 	{
 		StartBattle(provoker, target);
 	}
 
-	public void StartBattle(params UnitController[] _units)
+	public void StartBattle(params Unit[] _units)
 	{
-		BattlingUnits = new List<UnitController>(_units);
+		BattlingUnits = new List<Unit>(_units);
 
-		foreach (UnitController unit in BattlingUnits)
+		foreach (Unit unit in BattlingUnits)
 		{
 			unit.StartBattle();
 		}
@@ -109,26 +109,28 @@ public class BattleManager: MonoBehaviour
 
 	public void EndBattle()
 	{
-		foreach (UnitController unit in BattlingUnits)
+		PlayerMove = false;
+
+		foreach (Unit unit in BattlingUnits)
 		{
 			unit.EndBattle();
 		}
 
-		battleActive = false;
 		ClearInfo();
+		battleActive = false;
 	}
 
-	public void AddUnitToBattle(UnitController _unit)
+	public void AddUnitToBattle(Unit _unit)
 	{
 		_unit.StartBattle();
 		BattlingUnits.Add(_unit);
 
-		List<UnitController> reserve = UnitsTurnQueue.ToList<UnitController>();
+		List<Unit> reserve = UnitsTurnQueue.ToList<Unit>();
 		UnitsTurnQueue.Clear();
 		reserve.Add(_unit);
 		reserve.Sort();
 
-		foreach (UnitController unit in reserve)
+		foreach (Unit unit in reserve)
 		{
 			UnitsTurnQueue.Enqueue(unit);
 		}
@@ -139,7 +141,7 @@ public class BattleManager: MonoBehaviour
 		++roundN;
 
 		BattlingUnits.Sort();
-		foreach (UnitController unit in BattlingUnits)
+		foreach (Unit unit in BattlingUnits)
 		{
 			UnitsTurnQueue.Enqueue(unit);
 		}
@@ -181,9 +183,9 @@ public class BattleManager: MonoBehaviour
 
 	bool IsThereALivingEnemy()
 	{
-		foreach (UnitController unit in BattlingUnits)
+		foreach (Unit unit in BattlingUnits)
 		{
-			if (unit is EnemyController && unit.GetComponent<Stats>().Dead == false)
+			if (unit is Enemy && unit.GetComponent<Stats>().Dead == false)
 			{
 				return true;
 			}

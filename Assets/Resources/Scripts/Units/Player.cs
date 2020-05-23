@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 using System;
 using System.Collections.Generic;
 
-public class PlayerController: UnitController
+public class Player: Unit
 {
 	// Properties //
 #pragma warning disable 0649
@@ -19,23 +19,18 @@ public class PlayerController: UnitController
 	Tile lastTileClicked;
 
 	Texture2D cursorOverTarget;
+	Texture2D cursorOverInteractable;
 
-	float maxLootDistance = 1f;
+	float maxInteractDistance = 1f;
 
-	UnitController lootableTarget;
+	Unit lootableTarget;
 	Vector3 lootableInventoryPopupOffset = new Vector3(100, 0, 0);
 
-	// states
-	enum CursorState
-	{
-		Normal,
-		OverTarget
-	}
-
-	CursorState cursorState = CursorState.Normal;
+	NPC interactedNPC;
+	Vector3 NPCInventoryPopupOffset = new Vector3(-100, 0, 0);
 
 	// Events //
-	public static event Action<UnitController> OnPlayerFocusedTarget;
+	public static event Action<Unit> OnPlayerFocusedTarget;
     public static event Action OnPlayerDefocusedTarget;
 
 	// Functions //
@@ -43,7 +38,8 @@ public class PlayerController: UnitController
 	{
 		base.Awake();
 
-		cursorOverTarget = Resources.Load<Texture2D>("Icons/Cursors/Selecting");
+		cursorOverTarget = Resources.Load<Texture2D>("Icons/Cursors/OverTarget");
+		cursorOverInteractable = Resources.Load<Texture2D>("Icons/Cursors/OverInteractable");
 	}
 
 	protected override void Start()
@@ -54,6 +50,7 @@ public class PlayerController: UnitController
 		Inventory.transform.SetParent(WindowsRoot.transform, false);
 		Inventory.Owner = this;
 		Inventory.name = "Inventory (" + transform.name + ")";
+		Inventory.Init();
 		Inventory.Close();
 		
 		Equipment = Instantiate(equipmentPrefab);
@@ -117,7 +114,7 @@ public class PlayerController: UnitController
 
 			if (Input.GetMouseButtonDown(0))
 			{
-				SelectingClick();
+				SelectClick();
 			}
 
 			if (Input.GetMouseButtonDown(1))
@@ -128,7 +125,7 @@ public class PlayerController: UnitController
 					return;
 				}
 
-				MovementClick();
+				MoveClick();
 			}
 		}
 	}
@@ -161,7 +158,7 @@ public class PlayerController: UnitController
 
 			if (Input.GetMouseButtonDown(0))
 			{
-				SelectingClick();
+				SelectClick();
 			}
 
 			if (Input.GetMouseButtonDown(1))
@@ -172,7 +169,7 @@ public class PlayerController: UnitController
 					return;
 				}
 
-				MovementClick();
+				MoveClick();
 			}
 		}
 		else if (battleState == BattleState.Moving)
@@ -203,6 +200,7 @@ public class PlayerController: UnitController
 		}
 		else
 		{
+			SetCursor(null);
 			return true;
 		}
 	}
@@ -224,15 +222,19 @@ public class PlayerController: UnitController
                 lastTileOverlaped = null;
             }
 
-            // cursor over Enemy
-            if (hit.transform.tag == "Enemy" && cursorState != CursorState.OverTarget)
+            // cursor texture
+            if (hit.transform.tag == "Enemy")
             {
-                SetCursorOverTarget(hit.transform.GetComponent<UnitController>());
-            }
-            else if (hit.transform.tag != "Enemy" && cursorState != CursorState.Normal)
+				SetCursor(cursorOverTarget);
+			}
+			else if (hit.transform.tag == "NPC")
+			{
+				SetCursor(cursorOverInteractable);
+			}
+            else
             {
-                SetCursorNormal();
-            }
+				SetCursor(null);
+			}
 
             // cursor over Tile
             if (hit.transform.tag == "Tile" && hit.transform.GetComponent<Tile>().state == Tile.State.Possible)
@@ -243,21 +245,20 @@ public class PlayerController: UnitController
         }
     }
 
-    void SetCursorOverTarget(UnitController unit)
-    {
-        Cursor.SetCursor(cursorOverTarget, new Vector2(cursorOverTarget.width, cursorOverTarget.height) / 2, CursorMode.Auto);
+	void SetCursor(Texture2D texture)
+	{
+		if (texture == null)
+		{
+			Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+		}
+		else
+		{
+			Cursor.SetCursor(texture, new Vector2(cursorOverTarget.width, cursorOverTarget.height) / 2, CursorMode.Auto);
+		}
+		
+	}
 
-        cursorState = CursorState.OverTarget;
-    }
-
-    void SetCursorNormal()
-    {
-        Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
-
-        cursorState = CursorState.Normal;
-    }
-
-    void MovementClick()
+    void MoveClick()
     {
         if (lastTileClicked != null)
         {
@@ -285,7 +286,7 @@ public class PlayerController: UnitController
         }
     }
 
-    void SelectingClick()
+    void SelectClick()
     {
         Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit);
 
@@ -293,7 +294,7 @@ public class PlayerController: UnitController
         {
             if (hit.transform.tag == "Enemy")
             {
-                EnemyController enemy = hit.transform.GetComponentInParent<EnemyController>();
+                Enemy enemy = hit.transform.GetComponentInParent<Enemy>();
                 
                 // dead enemy
                 if (hit.transform.GetComponentInParent<Stats>().Dead == true)
@@ -327,6 +328,10 @@ public class PlayerController: UnitController
                     FocusTarget(enemy);
                 }
             }
+			else if (hit.transform.tag == "NPC" && InBattle == false)
+			{
+				TryToInteractWithNPC(hit.transform);
+			}
         }
 
 		// click somewhere else
@@ -356,11 +361,11 @@ public class PlayerController: UnitController
 		{
 			Vector3 direction = (target.position - transform.position).normalized;
 
-			foreach (RaycastHit hit in Physics.RaycastAll(transform.position, direction, maxLootDistance))
+			foreach (RaycastHit hit in Physics.RaycastAll(transform.position, direction, maxInteractDistance))
 			{
 				if (hit.transform == target.transform)
 				{
-					lootableTarget = target.GetComponentInParent<UnitController>();
+					lootableTarget = target.GetComponentInParent<Unit>();
 					lootableTarget.OpenInventory();
 					lootableTarget.Inventory.transform.position = Input.mousePosition + lootableInventoryPopupOffset;
 
@@ -372,7 +377,34 @@ public class PlayerController: UnitController
 		}
     }
 
-	public override void FocusTarget(UnitController target)
+	void TryToInteractWithNPC(Transform target)
+	{
+		if (interactedNPC != null && interactedNPC.transform == target.transform.parent && interactedNPC.Inventory.Closed == false)
+		{
+			interactedNPC.CloseInventory();
+			interactedNPC = null;
+		}
+		else
+		{
+			Vector3 direction = (target.position - transform.position).normalized;
+
+			foreach (RaycastHit hit in Physics.RaycastAll(transform.position, direction, maxInteractDistance))
+			{
+				if (hit.transform == target)
+				{
+					interactedNPC = target.GetComponentInParent<NPC>();
+					interactedNPC.OpenInventory();
+					interactedNPC.Inventory.transform.position = Input.mousePosition + NPCInventoryPopupOffset;
+
+					Inventory.Open();
+
+					return;
+				}
+			}
+		}
+	}
+
+	public override void FocusTarget(Unit target)
     {
 		base.FocusTarget(target);
 
@@ -395,7 +427,7 @@ public class PlayerController: UnitController
     {
         base.EndTurn();
 
-        SetCursorNormal();
+        SetCursor(null);
     }
 
     protected override void ClearInfo()

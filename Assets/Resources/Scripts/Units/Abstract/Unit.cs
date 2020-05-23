@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 
 [SelectionBase]
-public abstract class UnitController: MonoBehaviour, IComparable<UnitController>
+public abstract class Unit: MonoBehaviour, IComparable<Unit>
 {
 	// Properties //
 	// inspector
@@ -13,22 +13,25 @@ public abstract class UnitController: MonoBehaviour, IComparable<UnitController>
 	[SerializeField] GameGrid _grid;
 	[SerializeField] Inventory _inventoryPrefab;
 	[SerializeField] Transform _windowsRoot;
+	[SerializeField] int _money;
 
 #pragma warning restore 0649
 
 	[SerializeField] [Range(0.5f, 5f)] float _speed = 1.5f;
 	[SerializeField] [Range(0, 10)] int _startActionPoints = 5;
 	[ReadOnly] public Weapon weapon;
-	[ReadOnly] public UnitController unitInFocus;
+	[ReadOnly] public Unit unitInFocus;
 
 	public Transform Visual { get => _visual; }
 	public GameGrid Grid { get => _grid; }
 	public Inventory InventoryPrefab { get => _inventoryPrefab; }
 	public Transform WindowsRoot { get => _windowsRoot; }
+	public int Money { get => _money; set => _money = value; }
 	public float Speed { get => _speed; }
 	public int StartActionPoints { get => _startActionPoints; }
 
 	//
+
 	public Inventory Inventory { get; protected set; }
 	public Equipment Equipment { get; protected set; }
 
@@ -49,10 +52,14 @@ public abstract class UnitController: MonoBehaviour, IComparable<UnitController>
 	Vector3 nextTiledirection;
 
 	// Events //
-	public static event Action<UnitController> OnNewUnitTurn;
+	public static event Action<Unit> OnNewUnitTurn;
+	public event Action OnInvolvedInBattle;
+	public event Action OnLeavesTheBattle;
 
-    // State //
-    public enum BattleState
+	public event Action OnMoneyChanged;
+
+	// State //
+	public enum BattleState
     {
         Waiting,
         ReadingInput,
@@ -75,7 +82,7 @@ public abstract class UnitController: MonoBehaviour, IComparable<UnitController>
 		UnitAnim.Idle(true);
 	}
 
-	public int CompareTo(UnitController obj)
+	public int CompareTo(Unit obj)
 	{
 		return obj.Stats.PlayingTurnSpeed.CompareTo(Stats.PlayingTurnSpeed);
 	}
@@ -85,11 +92,15 @@ public abstract class UnitController: MonoBehaviour, IComparable<UnitController>
 		InBattle = true;
 		Inventory.Close();
 		Equipment.Close();
+
+		OnInvolvedInBattle?.Invoke();
 	}
 
 	public virtual void EndBattle()
 	{
 		InBattle = false;
+
+		OnLeavesTheBattle?.Invoke();
 	}
 
 	public virtual void StartRound()
@@ -244,7 +255,7 @@ public abstract class UnitController: MonoBehaviour, IComparable<UnitController>
         }
     }
 
-	public virtual void FocusTarget(UnitController target)
+	public virtual void FocusTarget(Unit target)
 	{
 		unitInFocus = target;
 	}
@@ -273,6 +284,32 @@ public abstract class UnitController: MonoBehaviour, IComparable<UnitController>
 		{
 			Inventory.Close();
 		}
+	}
+
+	public void AddMoney(int amount)
+	{
+		Money += amount;
+
+		OnMoneyChanged?.Invoke();
+	}
+
+	public int TakeMoney(int amount)
+	{
+		int give = 0;
+
+		if (Money >= amount)
+		{
+			give = amount;
+			Money -= amount;
+		}
+		else
+		{
+			give = Money;
+			Money = 0;
+		}
+
+		OnMoneyChanged?.Invoke();
+		return give;
 	}
 
 	public virtual void WaitTurn()

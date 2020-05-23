@@ -1,12 +1,17 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System;
+using System.Collections.Generic;
 
 public class Inventory: Window
 {
 	// Properties //
-	int slotCount;
-	[SerializeField] RectTransform slotsRoot = default;
+#pragma warning disable 0649
+
+	[SerializeField] RectTransform slotsRoot;
+	[SerializeField] Text moneyText;
+
+#pragma warning restore 0649
 
 	[SerializeField] Item[] startItems;
 
@@ -18,28 +23,22 @@ public class Inventory: Window
 		InstantiatePrefabs();
 	}
 
-	void OnValidate()
+	public void Init()
 	{
-		CountSlots();
-
-		if (startItems.Length > slotCount)
-		{
-			print("Size of default items is limited by amount of slots.");
-			Array.Resize(ref startItems, slotCount);
-		}
+		Owner.OnMoneyChanged += MoneyChanged;
+		MoneyChanged();
 	}
 
-	void CountSlots()
+	void OnDisable()
 	{
-		slotCount = 0;
+		Owner.OnMoneyChanged -= MoneyChanged;
+	}
 
-		foreach (Transform obj in slotsRoot)
+	public override void Open()
+	{
+		if (Owner.InBattle == false)
 		{
-			InventorySlot slot = obj.GetComponent<InventorySlot>();
-			if (slot != null)
-			{
-				++slotCount;
-			}
+			base.Open();
 		}
 	}
 
@@ -55,11 +54,115 @@ public class Inventory: Window
 		}
 	}
 
-	public override void Open()
+	void OnValidate()
 	{
-		if (Owner.InBattle == false)
+		int slotsCount = GetAllSlots().Length;
+
+		if (startItems.Length > slotsCount)
 		{
-			base.Open();
+			print("Size of default items is limited by amount of slots.");
+			Array.Resize(ref startItems, slotsCount);
+		}
+	}
+
+	InventorySlot[] GetAllSlots(RectTransform root = null)
+	{
+		List<InventorySlot> slots = new List<InventorySlot>();
+
+		if (root == null)
+		{
+			root = slotsRoot;
+		}
+
+		foreach (Transform transform in root)
+		{
+			InventorySlot slot = transform.GetComponent<InventorySlot>();
+
+			if (slot != null)
+				slots.Add(slot);
+		}
+
+		return slots.ToArray();
+	}
+
+	void MoneyChanged()
+	{
+		string display = Owner.Money.ToString();
+
+		for (int i = display.Length, j = 0; i > 0; --i, ++j)
+		{
+			if (j != 0 && j % 3 == 0)
+			{
+				display = display.Insert(i, " ");
+			}
+		}
+
+		moneyText.text = display;
+	}
+
+	int CountEmptySlots(RectTransform root = null)
+	{
+		int emptySlots = 0;
+
+		foreach (InventorySlot slot in GetAllSlots(root))
+		{
+			if (slot.IsEmpty())
+			{
+				++emptySlots;
+			}
+		}
+
+		return emptySlots;
+	}
+
+	InventorySlot GetFirstEmptySlot(RectTransform root = null)
+	{
+		foreach (InventorySlot slot in GetAllSlots(root))
+		{
+			if (slot.IsEmpty())
+				return slot;
+		}
+
+		return null;
+	}
+
+	public Item[] GetAllItems(RectTransform root = null)
+	{
+		List<Item> items = new List<Item>();
+
+		foreach (InventorySlot slot in GetAllSlots(root))
+		{
+			if (slot.IsEmpty() == false)
+			{
+				items.Add(slot.GetItem());
+			}
+		}
+
+		return items.ToArray();
+	}
+
+	public bool TryToConnectItems(Item[] items)
+	{
+		if (CountEmptySlots() < items.Length)
+		{
+			return false;
+		}
+		else
+		{
+			InventorySlot[] slots = GetAllSlots();
+			int i = 0;
+
+			foreach (Item item in items)
+			{
+				while (slots[i].IsEmpty() == false)
+				{
+					++i;
+				}
+
+				slots[i].ConnectOrSwapItem(item, true);
+			}
+
+			return true;
 		}
 	}
 }

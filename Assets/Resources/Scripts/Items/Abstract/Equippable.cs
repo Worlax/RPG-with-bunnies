@@ -8,12 +8,12 @@ public abstract class Equippable: Item
 	public EquipmentSlot.Type SlotType { get => _slotType; set => _slotType = value; }
 
 	// Functions //
-	public virtual void EquipItem(UnitController ownerOfThisItem)
+	public virtual void EquipItem(Unit ownerOfThisItem)
     {
 		if (ItemVisual != null)
             return;
 
-        ItemVisual = Instantiate(itemIn3DPrefab);
+        ItemVisual = Instantiate(ItemIn3DPrefab);
         ItemVisual.transform.SetParent(ownerOfThisItem.Visual, false);
 	}
 

@@ -63,7 +63,7 @@ public class Gun: Weapon
 		ammoText.text = CurrentAmmo.ToString();
 	}
 
-	public override void EquipItem(UnitController ownerOfThisItem)
+	public override void EquipItem(Unit ownerOfThisItem)
 	{
 		base.EquipItem(ownerOfThisItem);
 
@@ -124,9 +124,9 @@ public class Gun: Weapon
         UpdateWeaponInfo();
         holderStats.AddStats(0, MinDamage, MaxDamage);
 
-		if (holder is PlayerController)
+		if (holder is Player)
 		{
-			(holder as PlayerController).Equipment.UpdateStatsDisplay();
+			(holder as Player).Equipment.UpdateStatsDisplay();
 		}
     }
 

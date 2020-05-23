@@ -7,8 +7,8 @@ public class Window: MonoBehaviour
 	[SerializeField] KeyCode toggleKey = default;
 	[SerializeField] Button closeButton = null;
 
-	UnitController owner;
-	public UnitController Owner { get => owner; set { if (owner == null) { owner = value; } } }
+	Unit owner;
+	public Unit Owner { get => owner; set { if (owner == null) { owner = value; } } }
 
 	public bool Closed { get; private set; }
 

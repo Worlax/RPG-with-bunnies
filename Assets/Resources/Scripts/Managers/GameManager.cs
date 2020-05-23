@@ -17,18 +17,18 @@ public class GameManager: MonoBehaviour
 			Destroy(gameObject);
 		}
 
-		CurrenPlayer = FindObjectOfType<PlayerController>();
+		CurrenPlayer = FindObjectOfType<Player>();
 	}
 
 	// Properties //
-	public PlayerController CurrenPlayer { get; private set; }
+	public Player CurrenPlayer { get; private set; }
 
 	// Functions //
 	void Update()
 	{
 		if (Input.GetKeyDown(KeyCode.Alpha1))
 		{
-			BattleManager.instance.StartBattle(FindObjectsOfType<UnitController>());
+			BattleManager.instance.StartBattle(FindObjectsOfType<Unit>());
 		}
 	}
 }

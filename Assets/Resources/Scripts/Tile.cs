@@ -83,13 +83,22 @@ public class Tile: MonoBehaviour
         LayerMask mask = LayerMask.GetMask("Tile") | LayerMask.GetMask("Ground") | LayerMask.GetMask("Item");
         Vector3 size = GetComponent<BoxCollider>().bounds.size / 2;
 
-        if (Physics.CheckBox(transform.position, size, Quaternion.identity, ~mask))
-        {
-            state = State.Blocked;
-            return true;
-        }
+		foreach (Collider collider in Physics.OverlapBox(transform.position, size, Quaternion.identity, ~mask))
+		{
+			Stats stats = collider.transform.GetComponentInParent<Stats>();
 
-        return false;
+			if (stats != null && stats.Dead)
+			{
+				continue;
+			}
+			else
+			{
+				state = State.Blocked;
+				return false;
+			}
+		}
+
+		return true;
     }
 
     public void SetStateDisabled()
@@ -107,15 +116,21 @@ public class Tile: MonoBehaviour
     public void SetStatePossible()
     {
         state = State.Possible;
-        SetMaterial(mPossible);
+		
+		if (BattleManager.instance.PlayerMove)
+		{
+			SetMaterial(mPossible);
+		}
+		else
+		{
+			SetMaterial(mDisabled);
+		}
     }
 
-    public Tile SetStateOverlapped()
+    public void SetStateOverlapped()
     {
         state = State.Overlapped;
         SetMaterial(mOverlapped);
-
-        return this;
     }
 
     public void SetStateClicked()
@@ -127,7 +142,15 @@ public class Tile: MonoBehaviour
     public void SetStateContainsUnit()
     {
         state = State.ContainsUnit;
-        SetMaterial(mWithPlayer);
+
+		if (BattleManager.instance.PlayerMove)
+		{
+			SetMaterial(mWithPlayer);
+		}
+		else
+		{
+			SetMaterial(mDisabled);
+		}	
     }
 
     void SetMaterial(Material mat)

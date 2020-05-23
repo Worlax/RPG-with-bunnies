@@ -8,12 +8,16 @@ public abstract class Item: MonoBehaviour, IDragHandler, IBeginDragHandler, IEnd
 	// Properties //
 	public string itemName = "Item";
 
-    CanvasGroup canvasGroup;
+	[SerializeField] int _price = 100; 
+	[SerializeField] GameObject _itemIn3DPrefab;
+
+	//
+	public int Price { get => _price; }
+	public GameObject ItemIn3DPrefab { get => _itemIn3DPrefab; }
+    public GameObject ItemVisual { get; protected set; }
 
 	[HideInInspector] public InventorySlot lastConnectedSlot;
-
-    public GameObject itemIn3DPrefab;
-    public GameObject ItemVisual { get; protected set; }
+    CanvasGroup canvasGroup;
 
     // Functions //
     protected virtual void Start()
@@ -25,9 +29,9 @@ public abstract class Item: MonoBehaviour, IDragHandler, IBeginDragHandler, IEnd
 		{
 			Destroy(gameObject);
 		}
-		else if (slot.ConnectOrSwapItem(this) == false)
+		else
 		{
-			Destroy(gameObject);
+			slot.ConnectOrSwapItem(this, true);
 		}
 	}
 

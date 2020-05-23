@@ -1,10 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public class EnemyController: UnitController
+public class Enemy: Unit
 {
-    // Properties //
-    public int distanceOfSight = 20;
+	// Properties //
+	[SerializeField] bool patrol;
+	[SerializeField] Vector3[] patrolFlags;
+	[SerializeField] float patrolTimeBetweenSteps = 5f;
+
+    int distanceOfSight = 50;
 
 	// Functions //
 	protected override void Start()
@@ -15,11 +19,11 @@ public class EnemyController: UnitController
 		Inventory.transform.SetParent(WindowsRoot.transform, false);
 		Inventory.Owner = this;
 		Inventory.name = "Inv + Equip (" + transform.name + ")";
+		Inventory.Init();
+		Inventory.Close();
 
 		Equipment = Inventory.GetComponent<Equipment>();
 		Equipment.Owner = this;
-
-		Inventory.Close();
 	}
 
 	void Update()
@@ -112,20 +116,20 @@ public class EnemyController: UnitController
         }
     }
 
-    PlayerController GetFirstTarget()
+    Player GetFirstTarget()
     {
-        foreach (UnitController unit in BattleManager.instance.BattlingUnits)
+        foreach (Unit unit in BattleManager.instance.BattlingUnits)
         {
             if (unit.tag == "Player")
             {
-                return unit.GetComponent<PlayerController>();
+                return unit.GetComponent<Player>();
             }
         }
 
         return null;
     }
 
-    bool GetTileForMelee(UnitController target, out Tile tileForMelee)
+    bool GetTileForMelee(Unit target, out Tile tileForMelee)
     {
         Tile closestTile = Grid.Tiles[0, 0];
         float closestDistance = 999;
@@ -171,4 +175,9 @@ public class EnemyController: UnitController
 
         return false;
     }
+
+	void Patrol()
+	{
+		//base.CalculatePossibleTiles(patrolDistance);
+	}
 }

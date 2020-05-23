@@ -101,8 +101,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: Item
+  _price: 100
+  _itemIn3DPrefab: {fileID: 0}
   lastConnectedSlot: {fileID: 0}
-  itemIn3DPrefab: {fileID: 0}
   maxUses: 3
   usesLeft: 0
   HealthForUse: 10

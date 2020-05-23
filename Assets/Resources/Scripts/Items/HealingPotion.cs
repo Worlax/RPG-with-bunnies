@@ -7,9 +7,9 @@ public class HealingPotion: Usable
     public int HealthForUse = 10;
 
     // Functions //
-    protected override bool UseEffect()
+    protected override bool UseEffect(Unit user)
     {
-        Stats stats = BattleManager.instance.CurrentUnit.GetComponent<Stats>();
+        Stats stats = user.GetComponent<Stats>();
 
         return stats.Heal(HealthForUse);
     }

@@ -36,18 +36,18 @@ public class UI : MonoBehaviour
 
 	public void WaitTurn()
     {
-		if (BattleManager.instance.PlayerMove == false || BattleManager.instance.CurrentUnit.battleState != UnitController.BattleState.ReadingInput)
+		if (BattleManager.instance.PlayerMove == false || BattleManager.instance.CurrentUnit.battleState != Unit.BattleState.ReadingInput)
 			return;
 
-		BattleManager.instance.CurrentUnit.GetComponent<PlayerController>().WaitTurn();
+		BattleManager.instance.CurrentUnit.GetComponent<Player>().WaitTurn();
     }
 
     public void EndTurn()
     {
-        if (BattleManager.instance.PlayerMove == false || BattleManager.instance.CurrentUnit.battleState != UnitController.BattleState.ReadingInput)
+        if (BattleManager.instance.PlayerMove == false || BattleManager.instance.CurrentUnit.battleState != Unit.BattleState.ReadingInput)
             return;
 
-        BattleManager.instance.CurrentUnit.GetComponent<PlayerController>().EndTurn();
+        BattleManager.instance.CurrentUnit.GetComponent<Player>().EndTurn();
     }
 
 	void WeaponEquiped(Weapon weapon)
@@ -86,10 +86,7 @@ public class UI : MonoBehaviour
 
 	public void ToggleFireMode()
 	{
-		if (BattleManager.instance.PlayerMove == false)
-			return;
-
-		PlayerController player = BattleManager.instance.CurrentUnit.GetComponent<PlayerController>();
+		Player player = GameManager.instance.CurrenPlayer;
 
 		Gun gun = player.weapon as Gun;
 		if (gun == null)

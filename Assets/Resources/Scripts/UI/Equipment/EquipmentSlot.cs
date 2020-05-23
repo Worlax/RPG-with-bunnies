@@ -4,7 +4,7 @@ using System;
 public class EquipmentSlot: InventorySlot
 {
 	// Properties //
-	UnitController owner;
+	Unit owner;
 	Equipment equipment;
 
 	// Events //
@@ -30,13 +30,22 @@ public class EquipmentSlot: InventorySlot
 		owner = equipment.Owner;
 	}
 
-    public override bool ConnectOrSwapItem(Item newItem)
+    public override bool ConnectOrSwapItem(Item draggedItem)
     {
-        Equippable equipmentItem = newItem as Equippable;
+        Equippable equipmentItem = draggedItem as Equippable;
         if (equipmentItem == null || equipmentItem.SlotType != SlotType)
-            return false;
+		{
+			if (draggedItem is Ammo)
+			{
+				return base.ConnectOrSwapItem(draggedItem);
+			}
+			else
+			{
+				return false;
+			}
+		}
 
-        return base.ConnectOrSwapItem(newItem);
+        return base.ConnectOrSwapItem(draggedItem);
     }
 
     protected override void ConnectItem(Item newItem)
@@ -47,7 +56,7 @@ public class EquipmentSlot: InventorySlot
 		item.EquipItem(owner);
 		equipment.AddStats(item);
 
-		if (owner as PlayerController != null && newItem as Weapon != null)
+		if (owner as Player != null && newItem as Weapon != null)
 		{
 			PlayerEquipedWeapon?.Invoke(newItem as Weapon);
 		}
@@ -59,7 +68,7 @@ public class EquipmentSlot: InventorySlot
 		item.UnequipItem();
 		equipment.SubtractStats(item);
 
-		if (owner as PlayerController != null && item as Weapon != null)
+		if (owner as Player != null && item as Weapon != null)
 		{
 			PlayerUnequipedWeapon?.Invoke(itemInSlot as Weapon);
 		}

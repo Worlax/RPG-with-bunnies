@@ -3,7 +3,7 @@
 public abstract class Weapon: Equippable
 {
 	// Properties //
-	[ReadOnly][SerializeField] protected UnitController holder;
+	[ReadOnly][SerializeField] protected Unit holder;
 
 	[SerializeField] int _actionPointsForUse = 2;
 	[SerializeField] float _hitDistance = 6;
@@ -18,13 +18,13 @@ public abstract class Weapon: Equippable
 	WeaponAnim weaponAnim;
 	protected LineRenderer hitLine;
 
-	public UnitController AimedTarget { get; private set; }
+	public Unit AimedTarget { get; private set; }
 
 	protected Vector3 hitLocation;
 	protected bool randomLocationForDamagePopup = false;
 
     // Functions //
-    public override void EquipItem(UnitController ownerOfThisItem)
+    public override void EquipItem(Unit ownerOfThisItem)
     {
 		base.EquipItem(ownerOfThisItem);
 
@@ -49,7 +49,7 @@ public abstract class Weapon: Equippable
 		base.UnequipItem();
 	}
 
-	public virtual void Aim(UnitController target)
+	public virtual void Aim(Unit target)
     {
 		weaponAnim.Aim(target.transform);
 
@@ -60,7 +60,7 @@ public abstract class Weapon: Equippable
         if (hit.transform != null)
         {
 			// hit target
-			UnitController hitedUnit = hit.transform.GetComponentInParent<UnitController>();
+			Unit hitedUnit = hit.transform.GetComponentInParent<Unit>();
 			if (hitedUnit != null && hitedUnit == target)
             {
                 DrawHitLine(hit.point, false);
@@ -131,6 +131,6 @@ public abstract class Weapon: Equippable
 
 	public virtual void WeaponFired()
 	{
-		holder.battleState = UnitController.BattleState.ReadingInput;
+		holder.battleState = Unit.BattleState.ReadingInput;
 	}
 }
