@@ -80,7 +80,7 @@ public class Tile: MonoBehaviour
 
     public bool IsEmpty()
     {
-        LayerMask mask = LayerMask.GetMask("Tile") | LayerMask.GetMask("Ground") | LayerMask.GetMask("Item");
+        LayerMask mask = LayerMask.GetMask("Tile") | LayerMask.GetMask("Ground") | LayerMask.GetMask("Item") | LayerMask.GetMask("Ignore Raycast");
         Vector3 size = GetComponent<BoxCollider>().bounds.size / 2;
 
 		foreach (Collider collider in Physics.OverlapBox(transform.position, size, Quaternion.identity, ~mask))

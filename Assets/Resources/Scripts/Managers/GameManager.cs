@@ -24,11 +24,4 @@ public class GameManager: MonoBehaviour
 	public Player CurrenPlayer { get; private set; }
 
 	// Functions //
-	void Update()
-	{
-		if (Input.GetKeyDown(KeyCode.Alpha1))
-		{
-			BattleManager.instance.StartBattle(FindObjectsOfType<Unit>());
-		}
-	}
 }

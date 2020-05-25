@@ -87,14 +87,10 @@ public class BattleManager: MonoBehaviour
 		}
 	}
 
-	public void Provoke(Unit provoker, Unit target)
+	public void StartBattle(Unit firstTurnUnit, params Unit[] _otherUnits)
 	{
-		StartBattle(provoker, target);
-	}
-
-	public void StartBattle(params Unit[] _units)
-	{
-		BattlingUnits = new List<Unit>(_units);
+		BattlingUnits = new List<Unit>(_otherUnits);
+		BattlingUnits.Add(firstTurnUnit);
 
 		foreach (Unit unit in BattlingUnits)
 		{
@@ -102,7 +98,7 @@ public class BattleManager: MonoBehaviour
 		}
 
 		roundN = 0;
-		StartNewRound();
+		StartNewRound(firstTurnUnit);
 
 		battleActive = true;
 	}
@@ -120,14 +116,18 @@ public class BattleManager: MonoBehaviour
 		battleActive = false;
 	}
 
-	public void AddUnitToBattle(Unit _unit)
+	public void AddUnitsToBattle(params Unit[] _units)
 	{
-		_unit.StartBattle();
-		BattlingUnits.Add(_unit);
-
 		List<Unit> reserve = UnitsTurnQueue.ToList<Unit>();
 		UnitsTurnQueue.Clear();
-		reserve.Add(_unit);
+
+		foreach (Unit unit in _units)
+		{
+			BattlingUnits.Add(unit);
+			unit.StartBattle();
+			reserve.Add(unit);
+		}
+
 		reserve.Sort();
 
 		foreach (Unit unit in reserve)
@@ -136,14 +136,22 @@ public class BattleManager: MonoBehaviour
 		}
 	}
 
-    void StartNewRound()
+	void StartNewRound(Unit firstTurnUnit = null)
     {
 		++roundN;
+
+		if (firstTurnUnit != null)
+		{
+			UnitsTurnQueue.Enqueue(firstTurnUnit);
+		}
 
 		BattlingUnits.Sort();
 		foreach (Unit unit in BattlingUnits)
 		{
-			UnitsTurnQueue.Enqueue(unit);
+			if (unit != firstTurnUnit)
+			{
+				UnitsTurnQueue.Enqueue(unit);
+			}
 		}
 	}
 

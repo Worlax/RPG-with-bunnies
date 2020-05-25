@@ -308,10 +308,13 @@ public class Player: Unit
 					{
 						if (InBattle == false)
 						{
-							BattleManager.instance.Provoke(this, enemy);
+							BattleManager.instance.StartBattle(this, enemy);
+							enemy.GetComponentInChildren<Aggro>().AddNearEnemysToBattle();
 						}
 
 						battleState = BattleState.Waiting;
+						enemy.battleState = BattleState.Waiting;
+						enemy.isPatroling = false;
 						weapon.Fire();
 					}
                 }

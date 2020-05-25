@@ -4,13 +4,27 @@ using System.Collections.Generic;
 public class Enemy: Unit
 {
 	// Properties //
-	[SerializeField] bool patrol;
-	[SerializeField] Vector3[] patrolFlags;
-	[SerializeField] float patrolTimeBetweenSteps = 5f;
+#pragma warning disable 0649
 
-    int distanceOfSight = 50;
+	public bool isPatroling;
+	[SerializeField] float timeBetweenPatrolSteps = 4f;
+
+#pragma warning restore 0649
+
+	Patrol patrol;
+
+	int distanceOfSight = 50;
+
+	float enterTime;
 
 	// Functions //
+	protected override void Awake()
+	{
+		base.Awake();
+
+		patrol = GetComponent<Patrol>();
+	}
+
 	protected override void Start()
 	{
 		base.Start();
@@ -28,23 +42,54 @@ public class Enemy: Unit
 
 	void Update()
     {
-        if (battleState == BattleState.Waiting)
+		if (!InBattle)
+		{
+			// patrol logic
+			if (isPatroling && battleState == BattleState.Waiting)
+			{
+				if (enterTime == 0)
+				{
+					enterTime = Time.time;
+				}
+				else if (Time.time - enterTime >= timeBetweenPatrolSteps)
+				{
+					enterTime = -1;
+					Patrol();
+				}
+			}
+			else if (isPatroling && battleState == BattleState.Moving)
+			{
+				MakeStep(false, false, BattleState.Waiting);
+			}
+		}
+		else if (InBattle && !MyTurn)
+		{
+			return;
+		}
+        else if (InBattle && MyTurn && CurrentActionPoints == 0)
         {
-            return;
-        }
-        else if (CurrentActionPoints == 0)
-        {
-            EndTurn();
+			EndTurn();
         }
 
+		// battle logic
 		else if (battleState == BattleState.ReadingInput)
 		{
 			TryToAim();
 		}
 		else if (battleState == BattleState.Moving)
 		{
-			MakeStep(true);
+			if (InBattle)
+			{
+				MakeStep(true);
+			}
 		}
+	}
+
+	public override void StartBattle()
+	{
+		base.StartBattle();
+
+		isPatroling = false;
 	}
 
 	public override void StartRound()
@@ -75,6 +120,13 @@ public class Enemy: Unit
 		}
 		else
 		{
+			if (weapon != null && weapon is Gun)
+			{
+				if ((weapon as Gun).CurrentAmmo == 0)
+				{
+					EndTurn();
+				}
+			}
 			if (WasteActionPoints(weapon.ActionPointsForUse) == true)
 			{
 				LookAt(unitInFocus.transform.position);
@@ -90,14 +142,14 @@ public class Enemy: Unit
 		}
 	}
 
-	public override void CalculatePossibleTiles(int _distance = 0)
+	public override void CalculatePossibleTiles(int _distance = 0, bool flagPossibleTiles = true)
 	{
 		// calculating distance of sight and not just tiles that we can step on,
 		// so the map of the possible moves will be bigger than our action points can handle.
 		// we are trying to detect our target so we need more possible tiles
 		// and limit of our movement will be controlled by action points
 
-		base.CalculatePossibleTiles(distanceOfSight);
+		base.CalculatePossibleTiles(distanceOfSight, flagPossibleTiles);
 	}
 
 	bool CreatingPath()
@@ -178,6 +230,10 @@ public class Enemy: Unit
 
 	void Patrol()
 	{
-		//base.CalculatePossibleTiles(patrolDistance);
+		movePath = patrol.CalculateAllSteps();
+		CalculateNextStep();
+
+		battleState = BattleState.Moving;
+		enterTime = 0;
 	}
 }

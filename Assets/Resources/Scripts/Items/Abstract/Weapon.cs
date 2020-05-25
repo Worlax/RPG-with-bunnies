@@ -23,7 +23,18 @@ public abstract class Weapon: Equippable
 	protected Vector3 hitLocation;
 	protected bool randomLocationForDamagePopup = false;
 
+	public bool firing { get; private set; }
+
     // Functions //
+	void Update()
+	{
+		if (AimedTarget != null)
+		{
+			holder.LookAt(AimedTarget.transform);
+			Aim(AimedTarget);
+		}
+	}
+
     public override void EquipItem(Unit ownerOfThisItem)
     {
 		base.EquipItem(ownerOfThisItem);
@@ -53,7 +64,7 @@ public abstract class Weapon: Equippable
     {
 		weaponAnim.Aim(target.transform);
 
-        LayerMask mask = LayerMask.GetMask("Tile") | LayerMask.GetMask("Item");
+        LayerMask mask = LayerMask.GetMask("Tile") | LayerMask.GetMask("Item") | LayerMask.GetMask("Ignore Raycast");
         Physics.Raycast(holder.transform.position, (target.transform.position - holder.transform.position).normalized, out RaycastHit hit, HitDistance, ~mask);
 
         // raycast hit
@@ -71,14 +82,28 @@ public abstract class Weapon: Equippable
             // hit other object
             else
             {
-                DrawHitLine(hit.point, false);
+				if (AimedTarget == null)
+				{
+					DrawHitLine(hit.point, false);
+				}
+                else
+				{
+					StopAim();
+				}
             }
         }
         // hit no object
         else
-        {  
-            DrawHitLine(target.transform.position, true);
-        }
+        {
+			if (AimedTarget = null)
+			{
+				DrawHitLine(target.transform.position, true);
+			}
+			else
+			{
+				StopAim();
+			}
+		}
     }
 
     void DrawHitLine(Vector3 _secondPoint, bool useDistance)
@@ -116,7 +141,10 @@ public abstract class Weapon: Equippable
         }
     }
 
-	public abstract void Fire();
+	public virtual void Fire()
+	{
+		firing = true;
+	}
 
 	public virtual void WeaponHit()
 	{
@@ -131,6 +159,7 @@ public abstract class Weapon: Equippable
 
 	public virtual void WeaponFired()
 	{
+		firing = false;
 		holder.battleState = Unit.BattleState.ReadingInput;
 	}
 }

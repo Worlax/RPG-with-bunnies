@@ -81,6 +81,8 @@ public class Gun: Weapon
 
 	public override void Fire()
     {
+		base.Fire();
+
 		if (CurrentAmmo >= ammoForUse)
 		{
 			gunAnim.Fire(AimedTarget.transform, hitLocation, ammoForUse);

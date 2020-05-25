@@ -8,8 +8,12 @@ public abstract class Item: MonoBehaviour, IDragHandler, IBeginDragHandler, IEnd
 	// Properties //
 	public string itemName = "Item";
 
+#pragma warning disable 0649
+
 	[SerializeField] int _price = 100; 
 	[SerializeField] GameObject _itemIn3DPrefab;
+
+#pragma warning restore 0649
 
 	//
 	public int Price { get => _price; }

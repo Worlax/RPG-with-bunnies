@@ -24,6 +24,8 @@ public class MeleeWeapon: Weapon
 
 	public override void Fire()
 	{
+		base.Fire();
+
 		meleeWeaponAnim.Fire();
 	}
 }

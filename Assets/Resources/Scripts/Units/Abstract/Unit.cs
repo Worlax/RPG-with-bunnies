@@ -92,6 +92,7 @@ public abstract class Unit: MonoBehaviour, IComparable<Unit>
 		InBattle = true;
 		Inventory.Close();
 		Equipment.Close();
+		battleState = BattleState.Waiting;
 
 		OnInvolvedInBattle?.Invoke();
 	}
@@ -118,7 +119,7 @@ public abstract class Unit: MonoBehaviour, IComparable<Unit>
 		battleState = BattleState.ReadingInput;
     }
 
-    public virtual void CalculatePossibleTiles(int _distance = 0)
+    public virtual void CalculatePossibleTiles(int _distance = 0, bool flagPossibleTiles = true)
     {
         int distance;
 
@@ -150,7 +151,11 @@ public abstract class Unit: MonoBehaviour, IComparable<Unit>
             {
                 if (tile && tile.state != Tile.State.Blocked && tile.state != Tile.State.ContainsUnit && tile.bChecked == false && inProcess.numberOfParents < distance)
                 {
-                    tile.SetStatePossible();
+					if (flagPossibleTiles)
+					{
+						tile.SetStatePossible();
+					}
+                    
                     tile.parent = inProcess;
                     tile.numberOfParents = inProcess.numberOfParents + 1;
                     tile.bChecked = true;
@@ -190,7 +195,7 @@ public abstract class Unit: MonoBehaviour, IComparable<Unit>
         }
     }
 
-    protected void MakeStep(bool stopAfterOneTile = false)
+    protected void MakeStep(bool stopAfterOneTile = false, bool calculatePossibleTiles = true, BattleState stateAfterMoveEnd = BattleState.ReadingInput)
     {
 		UnitAnim.Idle(false);
 
@@ -209,13 +214,18 @@ public abstract class Unit: MonoBehaviour, IComparable<Unit>
 			if (CalculateNextStep() == false)
 			{
 				UnitAnim.Idle(true);
-				CalculatePossibleTiles();
-				battleState = BattleState.ReadingInput;
+
+				if (calculatePossibleTiles)
+				{
+					CalculatePossibleTiles();
+				}
+				
+				battleState = stateAfterMoveEnd;
 			}
 
 			if (stopAfterOneTile == true)
 			{
-				battleState = BattleState.ReadingInput;
+				battleState = stateAfterMoveEnd;
 			}
 		}
     }

@@ -46,7 +46,7 @@ GameObject:
   - component: {fileID: 7700544760456822325}
   - component: {fileID: 5967068896522393659}
   m_Layer: 12
-  m_Name: Body
+  m_Name: GunVisual
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -188,7 +188,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3850253557024483303}
   m_Layer: 12
-  m_Name: Rifle
+  m_Name: Gun
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
