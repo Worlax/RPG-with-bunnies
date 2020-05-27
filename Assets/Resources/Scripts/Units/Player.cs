@@ -397,7 +397,6 @@ public class Player: Unit
 				{
 					interactedNPC = target.GetComponentInParent<NPC>();
 					interactedNPC.OpenInventory();
-					interactedNPC.Inventory.transform.position = Input.mousePosition + NPCInventoryPopupOffset;
 
 					Inventory.Open();
 

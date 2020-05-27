@@ -38,7 +38,7 @@ public class Tile: MonoBehaviour
     [ReadOnly] public State state = State.Disabled;
 
     // Functions //
-    void Start()
+    void Awake()
     {
 		adjacentTiles = new List<Tile>();
 	}

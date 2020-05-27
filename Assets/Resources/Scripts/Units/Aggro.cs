@@ -31,18 +31,6 @@ public class Aggro: MonoBehaviour
 					List<Unit> unitsToBattle = new List<Unit>(nearEnemys);
 					unitsToBattle.Add(player);
 
-					foreach (Unit unit in unitsToBattle)
-					{
-						if (unit == null)
-						{
-							print("!!!");
-						}
-						else
-						{
-							print(unit);
-						}
-					}
-
 					BattleManager.instance.StartBattle(me, unitsToBattle.ToArray());
 				}
 			}

@@ -99,8 +99,8 @@ public abstract class Unit: MonoBehaviour, IComparable<Unit>
 
 	public virtual void EndBattle()
 	{
+		CurrentActionPoints = StartActionPoints;
 		InBattle = false;
-
 		OnLeavesTheBattle?.Invoke();
 	}
 

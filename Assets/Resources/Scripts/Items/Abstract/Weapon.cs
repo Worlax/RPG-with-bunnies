@@ -95,7 +95,7 @@ public abstract class Weapon: Equippable
         // hit no object
         else
         {
-			if (AimedTarget = null)
+			if (AimedTarget == null)
 			{
 				DrawHitLine(target.transform.position, true);
 			}
