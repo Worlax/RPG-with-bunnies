@@ -64,6 +64,19 @@ public class Player: Unit
 
     void Update()
     {
+		if (Input.GetKeyDown(KeyCode.J))
+		{
+
+		}
+		if (Input.GetKeyDown(KeyCode.K))
+		{
+			SaveSystem.Save();
+		}
+		if (Input.GetKeyDown(KeyCode.L))
+		{
+			SaveSystem.Load();
+		}
+
 		if (InBattle)
 		{
 			BattleLogic();

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class ItemsManager : MonoBehaviour
+public class ItemsManager: MonoBehaviour
 {
     // Singleton //
     public static ItemsManager instance = null;

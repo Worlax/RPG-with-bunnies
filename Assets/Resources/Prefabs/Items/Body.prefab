@@ -99,7 +99,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0daad595359821941817d4900df2c1e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemName: Item
+  _itemName: body
   _price: 100
   _itemIn3DPrefab: {fileID: 7486407370467627943, guid: 03111886220062443828b5f4d35323fb,
     type: 3}

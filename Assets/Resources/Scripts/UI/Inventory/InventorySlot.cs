@@ -81,7 +81,7 @@ public class InventorySlot: MonoBehaviour
             // item in slot and dragged item are StackableItems
             else if (itemInSlot is Stackable && draggedItem is Stackable)
             {
-                if (itemInSlot.itemName == draggedItem.itemName)
+                if (itemInSlot.name == draggedItem.name)
                 {
                     return CombineStackable(draggedItem as Stackable);
                 }

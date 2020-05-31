@@ -6,16 +6,17 @@ using System.Collections.Generic;
 public abstract class Item: MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler
 {
 	// Properties //
-	public string itemName = "Item";
 
 #pragma warning disable 0649
 
+	[SerializeField] string _itemName = "Default";
 	[SerializeField] int _price = 100; 
 	[SerializeField] GameObject _itemIn3DPrefab;
 
 #pragma warning restore 0649
 
 	//
+	public string ItemName { get => _itemName; }
 	public int Price { get => _price; }
 	public GameObject ItemIn3DPrefab { get => _itemIn3DPrefab; }
     public GameObject ItemVisual { get; protected set; }
@@ -23,9 +24,14 @@ public abstract class Item: MonoBehaviour, IDragHandler, IBeginDragHandler, IEnd
 	[HideInInspector] public InventorySlot lastConnectedSlot;
     CanvasGroup canvasGroup;
 
-    // Functions //
-    protected virtual void Start()
+	// Functions //
+	protected virtual void Start()
     {
+		if (_itemName == "Default")
+		{
+			Debug.LogWarning("Item '" + this + "' have a default name!");
+		}
+
         canvasGroup = GetComponent<CanvasGroup>();
 
 		InventorySlot slot = GetComponentInParent<InventorySlot>();
@@ -37,6 +43,26 @@ public abstract class Item: MonoBehaviour, IDragHandler, IBeginDragHandler, IEnd
 		{
 			slot.ConnectOrSwapItem(this, true);
 		}
+	}
+
+	public string GetID()
+	{
+		string ID = _itemName;
+
+		if (this is Usable)
+		{
+			ID += "_" + "usable" + "_" + (this as Usable).usesLeft.ToString();
+		}
+		else if (this is Stackable)
+		{
+			ID += "_" + "stackable" + "_" + (this as Stackable).inStack.ToString();
+		}
+		else if (this is Gun)
+		{
+			ID += "_" + "weapon" + "_" + (this as Gun).CurrentAmmo.ToString();
+		}
+
+		return ID;
 	}
 
     public void OnBeginDrag(PointerEventData eventData)

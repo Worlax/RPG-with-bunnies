@@ -99,7 +99,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd4dc61950e618b40b241a738a601bc9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemName: Item
+  _itemName: knife
   _price: 100
   _itemIn3DPrefab: {fileID: 1225194024383487329, guid: 577efa7a19f799a44968d874528d54ee,
     type: 3}

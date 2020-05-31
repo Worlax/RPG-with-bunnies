@@ -1,5 +1,4 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine.UI;
 
 public abstract class Stackable: Item
 {
@@ -15,8 +14,9 @@ public abstract class Stackable: Item
         base.Start();
 
         inStackText = GetComponentInChildren<Text>();
-        inStackText.text = inStack.ToString();
-    }
+
+		UpdateVisual();
+	}
 
     public void AddToStack(int amount)
     {
@@ -26,7 +26,7 @@ public abstract class Stackable: Item
             inStack = maxInStack;
         }
 
-        inStackText.text = inStack.ToString();
+		UpdateVisual();
     }
 
     public void TakeFromStack(int amount, out int wasTaken)
@@ -42,11 +42,16 @@ public abstract class Stackable: Item
 			inStack = 0;
 		}
 
-        inStackText.text = inStack.ToString();
+		UpdateVisual();
 
 		if (inStack <= 0)
 		{
 			Destroy(gameObject);
 		}
+	}
+
+	void UpdateVisual()
+	{
+		inStackText.text = inStack.ToString();
 	}
 }

@@ -35,14 +35,7 @@ public class EquipmentSlot: InventorySlot
         Equippable equipmentItem = draggedItem as Equippable;
         if (equipmentItem == null || equipmentItem.SlotType != SlotType)
 		{
-			if (draggedItem is Ammo)
-			{
-				return base.ConnectOrSwapItem(draggedItem);
-			}
-			else
-			{
-				return false;
-			}
+			return false;
 		}
 
         return base.ConnectOrSwapItem(draggedItem);
@@ -64,6 +57,9 @@ public class EquipmentSlot: InventorySlot
 
     public override void DisconnectItem()
     {
+		if (itemInSlot == null)
+			return;
+
 		Equippable item = itemInSlot as Equippable;
 		item.UnequipItem();
 		equipment.SubtractStats(item);

@@ -100,9 +100,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5110f0a69a1cc6f489f012cd6f8eff17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemName: 7.62x51
+  _itemName: 7.62x51
+  _price: 100
+  _itemIn3DPrefab: {fileID: 0}
   lastConnectedSlot: {fileID: 0}
-  itemIn3DPrefab: {fileID: 0}
   maxInStack: 0
   inStack: 20
   _type: 0

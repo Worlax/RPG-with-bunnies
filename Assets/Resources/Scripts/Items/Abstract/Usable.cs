@@ -17,9 +17,13 @@ public abstract class Usable: Item, IPointerClickHandler
     {
         base.Start();
 
-        usesLeft = maxUses;
+		if (usesLeft == 0)
+		{
+			usesLeft = maxUses;
+		}
+        
 		usesSlider = GetComponentInChildren<Slider>();
-		usesSlider.value = 1;
+		UpdateVisual();
 	}
 
     public void Use(Unit user)
@@ -27,7 +31,7 @@ public abstract class Usable: Item, IPointerClickHandler
         if (UseEffect(user) == true)
         {
             --usesLeft;
-			usesSlider.value = (float)usesLeft / (float)maxUses;
+			UpdateVisual();
 
 			if (usesLeft <= 0)
             {
@@ -35,6 +39,11 @@ public abstract class Usable: Item, IPointerClickHandler
             }
         }
     }
+
+	public void UpdateVisual()
+	{
+		usesSlider.value = (float)usesLeft / (float)maxUses;
+	}
 
 	public void OnPointerClick(PointerEventData eventData)
 	{

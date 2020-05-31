@@ -27,7 +27,7 @@ public class Window: MonoBehaviour
 		}
 	}
 
-	void Update()
+	protected virtual void Update()
 	{
 		if (Input.GetKeyDown(toggleKey))
 		{

@@ -68,14 +68,14 @@ MonoBehaviour:
   healthBar: {fileID: 9174324222629257335}
   healthHighColor: {r: 0.745283, g: 0.087165914, b: 0.059763268, a: 0.9019608}
   healthLowColor: {r: 0.29814878, g: 0.569322, b: 0.9433962, a: 0.9019608}
-  _currentHealth: 30
+  CurrentHealth: 70
   _maxHealth: 30
   _minDamage: 3
   _maxDamage: 5
   _playingTurnSpeed: 2
-  _level: 1
-  _exp: 20
-  _expForLevelUp: 50
+  Level: 1
+  Exp: 50
+  ExpForLevelUp: 50
   _dead: 0
 --- !u!114 &9166127174043918407
 MonoBehaviour:

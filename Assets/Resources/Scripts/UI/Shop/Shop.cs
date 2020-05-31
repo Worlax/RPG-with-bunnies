@@ -16,8 +16,10 @@ public class Shop: Inventory
 	int moneyForTrade = 0;
 
 	// Functions //
-	void Update()
+	protected override void Update()
 	{
+		base.Update();
+
 		if (Closed == false)
 		{
 			SetPriceForAllItems();

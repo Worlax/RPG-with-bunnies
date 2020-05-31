@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
-public class Equipment : Window
+public class Equipment: Window
 {
 	// Properties //
 #pragma warning disable 0649
@@ -28,9 +29,22 @@ public class Equipment : Window
 	{
 		base.Start();
 
-		InstantiatePrefabs();
-
+		if (Owner is Player && SaveSystem.HaveSavedFile())
+		{
+			SaveSystem.LoadEquipment();
+		}
+		else
+		{
+			InstantiateWithStartPrefabs();
+		}
+		
 		ownerStats = Owner.GetComponent<Stats>();
+	}
+
+	protected override void Update()
+	{
+		base.Update();
+
 		UpdateStatsDisplay();
 	}
 
@@ -91,22 +105,102 @@ public class Equipment : Window
 		UpdateStatsDisplay();
     }
 
-	void InstantiatePrefabs()
+	public void InstantiatePrefabs(Data data)
 	{
-		if (helmet != null)
+		DeleteAllItems();
+
+		InstantiateFromID(data.EquipedHelmet);
+		InstantiateFromID(data.EquipedBody);
+		InstantiateFromID(data.EquipedWeapon);
+	}
+
+	void InstantiateFromID(string id)
+	{
+		if (id == null)
+			return;
+
+		string[] idSplit = id.Split('_');
+
+		Item itemPrefab = DataManager.instance.FindItem(idSplit[0]);
+
+		Item item = Instantiate(itemPrefab);
+
+		foreach (Transform trans in slotsRoot)
 		{
-			Equippable _helmet = Instantiate(helmet);
-			_helmet.transform.SetParent(slotsRoot.GetChild(0), false);
+			EquipmentSlot slot = trans.GetComponent<EquipmentSlot>();
+
+			if (slot && slot.SlotType == (item as Equippable).SlotType)
+			{
+				item.transform.SetParent(slot.transform, false);
+			}
 		}
-		if (body != null)
+
+		if (idSplit.Length >= 3)
 		{
-			Equippable _body = Instantiate(body);
-			_body.transform.SetParent(slotsRoot.GetChild(1), false);
+			switch (idSplit[1])
+			{
+				case "weapon":
+					(item as Gun).CurrentAmmo = int.Parse(idSplit[2]);
+					(item as Gun).AddAmmo(0);
+					break;
+			}
 		}
-		if (weapon != null)
+	}
+
+	public void InstantiatePrefabs(Equippable _helmet, Equippable _body, Weapon _weapon)
+	{
+		DeleteAllItems();
+
+		if (_helmet != null)
 		{
-			Weapon _weapon = Instantiate(weapon);
-			_weapon.transform.SetParent(slotsRoot.GetChild(2), false);
+			Equippable helmet = Instantiate(_helmet);
+			helmet.transform.SetParent(slotsRoot.GetChild(0), false);
+		}
+		if (_body != null)
+		{
+			Equippable body = Instantiate(_body);
+			body.transform.SetParent(slotsRoot.GetChild(1), false);
+		}
+		if (_weapon != null)
+		{
+			Weapon weapon = Instantiate(_weapon);
+			weapon.transform.SetParent(slotsRoot.GetChild(2), false);
+		}
+	}
+
+	void InstantiateWithStartPrefabs()
+	{
+		InstantiatePrefabs(helmet, body, weapon);
+	}
+
+	public EquipmentSlot[] GetAllSlots()
+	{
+		List<EquipmentSlot> slots = new List<EquipmentSlot>();
+
+		foreach (Transform transform in slotsRoot)
+		{
+			EquipmentSlot slot = transform.GetComponent<EquipmentSlot>();
+
+			if (slot != null)
+				slots.Add(slot);
+		}
+
+		return slots.ToArray();
+	}
+
+	void DeleteAllItems()
+	{
+		foreach (EquipmentSlot slot in GetAllSlots())
+		{
+			if (!slot.IsEmpty())
+			{
+				Equippable item = slot.GetItem() as Equippable;
+				slot.DisconnectItem();
+
+				Destroy(item.gameObject);
+			}	
 		}
 	}
 }
+
+

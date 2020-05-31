@@ -63,6 +63,13 @@ public class Gun: Weapon
 		ammoText.text = CurrentAmmo.ToString();
 	}
 
+	protected override void Start()
+	{
+		base.Start();
+
+		UpdateVisual();
+	}
+
 	public override void EquipItem(Unit ownerOfThisItem)
 	{
 		base.EquipItem(ownerOfThisItem);
@@ -207,7 +214,7 @@ public class Gun: Weapon
             CurrentAmmo = MaxAmmo;
         }
 
-		ammoText.text = CurrentAmmo.ToString();
+		UpdateVisual();
 		AmmoChanged?.Invoke(this);
     }
 
@@ -226,9 +233,14 @@ public class Gun: Weapon
 			CurrentAmmo = 0;
 		}
 
-		ammoText.text = CurrentAmmo.ToString();
+		UpdateVisual();
 		AmmoChanged?.Invoke(this);
 
 		return returnAmmo;
     }
+
+	void UpdateVisual()
+	{
+		ammoText.text = CurrentAmmo.ToString();
+	}
 }

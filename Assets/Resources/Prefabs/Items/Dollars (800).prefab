@@ -100,9 +100,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58715fa30d8d6ea4a8fac059bf378b7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemName: Dollars
+  _itemName: dollar2
+  _price: 100
+  _itemIn3DPrefab: {fileID: 0}
   lastConnectedSlot: {fileID: 0}
-  itemIn3DPrefab: {fileID: 0}
   maxInStack: 1000
   inStack: 800
 --- !u!1001 &344547964444461001

@@ -20,7 +20,14 @@ public class Inventory: Window
 	{
 		base.Start();
 
-		InstantiatePrefabs();
+		if (Owner is Player && SaveSystem.HaveSavedFile())
+		{
+			SaveSystem.LoadInventory();
+		}
+		else
+		{
+			InstantiatePrefabs(startItems);
+		}
 	}
 
 	public void Init()
@@ -42,15 +49,58 @@ public class Inventory: Window
 		}
 	}
 
-	void InstantiatePrefabs()
+	public void InstantiatePrefabs(Data data)
 	{
-		for (int i = 0; i < startItems.Length; ++i)
+		DeleteAllItems();
+
+		for (int i = 0; i < data.InventoryItems.Length; ++i)
 		{
-			if (startItems[i] != null)
+			string[] idSplit = data.InventoryItems[i].Split('_');
+
+			Item itemPrefab = DataManager.instance.FindItem(idSplit[0]);
+
+			Item item = Instantiate(itemPrefab);
+			item.transform.SetParent(slotsRoot.GetChild(i), false);
+
+			if (idSplit.Length >= 3)
 			{
-				Item item = Instantiate(startItems[i]);
+				switch (idSplit[1])
+				{
+					case "usable":
+						(item as Usable).usesLeft = int.Parse(idSplit[2]);
+						break;
+
+					case "stackable":
+						(item as Stackable).inStack = int.Parse(idSplit[2]);
+						break;
+
+					case "weapon":
+						(item as Gun).CurrentAmmo = int.Parse(idSplit[2]);
+						break;
+				}
+			}
+		}
+	}
+
+	public void InstantiatePrefabs(Item[] items)
+	{
+		DeleteAllItems();
+
+		for (int i = 0; i < items.Length; ++i)
+		{
+			if (items[i] != null)
+			{
+				Item item = Instantiate(items[i]);
 				item.transform.SetParent(slotsRoot.GetChild(i), false);
 			}
+		}
+	}
+
+	void DeleteAllItems()
+	{
+		foreach (Item item in GetAllItems())
+		{
+			Destroy(item.gameObject);
 		}
 	}
 

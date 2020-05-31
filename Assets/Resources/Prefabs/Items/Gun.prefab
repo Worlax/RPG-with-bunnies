@@ -100,7 +100,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7052eb608da2cb049b212fad64a04fbf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemName: Item
+  _itemName: gun
   _price: 100
   _itemIn3DPrefab: {fileID: 5845950588336264084, guid: 0c2412728df141c4b9941fc314d356ea,
     type: 3}
@@ -127,7 +127,7 @@ MonoBehaviour:
   aMinDamage: 5
   aMaxDamage: 6
   _AmmoType: 1
-  _currentAmmo: 0
+  _currentAmmo: 30
   _maxAmmo: 30
 --- !u!1001 &6763490927694344371
 PrefabInstance:
