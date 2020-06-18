@@ -98,12 +98,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38df26f43272ae94d9bb46c44e123a1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _spawnPoint: {fileID: 2137442806905812515}
   mDisabled: {fileID: 2100000, guid: 6184ae08658d5eb45a5d763a1bbe9daa, type: 2}
   mPossible: {fileID: 2100000, guid: db07a64b2acdced41b1b883d656b9fa3, type: 2}
   mOverlapped: {fileID: 2100000, guid: e0959fbed908dd3478addf354c731f3a, type: 2}
   mClicked: {fileID: 2100000, guid: ee0d469ff9e602247a096b0ce1768c91, type: 2}
   mWithPlayer: {fileID: 2100000, guid: 5550b5cd34db8df4f94aff9cde0ff1f5, type: 2}
-  _spawnPoint: {fileID: 2137442806905812515}
   bChecked: 0
   parent: {fileID: 0}
   numberOfParents: 0

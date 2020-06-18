@@ -303,7 +303,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Fire
+  m_Name: Fire2
   m_Speed: 1.7
   m_CycleOffset: 0
   m_Transitions:
@@ -317,7 +317,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 9e3c4e33b9f18ff46a9c3cbdb588e394, type: 2}
+  m_Motion: {fileID: 7400000, guid: fcbca1fe061090f43ac2c67799f9189a, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 

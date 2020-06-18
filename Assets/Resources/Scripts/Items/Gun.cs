@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using System;
 
-public class Gun: Weapon
+public class Gun : Weapon
 {
 	// Properties //
 	GunAnim gunAnim;
@@ -39,7 +39,8 @@ public class Gun: Weapon
 	public int CurrentAmmo { get => _currentAmmo; set => _currentAmmo = value; }
 	public int MaxAmmo { get => _maxAmmo; set => _maxAmmo = value; }
 
-	protected int ammoForUse;
+	int _ammoForUse;
+	public int AmmoForUse { get => _ammoForUse; private set => _ammoForUse = value; }
 
 	public enum FireMode
     {
@@ -90,9 +91,9 @@ public class Gun: Weapon
     {
 		base.Fire();
 
-		if (CurrentAmmo >= ammoForUse)
+		if (CurrentAmmo >= AmmoForUse)
 		{
-			gunAnim.Fire(AimedTarget.transform, hitLocation, ammoForUse);
+			gunAnim.Fire(AimedTarget.transform, hitLocation, AmmoForUse);
 		}
 	}
 
@@ -165,7 +166,7 @@ public class Gun: Weapon
                 ActionPointsForUse = sActionPoints;
                 MinDamage = sMinDamage;
                 MaxDamage = sMaxDamage;
-                ammoForUse = sAmmo;
+                AmmoForUse = sAmmo;
 				randomLocationForDamagePopup = false;
 				break;
 
@@ -173,7 +174,7 @@ public class Gun: Weapon
                 ActionPointsForUse = bActionPoints;
                 MinDamage = bMinDamage;
                 MaxDamage = bMaxDamage;
-                ammoForUse = bAmmo;
+                AmmoForUse = bAmmo;
 				randomLocationForDamagePopup = true;
 				break;
 
@@ -181,7 +182,7 @@ public class Gun: Weapon
                 ActionPointsForUse = aActionPoints;
                 MinDamage = aMinDamage;
                 MaxDamage = aMaxDamage;
-                ammoForUse = aAmmo;
+                AmmoForUse = aAmmo;
 				randomLocationForDamagePopup = true;
 				break;
         }

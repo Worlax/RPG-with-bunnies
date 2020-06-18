@@ -9,6 +9,6 @@ EditorBuildSettings:
     path: Assets/Resources/Scenes/Town.unity
     guid: 48416db4a7c829b41b369d21b42d35a3
   - enabled: 1
-    path: Assets/Resources/Scenes/Dangeon_1.unity
+    path: Assets/Resources/Scenes/Dangeon.unity
     guid: 76cd214f988a0364d8d66d44ff409c47
   m_configObjects: {}

@@ -317,6 +317,14 @@ public class Player: Unit
                 // second click on target
                 else if (weapon != null && unitInFocus == enemy && weapon.AimedTarget != null)
                 {
+					if (weapon is Gun)
+					{
+						Gun gun = weapon as Gun;
+
+						if (gun.AmmoForUse > gun.CurrentAmmo)
+							return;
+					}
+
 					if (WasteActionPoints(weapon.ActionPointsForUse) == true)
 					{
 						if (InBattle == false)
